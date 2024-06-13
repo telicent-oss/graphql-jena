@@ -1,0 +1,53 @@
+type Node {
+    id: ID! #Used if you want client-side caching, but will return the same string as uri
+    uri: String! #The uri of the resource
+    uriHash: String! @deprecated #A SHA1 hash of the uri
+    shortUri: String! #If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    types: [Node]! #An array of types for the Node - i.e. the classes it is an instance of.
+    properties: [Property]! #An array of literal properties of the Node
+    outRels: [Rel]! #An array of Rels where the current Node is in the domain position
+    inRels: [Rel]! #An array of Rels where the current Node is in the range position
+    instances: [Node] #If the node is a class, this will return an array of its instances
+}
+
+type Rel { #A subject-predicate-object statement
+    id: ID! #A (sorta) unique ID made from hashing (SHA1) the "<subject> <predicate> <object>" string
+    domain: Node! #AKA subject
+    domain_id: String!
+    predicate: String! #AKA property
+    range_id: String!
+    range: Node! #AKA object
+}
+
+type Property { #A literal property
+    predicate: String!
+    shortPredicate: String!
+    value: String!
+    datatype: String
+    language: String
+}
+
+type State {
+    uri: String!
+    type: String!
+    start: String
+    end: String
+    period: String
+    relations: [NonDirectionalRel]!
+}
+
+type NonDirectionalRel {
+    predicate: String!
+    entity: Node!
+}
+
+type Query {
+    search(
+        graph: String
+        searchTerm: String!
+    ): [Node]
+    getAllEntities(graph: String): [Node]
+    states(uri: String!): [State]!
+    node(graph: String, uri: String!): Node
+    nodes(graph: String, uris: [String!]!): [Node]
+}

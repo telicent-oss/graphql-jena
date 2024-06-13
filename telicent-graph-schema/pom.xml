@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.telicent.jena.graphql</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.5.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>telicent-graph-schema</artifactId>
+    <name>Telicent - GraphQL for Apache Jena - Telicent Graph Application Schema</name>
+    <description>Provides an implementation of Telicent's Graph Application GraphQL schema within the GraphQL for Apache
+        Jena framework
+    </description>
+
+    <properties>
+        <license.header.path>${project.parent.basedir}</license.header.path>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.telicent.jena.graphql</groupId>
+            <artifactId>graphql-jena-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.telicent.public</groupId>
+            <artifactId>jwt-servlet-auth-aws</artifactId>
+            <version>${dependency.jwt-servlet}</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>io.telicent.jena.graphql</groupId>
+            <artifactId>graphql-jena-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${dependency.wiremock}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

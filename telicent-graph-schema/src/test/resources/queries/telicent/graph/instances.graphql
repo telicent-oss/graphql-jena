@@ -1,0 +1,11 @@
+query {
+    node(uri: "http://ies.data.gov.uk/ontology/ies4#Person") {
+        id
+        uri
+        shortUri
+        instances {
+            uri
+            shortUri
+        }
+    }
+}

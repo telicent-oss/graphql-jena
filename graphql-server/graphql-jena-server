@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# Copyright (C) 2022 Telicent Limited
+#
+
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+SCRIPT_DIR=$(cd "${SCRIPT_DIR}" && pwd)
+
+function error() {
+  echo "$@" 1>&2
+}
+
+function abort() {
+  echo "$@" 1>&2
+  exit 255
+}
+
+# Search for the JAR file in common locations, there's basically two we care about:
+#
+#   1) The lib/ directory under the SCRIPT_DIR i.e. a production deployment
+#   2) The target/ directory under the SCRIPT_DIR i.e. a developers local development environment
+#
+JAR_NAME=graphql-jena-server.jar
+if [ -f "${SCRIPT_DIR}/target/${JAR_NAME}" ]; then
+  CLASSPATH="${SCRIPT_DIR}/target/${JAR_NAME}"
+else
+  error "Failed to locate required JAR file ${JAR_NAME} in any of the expected locations"
+  if [ -f "${SCRIPT_DIR}/pom.xml" ]; then
+    error "You may need to do a mvn package first"
+  fi
+  exit 255
+fi
+
+# shellcheck disable=SC2086
+exec java ${JAVA_OPTIONS} -jar "${CLASSPATH}" "$@"

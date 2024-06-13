@@ -1,0 +1,16 @@
+query {
+    quads(subject: { kind: URI, value: "https://example.org/13" }) {
+        subject {
+            kind
+            value
+        }
+        predicate {
+            kind
+            value
+        }
+        object {
+            kind
+            value
+        }
+    }
+}

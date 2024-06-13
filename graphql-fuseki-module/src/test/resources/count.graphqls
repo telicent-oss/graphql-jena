@@ -1,0 +1,7 @@
+schema {
+    query: Count
+}
+
+type Count {
+    count: Int
+}

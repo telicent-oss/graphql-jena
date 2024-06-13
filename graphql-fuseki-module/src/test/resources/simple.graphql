@@ -1,0 +1,16 @@
+query {
+    quads(subject: { kind: URI, value: "https://starwars.com#planet_Tatooine" }) {
+        subject {
+            kind
+            value
+        }
+        predicate {
+            kind
+            value
+        }
+        object {
+            kind
+            value
+        }
+    }
+}

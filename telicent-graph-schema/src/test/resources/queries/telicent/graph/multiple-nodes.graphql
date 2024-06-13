@@ -1,0 +1,13 @@
+query {
+    nodes(uris: ["https://starwars.com#person_Obi-WanKenobi", "https://starwars.com#hutt_JabbaDesilijicTiure"]) {
+        id
+        uri
+        shortUri
+        properties {
+            predicate
+            value
+            datatype
+            language
+        }
+    }
+}

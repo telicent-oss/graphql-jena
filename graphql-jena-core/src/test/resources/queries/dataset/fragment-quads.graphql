@@ -1,0 +1,17 @@
+query {
+    quads {
+        subject {
+            ...NodeFragment
+        }
+        predicate {
+            ...NodeFragment
+        }
+        object {
+            ...NodeFragment
+        }
+    }
+}
+fragment NodeFragment on Node {
+    kind
+    value
+}

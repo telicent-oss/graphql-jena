@@ -1,0 +1,7 @@
+{
+  "operationName":"State",
+  "variables": {
+    "stateUri":"https://starwars.com#person_LukeSkywalker"
+  },
+  "query":"query State($stateUri: String!) {\n  states(uri: $stateUri) {\n    end\n    period\n    start\n    type\n    uri\n    relations {\n      predicate\n      entity {\n        uri\n        types {\n          uri\n          shortUri\n          __typename\n        }\n        properties {\n          value\n          shortPredicate\n          predicate\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
+}

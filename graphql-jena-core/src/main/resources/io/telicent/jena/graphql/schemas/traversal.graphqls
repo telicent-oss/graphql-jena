@@ -1,0 +1,24 @@
+schema {
+    query: Traversal
+}
+
+type Traversal {
+    nodes(starts: [NodeFilter!]): [TraversalNode!]!
+}
+
+type TraversalNode {
+    node: Node
+    outgoing(predicate: [NodeFilter!], kinds: [NodeKind!]): [TraversalEdge!]
+    incoming(predicate: [NodeFilter!], kinds: [NodeKind!]): [TraversalEdge!]
+}
+
+type TraversalEdge {
+    edge: Node
+    direction: EdgeDirection
+    target: TraversalNode!
+}
+
+enum EdgeDirection {
+    OUT
+    IN
+}

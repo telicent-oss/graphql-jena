@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.telicent.jena.graphql</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.5.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>graphql-server</artifactId>
+    <name>Telicent - GraphQL for Apache Jena - Standalone Server</name>
+    <description>A standalone HTTP server application offering GraphQL APIs over Apache Jena backed data</description>
+
+    <properties>
+        <license.header.path>${project.parent.basedir}</license.header.path>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.telicent.jena.graphql</groupId>
+            <artifactId>graphql-jena-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.telicent.smart-caches</groupId>
+            <artifactId>jaxrs-base-server</artifactId>
+            <version>${dependency.smart-caches}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb2</artifactId>
+            <version>${dependency.jena}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.rvesse</groupId>
+            <artifactId>airline</artifactId>
+            <version>${dependency.airline}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.telicent.jena.graphql</groupId>
+            <artifactId>telicent-graph-schema</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>graphql-jena-server</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${plugin.shade}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>io.telicent.jena.graphql.server.GraphQLEntrypoint</Main-Class>
+                                    </manifestEntries>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

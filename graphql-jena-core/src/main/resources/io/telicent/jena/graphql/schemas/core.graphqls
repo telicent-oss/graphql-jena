@@ -1,0 +1,44 @@
+type Triple {
+    subject: Node!
+    predicate: Node!
+    object: Node!
+}
+
+type Quad {
+    subject: Node!
+    predicate: Node!
+    object: Node!
+    graph: Node!
+}
+
+enum NodeKind {
+    URI
+    BLANK
+    PLAIN_LITERAL
+    LANGUAGE_LITERAL
+    TYPED_LITERAL
+    VARIABLE
+    TRIPLE
+}
+
+type Node {
+    kind: NodeKind!
+    value: String
+    triple: Triple
+    datatype: String
+    language: String
+}
+
+input NodeFilter {
+    kind: NodeKind!
+    value: String
+    triple: TripleFilter
+    datatype: String
+    language: String
+}
+
+input TripleFilter {
+    subject: NodeFilter!
+    predicate: NodeFilter!
+    object: NodeFilter!
+}

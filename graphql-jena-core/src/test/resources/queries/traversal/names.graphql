@@ -1,0 +1,15 @@
+query {
+    nodes {
+        node {
+            kind
+            value
+        }
+        outgoing(predicate: [ { kind: URI, value: "http://xmlns.com/foaf/0.1/name"}]) {
+            target {
+                node {
+                    value
+                }
+            }
+        }
+    }
+}

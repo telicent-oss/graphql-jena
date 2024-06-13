@@ -1,0 +1,25 @@
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX graphql: <https://telicent.io/fuseki/modules/graphql#>
+
+:service1 rdf:type fuseki:Service ;
+    fuseki:name "ds" ;
+
+    fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "query" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; fuseki:name "gsp" ] ;
+
+    # Using the GraphQL operation
+    fuseki:endpoint [ fuseki:operation graphql:graphql ;
+                      ja:context [ ja:cxtName "graphql:executor" ;
+                                   ja:cxtValue "io.telicent.jena.graphql.execution.DatasetExecutor" ];
+                      fuseki:name "graphql" ];
+
+    fuseki:dataset :dataset ;
+    .
+
+# Local dev
+:dataset rdf:type ja:MemoryDataset .

@@ -1,0 +1,25 @@
+# Maven and Build Artifacts
+target/
+lib/
+agents/
+*.versionsBackup
+pom.xml.*
+release.properties
+dependency-reduced-pom.xml
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS X
+.DS_Store
+

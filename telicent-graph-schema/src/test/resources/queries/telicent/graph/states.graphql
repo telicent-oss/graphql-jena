@@ -1,0 +1,23 @@
+query State($stateUri: String!) {
+    states(uri: $stateUri) {
+        end
+        period
+        start
+        type
+        uri
+        relations {
+            predicate
+            entity {
+                uri
+                types {
+                    uri
+                    shortUri
+                }
+                properties {
+                    value
+                    shortPredicate predicate
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+GraphQL Extensions for Apache Jena
+==================================
+
+Provides integration between GraphQL Java and Apache Jena to enable GraphQL
+queries over Jena Dataset's
+
+Copyright (C) 2024 Telicent Ltd
+

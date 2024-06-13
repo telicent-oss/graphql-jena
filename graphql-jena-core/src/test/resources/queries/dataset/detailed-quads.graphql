@@ -1,0 +1,22 @@
+query {
+    quads {
+        subject {
+            kind
+            value
+        }
+        predicate {
+            kind
+            value
+        }
+        object {
+            kind
+            value
+            language
+            datatype
+        }
+        graph {
+            kind
+            value
+        }
+    }
+}

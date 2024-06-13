@@ -1,0 +1,7 @@
+schema {
+    query: Quads
+}
+
+type Quads {
+    quads(subject: NodeFilter, predicate: NodeFilter, object: NodeFilter, graph: NodeFilter): [Quad!]!
+}

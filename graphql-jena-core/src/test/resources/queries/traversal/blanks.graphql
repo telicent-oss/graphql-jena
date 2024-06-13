@@ -1,0 +1,15 @@
+query {
+    nodes {
+        node {
+            kind
+            value
+        }
+        outgoing(kinds: [ BLANK ]) {
+            target {
+                node {
+                    value
+                }
+            }
+        }
+    }
+}

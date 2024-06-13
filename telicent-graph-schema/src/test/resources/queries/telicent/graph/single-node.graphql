@@ -1,0 +1,30 @@
+query {
+    node(uri: "https://starwars.com#person_Obi-WanKenobi") {
+        id
+        uri
+        shortUri
+        properties {
+            predicate
+            value
+            datatype
+            language
+        }
+        inRels {
+            domain {
+                uri
+            }
+            domain_id
+            predicate
+        }
+        outRels {
+            predicate
+            range {
+                uri
+            }
+            range_id
+        }
+        instances {
+            uri
+        }
+    }
+}

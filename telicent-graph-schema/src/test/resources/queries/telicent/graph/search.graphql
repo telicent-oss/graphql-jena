@@ -1,0 +1,7 @@
+query {
+    search(searchTerm: "test") {
+        id
+        uri
+        shortUri
+    }
+}

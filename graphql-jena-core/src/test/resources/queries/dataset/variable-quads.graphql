@@ -1,0 +1,18 @@
+query($subject: NodeFilter, $predicate: NodeFilter, $object: NodeFilter, $graph: NodeFilter) {
+    quads(subject: $subject, predicate: $predicate, object: $object, graph: $graph) {
+        subject {
+            kind
+            value
+        }
+        predicate {
+            kind
+            value
+        }
+        object {
+            kind
+            value
+            language
+            datatype
+        }
+    }
+}

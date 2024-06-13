@@ -1,0 +1,14 @@
+query {
+    types: quads(predicate: { kind: URI, value: "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }, object: { kind: URI, value: "http://www.w3.org/2000/01/rdf-schema#Class" }) {
+        subject {
+            kind
+            value
+        }
+    }
+    instances: quads(predicate: { kind: URI, value: "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }) {
+        subject {
+            kind
+            value
+        }
+    }
+}

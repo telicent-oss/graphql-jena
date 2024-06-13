@@ -1,0 +1,39 @@
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX graphql: <https://telicent.io/fuseki/modules/graphql#>
+
+:service1 rdf:type fuseki:Service ;
+    fuseki:name "ds" ;
+
+    fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "query" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; fuseki:name "gsp" ] ;
+
+    # Defining multiple GraphQL operations with different schemas
+    fuseki:endpoint [ fuseki:operation graphql:graphql ;
+                      ja:context [ ja:cxtName "graphql:executor" ;
+                                   ja:cxtValue "io.telicent.jena.graphql.execution.DatasetExecutor" ];
+                      fuseki:name "dataset-graphql" ];
+    fuseki:endpoint [ fuseki:operation graphql:graphql ;
+                      ja:context [ ja:cxtName "graphql:executor" ;
+                                   ja:cxtValue "io.telicent.jena.graphql.execution.TraversalExecutor" ];
+                      fuseki:name "traversal-graphql" ];
+    fuseki:endpoint [ fuseki:operation graphql:graphql ;
+                      ja:context [ ja:cxtName "graphql:executor" ;
+                                   # This schema and its execution defined purely in this test module
+                                   ja:cxtValue "io.telicent.jena.graphql.fuseki.CountExecutor" ];
+                      fuseki:name "count-graphql" ];
+    fuseki:endpoint [ fuseki:operation graphql:graphql ;
+                      ja:context [ ja:cxtName "graphql:executor" ;
+                                   # We provide no name for this executor so that it gets set by default
+                                   ja:cxtValue "io.telicent.jena.graphql.execution.DatasetExecutor" ];
+                      ];
+
+    fuseki:dataset :dataset ;
+    .
+
+# Local dev
+:dataset rdf:type ja:MemoryDataset .

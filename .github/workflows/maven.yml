@@ -1,0 +1,21 @@
+name: Maven Build
+
+# Run workflow for any push to a branch
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  maven-build:
+    uses: telicent-oss/shared-workflows/.github/workflows/maven.yml@main
+    with:
+      # No Docker based tests in this repository currently
+      USES_DOCKERHUB_IMAGES: false
+      # Want to publish SNAPSHOTs from main
+      PUBLISH_SNAPSHOTS: true
+      MAIN_BRANCH: main
+      JAVA_VERSION: 17

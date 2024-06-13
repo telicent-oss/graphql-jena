@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.telicent.jena.graphql</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.5.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Telicent - GraphQL for Apache Jena - Parent</name>
+    <description>Provides GraphQL extensions for use with Apache Jena</description>
+    <url>https://github.com/telicent-oss/graphql-jena</url>
+
+    <modules>
+        <module>graphql-jena-core</module>
+        <module>graphql-server</module>
+        <module>telicent-graph-schema</module>
+        <module>graphql-fuseki-module</module>
+    </modules>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-oss</id>
+            <name>Sonatype OSS Snapshots</name>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-oss</id>
+            <name>Sonatype OSS</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    <scm>
+        <connection>scm:git:https://github.com/telicent-oss/graphql-jena</connection>
+        <developerConnection>scm:git:ssh://git@github.com/telicent-oss/graphql-jena</developerConnection>
+        <url>https://github.com/telicent-oss/graphql-jena</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Telicent Developers</name>
+            <email>opensource@telicent.io</email>
+            <organization>Telicent Ltd</organization>
+            <organizationUrl>https://telicent.io</organizationUrl>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <properties>
+        <!-- License Plugin Configuration -->
+        <!--
+        Note that all submodules need to declare this appropriately as well so that the plugin can correctly find
+        the header.txt file in this top directory even when run on a submodule -->
+        <license.header.path>${project.basedir}</license.header.path>
+
+        <!-- Whether Javadoc should fail the build if warning are raised -->
+        <javadoc.failOnWarnings>true</javadoc.failOnWarnings>
+
+        <!-- Code Coverage Configuration -->
+        <!--
+        Controls the minimum code coverage ratio that modules which have opted into code coverage enforcement are
+        required to meet.  If a sub-module wants to increase/decrease this value they can do so by redefining this
+        property in their pom.xml
+        -->
+        <coverage.minimum>0.9</coverage.minimum>
+        <coverage.skip>false</coverage.skip>
+
+        <!-- Plugin Versions -->
+        <plugin.compiler>3.13.0</plugin.compiler>
+        <plugin.cyclonedx>2.8.0</plugin.cyclonedx>
+        <plugin.dependency>3.6.1</plugin.dependency>
+        <plugin.editorconfig>0.1.3</plugin.editorconfig>
+        <plugin.jacoco>0.8.12</plugin.jacoco>
+        <plugin.jar>3.4.1</plugin.jar>
+        <plugin.license>4.3</plugin.license>
+        <plugin.shade>3.6.0</plugin.shade>
+
+        <!-- Dependency Versions -->
+        <dependency.airline>3.0.0</dependency.airline>
+        <dependency.graphql>21.5</dependency.graphql>
+        <dependency.jena>5.0.0</dependency.jena>
+        <dependency.jackson>2.17.1</dependency.jackson>
+        <dependency.jersey>3.1.5</dependency.jersey>
+        <dependency.jwt-servlet>0.14.0</dependency.jwt-servlet>
+        <dependency.logback>1.5.6</dependency.logback>
+        <dependency.slf4j>2.0.13</dependency.slf4j>
+        <dependency.smart-caches>0.18.1</dependency.smart-caches>
+        <dependency.testng>7.10.2</dependency.testng>
+        <dependency.wiremock>3.6.0</dependency.wiremock>
+
+        <!-- Build configuration -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.version>17</jdk.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>graphql-java</artifactId>
+                <version>${dependency.graphql}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${dependency.jackson}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.jena</groupId>
+                <artifactId>apache-jena-libs</artifactId>
+                <version>${dependency.jena}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${dependency.logback}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${dependency.jersey}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${dependency.slf4j}</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${dependency.testng}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${dependency.logback}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${plugin.dependency}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>go-offline</goal>
+                            </goals>
+                            <configuration>
+                                <!--
+                                When going offline don't try to resolve internal project dependencies.  This is
+                                primarily only a problem when the version gets bumped.  However, in a CI/CD environment
+                                this is always needed.
+                                -->
+                                <excludeScope>io.telicent.jena.graphql</excludeScope>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+
+        </pluginManagement>
+
+        <plugins>
+            <!-- Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.compiler}</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <release>${jdk.version}</release>
+                </configuration>
+            </plugin>
+
+            <!-- JAR Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${plugin.jar}</version>
+                <configuration>
+                    <archive>
+                        <manifest> 
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                    <skipIfEmpty>true</skipIfEmpty>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Source Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Javadoc Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.7.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <javadocVersion>${java.version}</javadocVersion>
+                    <quiet>true</quiet>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <failOnWarnings>${javadoc.failOnWarnings}</failOnWarnings>
+                </configuration>
+            </plugin>
+
+            <!-- EditorConfig Plugin -->
+            <plugin>
+                <groupId>org.ec4j.maven</groupId>
+                <artifactId>editorconfig-maven-plugin</artifactId>
+                <version>${plugin.editorconfig}</version>
+                <executions>
+                    <execution>
+                        <id>check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>*-code-style.xml</exclude>
+                        <exclude>docs/images/</exclude>
+                        <exclude>temp.token</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- License Plugin -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${plugin.license}</version>
+                <configuration>
+                    <failIfMissing>true</failIfMissing>
+                    <aggregate>false</aggregate>
+                    <useDefaultMapping>true</useDefaultMapping>
+                    <strictCheck>true</strictCheck>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>${license.header.path}/header.txt</header>
+                            <excludes>
+                                <exclude>header.txt</exclude>
+                                <exclude>pom.xml</exclude>
+                                <exclude>NOTICE</exclude>
+                                <exclude>**/pom.xml</exclude>
+                                <exclude>.github/**/*</exclude>
+                                <exclude>*-code-style.xml</exclude>
+                                <exclude>.editorconfig</exclude>
+                                <exclude>**/*.ttl</exclude>
+                                <exclude>**/*.graphql</exclude>
+                                <exclude>**/*.graphqls</exclude>
+                                <exclude>**/*.trig</exclude>
+                                <exclude>**/logback*.xml</exclude>
+                                <exclude>**/graphql-jena-server</exclude>
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
+                    <mapping>
+                        <java>JAVADOC_STYLE</java>
+                    </mapping>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Code Coverage Plugins -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${plugin.jacoco}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>require-test-coverage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${coverage.minimum}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${coverage.minimum}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>METHOD</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${coverage.minimum}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${coverage.minimum}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${coverage.minimum}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${coverage.minimum}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                            <haltOnFailure>true</haltOnFailure>
+                            <skip>${coverage.skip}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Dependency plugin -->
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${plugin.cyclonedx}</version>
+                <executions>
+                    <execution>
+                        <id>build-sbom-cyclonedx</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputName>${project.artifactId}-${project.version}-bom</outputName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>sonatype-oss</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+                    <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <repositories>
+        <repository>
+            <id>sonatype-oss</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- Needed for Apache Jena SNAPSHOTs -->
+        <repository>
+            <id>apache-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>
