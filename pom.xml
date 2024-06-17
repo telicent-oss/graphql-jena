@@ -92,7 +92,7 @@
         <dependency.jwt-servlet>0.15.0</dependency.jwt-servlet>
         <dependency.logback>1.5.6</dependency.logback>
         <dependency.slf4j>2.0.13</dependency.slf4j>
-        <dependency.smart-caches>0.20.0</dependency.smart-caches>
+        <dependency.smart-caches>0.20.1</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.6.0</dependency.wiremock>
 
