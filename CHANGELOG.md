@@ -1,5 +1,9 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.7.0
+
+- Upgrades to GraphQL Java 22.1
+
 # 0.6.0
 
 - First public release to Maven Central

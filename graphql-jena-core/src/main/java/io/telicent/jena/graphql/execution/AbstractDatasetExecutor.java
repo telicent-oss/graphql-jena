@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Abstract GraphQL Executor that operates over a Jena {@link DatasetGraph}
@@ -69,10 +70,12 @@ public abstract class AbstractDatasetExecutor implements GraphQLExecutor, GraphQ
 
         // Add Query Cache here
         // TODO Eventually should make the cache size configurable here
-        Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(1_000).build();
+        Cache<String, CompletableFuture<PreparsedDocumentEntry>> cache =
+                Caffeine.newBuilder().maximumSize(1_000).build();
         PreparsedDocumentProvider preparsedCache =
                 (executionInput, computeFunction) -> cache.get(executionInput.getQuery(),
-                                                               key -> computeFunction.apply(executionInput));
+                                                               key -> CompletableFuture.supplyAsync(
+                                                                       () -> computeFunction.apply(executionInput)));
 
         //@formatter:off
         this.graphQL
@@ -178,21 +181,19 @@ public abstract class AbstractDatasetExecutor implements GraphQLExecutor, GraphQ
      * @return GraphQL Results
      */
     @Override
-    public final ExecutionResult execute(DatasetGraph dsg, String query, String operationName, Map<String, Object> variables,
-                                   Map<String, Object> extensions) {
+    public final ExecutionResult execute(DatasetGraph dsg, String query, String operationName,
+                                         Map<String, Object> variables, Map<String, Object> extensions) {
         Objects.requireNonNull(dsg, "DatasetGraph to execute over cannot be null");
-        ExecutionInput input =
-                ExecutionInput.newExecutionInput(query)
-                              .localContext(createLocalContext(dsg, extensions))
-                              .operationName(operationName)
-                              .variables(variables)
-                              .extensions(extensions)
-                              .build();
+        ExecutionInput input = ExecutionInput.newExecutionInput(query)
+                                             .localContext(createLocalContext(dsg, extensions))
+                                             .operationName(operationName)
+                                             .variables(variables)
+                                             .extensions(extensions)
+                                             .build();
 
         // Ensure we execute the GraphQL query inside a read transaction on the Dataset.  This gives proper transaction
         // isolation for the entire query which could include many requests against the dataset
-        return Txn.calculateRead(dsg,
-                                 () -> this.graphQL.execute(input));
+        return Txn.calculateRead(dsg, () -> this.graphQL.execute(input));
     }
 
     /**
