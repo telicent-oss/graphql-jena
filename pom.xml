@@ -124,9 +124,8 @@
 
             <dependency>
                 <groupId>org.apache.jena</groupId>
-                <artifactId>apache-jena-libs</artifactId>
+                <artifactId>jena-arq</artifactId>
                 <version>${dependency.jena}</version>
-                <type>pom</type>
             </dependency>
 
             <dependency>
