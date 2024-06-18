@@ -310,7 +310,6 @@
                                 <exclude>**/*.graphql</exclude>
                                 <exclude>**/*.graphqls</exclude>
                                 <exclude>**/*.trig</exclude>
-                                <exclude>**/logback*.xml</exclude>
                                 <exclude>**/graphql-jena-server</exclude>
                             </excludes>
                         </licenseSet>

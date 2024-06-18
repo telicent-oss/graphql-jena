@@ -19,3 +19,8 @@ $ mvn clean install
 
 Decent test coverage is provided and enforced during builds via the Jacoco Plugin **BUT** users should be aware that
 this project is experimental and there may be bugs, or scenarios we haven't tested.
+
+Logging is disabled in tests but can be enabled with the following:
+```bash
+$ mvn test -Dlogback.configurationFile=logback-debug.xml
+```

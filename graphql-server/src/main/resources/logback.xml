@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2023 Telicent Ltd
+    Copyright (C) Telicent Ltd
 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
     the License. You may obtain a copy of the License at
@@ -13,12 +13,14 @@
 
 -->
 <configuration>
+    <!-- Disables logging of Logback initialisation - remove if facing issue with logging config -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <target>System.err</target>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{0} - %msg%n</pattern>
+            <pattern>%date{ISO8601} [%X{Request-ID:-Server}] [%X{JwtUser:-&lt;anon>}] %-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
 
