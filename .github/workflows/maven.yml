@@ -19,4 +19,6 @@ jobs:
       PUBLISH_SNAPSHOTS: true
       MAIN_BRANCH: main
       JAVA_VERSION: 17
+      # If running in debug mode, use appropriate logging
+      MAVEN_DEBUG_ARGS: -Dlogback.configurationFile=logback-debug.xml
     secrets: inherit

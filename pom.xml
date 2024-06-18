@@ -78,21 +78,26 @@
         <plugin.cyclonedx>2.8.0</plugin.cyclonedx>
         <plugin.dependency>3.7.0</plugin.dependency>
         <plugin.editorconfig>0.1.3</plugin.editorconfig>
+        <plugin.gpg>3.2.4</plugin.gpg>
         <plugin.jacoco>0.8.12</plugin.jacoco>
         <plugin.jar>3.4.1</plugin.jar>
+        <plugin.javadoc>3.7.0</plugin.javadoc>
         <plugin.license>4.5</plugin.license>
+        <plugin.nexus>1.7.0</plugin.nexus>
         <plugin.shade>3.6.0</plugin.shade>
+        <plugin.source>3.3.1</plugin.source>
+        <plugin.versions>2.16.2</plugin.versions>
 
         <!-- Dependency Versions -->
         <dependency.airline>3.0.0</dependency.airline>
-        <dependency.graphql>21.5</dependency.graphql>
+        <dependency.graphql>22.1</dependency.graphql>
         <dependency.jena>5.0.0</dependency.jena>
         <dependency.jackson>2.17.1</dependency.jackson>
         <dependency.jersey>3.1.7</dependency.jersey>
         <dependency.jwt-servlet>0.15.0</dependency.jwt-servlet>
         <dependency.logback>1.5.6</dependency.logback>
         <dependency.slf4j>2.0.13</dependency.slf4j>
-        <dependency.smart-caches>0.20.0</dependency.smart-caches>
+        <dependency.smart-caches>0.20.1</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.6.0</dependency.wiremock>
 
@@ -119,9 +124,8 @@
 
             <dependency>
                 <groupId>org.apache.jena</groupId>
-                <artifactId>apache-jena-libs</artifactId>
+                <artifactId>jena-arq</artifactId>
                 <version>${dependency.jena}</version>
-                <type>pom</type>
             </dependency>
 
             <dependency>
@@ -227,7 +231,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${plugin.source}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -243,7 +247,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>${plugin.javadoc}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -310,7 +314,6 @@
                                 <exclude>**/*.graphql</exclude>
                                 <exclude>**/*.graphqls</exclude>
                                 <exclude>**/*.trig</exclude>
-                                <exclude>**/logback*.xml</exclude>
                                 <exclude>**/graphql-jena-server</exclude>
                             </excludes>
                         </licenseSet>
@@ -422,7 +425,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>${plugin.gpg}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -436,7 +439,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.7.0</version>
+                <version>${plugin.nexus}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>sonatype-oss</serverId>
@@ -444,6 +447,16 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                     <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
                     <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
+                </configuration>
+            </plugin>
+
+            <!-- Versions plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${plugin.versions}</version>
+                <configuration>
+                    <ignoredVersions>.*[-\.]M.*,.*-alpha.*,.*-RC.*</ignoredVersions>
                 </configuration>
             </plugin>
 

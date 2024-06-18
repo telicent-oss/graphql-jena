@@ -23,8 +23,7 @@
 
         <dependency>
             <groupId>org.apache.jena</groupId>
-            <artifactId>apache-jena-libs</artifactId>
-            <type>pom</type>
+            <artifactId>jena-arq</artifactId>
         </dependency>
 
         <dependency>

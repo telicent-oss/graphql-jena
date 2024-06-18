@@ -13,8 +13,6 @@
 
 -->
 <configuration>
-    <!-- Disables logging of Logback initialisation - remove if facing issue with logging config -->
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -23,8 +21,8 @@
             <pattern>%date{ISO8601} [%X{Request-ID:-Server}] [%X{JwtUser:-&lt;anon>}] %-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
-    
-    <root level="OFF">
+
+    <root level="INFO">
         <appender-ref ref="STDERR" />
     </root>
 </configuration>
