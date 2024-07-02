@@ -14,7 +14,10 @@ package io.telicent.jena.graphql.execution;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import graphql.ErrorType;
 import graphql.ExecutionResult;
+import graphql.GraphQLError;
+import graphql.ParseAndValidateResult;
 import io.telicent.jena.graphql.schemas.models.NodeKind;
 import io.telicent.jena.graphql.schemas.models.WrappedNode;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
@@ -97,6 +100,92 @@ public class AbstractExecutionTests {
         Assert.assertTrue(result.isDataPresent());
         return result;
     }
+
+    /**
+     * Verifies that the given query is valid
+     *
+     * @param execution Execution to validate the query against
+     * @param query     Raw GraphQL Query
+     * @return Validation result
+     */
+    protected static ParseAndValidateResult verifyValidationSuccess(GraphQLExecutor execution, String query) {
+        return verifyValidationSuccess(execution, query, Collections.emptyMap());
+    }
+
+    /**
+     * Verifies that the given query is valid
+     *
+     * @param execution Execution to validate the query against
+     * @param query     Raw GraphQL Query
+     * @param variables Variables for use by the query
+     * @return Validation result
+     */
+    protected static ParseAndValidateResult verifyValidationSuccess(GraphQLExecutor execution, String query,
+                                                     Map<String, Object> variables) {
+        return verifyValidationSuccess(execution, query, variables, Collections.emptyMap());
+    }
+
+    /**
+     * Verifies that the given query is valid
+     *
+     * @param execution  Execution to validate the query against
+     * @param query      Raw GraphQL Query
+     * @param variables  Variables for use by the query
+     * @param extensions Extensions for use by the query
+     * @return Validation result
+     */
+    protected static ParseAndValidateResult verifyValidationSuccess(GraphQLExecutor execution, String query,
+                                                                    Map<String, Object> variables, Map<String,Object> extensions) {
+        ParseAndValidateResult result = execution.validate(query, "test", variables, extensions);
+        Assert.assertFalse(result.isFailure());
+        Assert.assertTrue(result.getErrors().isEmpty());
+        return result;
+    }
+
+    /**
+     * Verifies that the given query is invalid
+     *
+     * @param execution Execution to validate the query against
+     * @param query     Raw GraphQL Query
+     * @return Validation result
+     */
+    protected static ParseAndValidateResult verifyValidationFailure(GraphQLExecutor execution, String query) {
+        return verifyValidationFailure(execution, query, Collections.emptyMap());
+    }
+
+    /**
+     * Verifies that the given query is invalid
+     *
+     * @param execution Execution to validate the query against
+     * @param query     Raw GraphQL Query
+     * @param variables Variables for use by the query
+     * @return Validation result
+     */
+    protected static ParseAndValidateResult verifyValidationFailure(GraphQLExecutor execution, String query,
+                                                                    Map<String, Object> variables) {
+        return verifyValidationFailure(execution, query, variables, Collections.emptyMap());
+    }
+    /**
+     * Verifies that the given query is invalid
+     *
+     * @param execution  Execution to validate the query against
+     * @param query      Raw GraphQL Query
+     * @param variables  Variables for use by the query
+     * @param extensions Extensions for use by the query
+     * @return Validation result
+     */
+    protected static ParseAndValidateResult verifyValidationFailure(GraphQLExecutor execution, String query,
+                                                                    Map<String, Object> variables, Map<String,Object> extensions) {
+        ParseAndValidateResult result = execution.validate(query, "test", variables, extensions);
+        Assert.assertTrue(result.isFailure());
+        Assert.assertFalse(result.getErrors().isEmpty());
+        List<GraphQLError> errors = result.getErrors();
+        Assert.assertEquals(errors.size(), 1);
+        GraphQLError error = errors.get(0);
+        Assert.assertEquals(error.getErrorType(), ErrorType.InvalidSyntax);
+        return result;
+    }
+
 
     protected static void verifyNode(Map<String, Object> quad, String field, NodeKind kind, String expectedValue,
                                      String expectedLang, String expectedDatatype) {

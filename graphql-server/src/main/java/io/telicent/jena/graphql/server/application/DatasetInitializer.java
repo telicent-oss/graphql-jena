@@ -15,6 +15,7 @@ package io.telicent.jena.graphql.server.application;
 import io.telicent.jena.graphql.execution.DatasetExecutor;
 import io.telicent.jena.graphql.execution.TraversalExecutor;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentGraphExecutor;
+import io.telicent.jena.graphql.utils.ExcludeFromJacocoGeneratedReport;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +44,7 @@ public class DatasetInitializer implements ServletContextListener {
 
     }
 
+    @ExcludeFromJacocoGeneratedReport
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         // Determine from our System properties what dataset (if any) we are using
@@ -74,6 +76,7 @@ public class DatasetInitializer implements ServletContextListener {
         }
     }
 
+    @ExcludeFromJacocoGeneratedReport
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (this.dsg != null) {

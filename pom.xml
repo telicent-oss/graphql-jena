@@ -96,6 +96,7 @@
         <dependency.jersey>3.1.7</dependency.jersey>
         <dependency.jwt-servlet>0.15.0</dependency.jwt-servlet>
         <dependency.logback>1.5.6</dependency.logback>
+        <dependency.mockito>5.11.0</dependency.mockito>
         <dependency.slf4j>2.0.13</dependency.slf4j>
         <dependency.smart-caches>0.20.2</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
@@ -139,31 +140,35 @@
                 <artifactId>jersey-client</artifactId>
                 <version>${dependency.jersey}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${dependency.slf4j}</version>
+            </dependency>
+
+            <!-- Test Dependencies -->
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${dependency.testng}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wiremock</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${dependency.wiremock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${dependency.mockito}</version>
+                <scope>test</scope>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${dependency.slf4j}</version>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${dependency.testng}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${dependency.logback}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <pluginManagement>
@@ -212,7 +217,7 @@
                 <version>${plugin.jar}</version>
                 <configuration>
                     <archive>
-                        <manifest> 
+                        <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>

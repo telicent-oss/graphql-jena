@@ -21,6 +21,7 @@ import com.github.rvesse.airline.annotations.restrictions.*;
 import com.github.rvesse.airline.parser.errors.ParseException;
 import io.telicent.jena.graphql.server.application.DatasetInitializer;
 import io.telicent.jena.graphql.server.application.GraphQLApplication;
+import io.telicent.jena.graphql.utils.ExcludeFromJacocoGeneratedReport;
 import io.telicent.smart.cache.server.jaxrs.applications.AbstractAppEntrypoint;
 import io.telicent.smart.cache.server.jaxrs.applications.CorsConfigurationBuilder;
 import io.telicent.smart.cache.server.jaxrs.applications.ServerBuilder;
@@ -83,6 +84,7 @@ public class GraphQLEntrypoint extends AbstractAppEntrypoint {
      *
      * @param args Arguments
      */
+    @ExcludeFromJacocoGeneratedReport
     public static void main(String[] args) {
         try {
             GraphQLEntrypoint entrypoint = SingleCommand.singleCommand(GraphQLEntrypoint.class).parse(args);

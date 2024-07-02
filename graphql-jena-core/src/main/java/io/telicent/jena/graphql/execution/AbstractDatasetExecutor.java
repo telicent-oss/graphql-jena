@@ -14,9 +14,7 @@ package io.telicent.jena.graphql.execution;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import graphql.ExecutionInput;
-import graphql.ExecutionResult;
-import graphql.GraphQL;
+import graphql.*;
 import graphql.execution.preparsed.PreparsedDocumentEntry;
 import graphql.execution.preparsed.PreparsedDocumentProvider;
 import graphql.schema.GraphQLSchema;
@@ -209,5 +207,28 @@ public abstract class AbstractDatasetExecutor implements GraphQLExecutor, GraphQ
      */
     protected Object createLocalContext(DatasetGraph dsg, Map<String, Object> extensions) {
         return dsg;
+    }
+
+
+    /**
+     * Validate the given Graph QL query
+     * @param query         Query to validate
+     * @param operationName Operation name indicating an operation within the query document to execute
+     * @param variables     Variables to make available to the query
+     * @param extensions    Vendor extensions to make available to the query
+     * @return Parsing results
+     */
+    @Override
+    public ParseAndValidateResult validate(String query, String operationName, Map<String, Object> variables,
+                                    Map<String, Object> extensions){
+        Objects.requireNonNull(dsg, "DatasetGraph to validate against cannot be null");
+        ExecutionInput input =
+                ExecutionInput.newExecutionInput(query)
+                              .localContext(createLocalContext(dsg, extensions))
+                              .operationName(operationName)
+                              .variables(variables)
+                              .extensions(extensions)
+                              .build();
+        return ParseAndValidate.parseAndValidate(schema, input);
     }
 }
