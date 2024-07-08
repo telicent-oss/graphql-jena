@@ -92,12 +92,12 @@
         <dependency.airline>3.0.0</dependency.airline>
         <dependency.graphql>22.1</dependency.graphql>
         <dependency.jena>5.0.0</dependency.jena>
-        <dependency.jackson>2.17.1</dependency.jackson>
+        <dependency.jackson>2.17.2</dependency.jackson>
         <dependency.jersey>3.1.7</dependency.jersey>
-        <dependency.jwt-servlet>0.15.0</dependency.jwt-servlet>
+        <dependency.jwt-servlet>0.15.1</dependency.jwt-servlet>
         <dependency.logback>1.5.6</dependency.logback>
         <dependency.slf4j>2.0.13</dependency.slf4j>
-        <dependency.smart-caches>0.20.2</dependency.smart-caches>
+        <dependency.smart-caches>0.21.0</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.8.0</dependency.wiremock>
 
