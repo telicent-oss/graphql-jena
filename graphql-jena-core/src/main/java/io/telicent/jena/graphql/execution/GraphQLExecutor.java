@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.execution;
 
 import graphql.ExecutionResult;
+import graphql.ParseAndValidateResult;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 
 import java.util.Map;
@@ -57,4 +58,15 @@ public interface GraphQLExecutor {
      * @return Execution result
      */
     ExecutionResult execute(GraphQLRequest request);
+
+    /**
+     * Validates the provided request
+     * @param query Query
+     * @param operationName Operation name indicating an operation within the query document to execute
+     * @param variables     Variables to make available to the query
+     * @param extensions    Vendor extensions to make available to the query
+     * @return Validation Result
+     */
+    ParseAndValidateResult validate(String query, String operationName, Map<String, Object> variables,
+                            Map<String, Object> extensions);
 }

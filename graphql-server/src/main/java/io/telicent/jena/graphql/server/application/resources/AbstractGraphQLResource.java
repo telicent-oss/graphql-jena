@@ -12,12 +12,10 @@
  */
 package io.telicent.jena.graphql.server.application.resources;
 
-import java.util.Collections;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import graphql.ExecutionResult;
+import graphql.ParseAndValidateResult;
 import io.telicent.jena.graphql.execution.GraphQLExecutor;
 import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.smart.cache.server.jaxrs.model.Problem;
@@ -28,6 +26,9 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Abstract JAX-RS resource for handling GraphQL requests
@@ -62,69 +63,57 @@ public class AbstractGraphQLResource {
     }
 
     /**
-     * Executes a GraphQL Query
+     * Validate or execute the given Graph QL query (and associate variables/extensions).
      *
-     * @param query          Query
-     * @param operationName  Operation name
-     * @param variables      Raw variables
-     * @param extensions     Raw extensions
-     * @param servletContext Servlet context
-     * @param executorType   Executor class, used as a key to servlet context attributes to retrieve the configured
-     *                       instance of {@link GraphQLExecutor} used to execute this query
-     * @return HTTP Response
+     * @param query          query to validate
+     * @param operationName  operation Name
+     * @param variables      variables to make available to the query
+     * @param extensions     query extensions
+     * @param servletContext for communicating with surrounding container (session management etc..)
+     * @param executorType   relevant class to execute the operation
+     * @param validate       flag indicating execution (false) or validation (true)
+     * @return either a successful response (200) or the error(s) (400).
      */
-    protected final Response executeGraphQL(String query, String operationName, String variables, String extensions,
-                                            ServletContext servletContext, Class<?> executorType) {
-        // Parse any query variables and extensions
-        Map<String, Object> parsedVariables;
-        if (StringUtils.isNotBlank(variables)) {
-            try {
-                parsedVariables = GraphQLOverHttp.parseMap(variables);
-            } catch (JsonProcessingException e) {
-                return badRequest(e, "Invalid GraphQL Variables", GraphQLOverHttp.PARAMETER_VARIABLES);
+    protected final Response executeOrValidateGraphQL(String query, String operationName, String variables, String extensions,
+                                            ServletContext servletContext, Class<?> executorType, boolean validate) {
+        boolean variable = true;
+        try {
+            Map<String, Object> parsedVariables = parseJSONStringIntoMap(variables);
+            variable = false;
+            Map<String, Object> parsedExtensions = parseJSONStringIntoMap(extensions);
+            return executeOrValidateGraphQL(query, operationName, parsedVariables, parsedExtensions, servletContext, executorType, validate);
+        } catch (JsonProcessingException exception) {
+            if (variable) {
+                return badRequest(exception, "Invalid GraphQL Variables", GraphQLOverHttp.PARAMETER_VARIABLES);
+            } else {
+                return badRequest(exception, "Invalid GraphQL Extensions", GraphQLOverHttp.PARAMETER_EXTENSIONS);
             }
-        } else {
-            parsedVariables = Collections.emptyMap();
         }
-        Map<String, Object> parsedExtensions;
-        if (StringUtils.isNotBlank(extensions)) {
-            try {
-                parsedExtensions = GraphQLOverHttp.parseMap(extensions);
-            } catch (JsonProcessingException e) {
-                return badRequest(e, "Invalid GraphQL Extensions", GraphQLOverHttp.PARAMETER_EXTENSIONS);
-            }
-        } else {
-            parsedExtensions = Collections.emptyMap();
-        }
-
-        return executeGraphQL(query, operationName, parsedVariables, parsedExtensions, servletContext, executorType);
     }
 
     /**
-     * Executes a GraphQL Query
+     * Validate or execute the given Graph QL query (and associate variables/extensions).
      *
-     * @param query            Query
-     * @param operationName    Operation name
-     * @param parsedVariables  Parsed variables
-     * @param parsedExtensions Parsed extensions
-     * @param servletContext   Servlet context
-     * @param executorType     Executor class, used as a key to servlet context attributes to retrieve the configured
-     *                         instance of {@link GraphQLExecutor} used to execute this query
-     * @return HTTP Response
+     * @param query          query to validate
+     * @param operationName  operation Name
+     * @param variables      variables to make available to the query
+     * @param extensions     query extensions
+     * @param servletContext for communicating with surrounding container (session management etc..)
+     * @param executorType   relevant class to execute the operation
+     * @param validate       flag indicating execution (false) or validation (true)
+     * @return either a successful response (200) or the error(s) (400).
      */
-    protected final Response executeGraphQL(String query, String operationName, Map<String, Object> parsedVariables,
-                                            Map<String, Object> parsedExtensions,
-                                            ServletContext servletContext, Class<?> executorType) {
-        if (parsedVariables == null) {
-            parsedVariables = Collections.emptyMap();
+    protected final Response executeOrValidateGraphQL(String query, String operationName, Map<String, Object> variables,
+                                               Map<String, Object> extensions, ServletContext servletContext,
+                                               Class<?> executorType, boolean validate) {
+        if (variables == null) {
+            variables = Collections.emptyMap();
         }
-        if (parsedExtensions == null) {
-            parsedExtensions = Collections.emptyMap();
+        if (extensions == null) {
+            extensions = Collections.emptyMap();
         }
 
-        // Get the executor from somewhere
-        GraphQLExecutor executor =
-                (GraphQLExecutor) servletContext.getAttribute(executorType.getCanonicalName());
+        GraphQLExecutor executor = (GraphQLExecutor) servletContext.getAttribute(executorType.getCanonicalName());
         if (executor == null) {
             //@formatter:off
             return new Problem("ServiceUnavailable",
@@ -135,18 +124,39 @@ public class AbstractGraphQLResource {
             //@formatter:on
         }
 
-        // Run the actual query and produce the response
-        LOGGER.info("Starting GraphQL Query with executor {}...", executor.getClass().getSimpleName());
-        ExecutionResult result = executor.execute(query, operationName, parsedVariables, parsedExtensions);
-        Map<String, Object> specResponse = result.toSpecification();
-        int status = GraphQLOverHttp.selectHttpStatus(result);
-        LOGGER.info("Finished GraphQL Query with executor {}, returning status {}", executor.getClass().getSimpleName(),
-                    status);
-
-        return Response.status(status)
-                       .entity(specResponse)
-                       .header(HttpNames.hContentType, GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON)
-                       .build();
+        if (validate) {
+            ParseAndValidateResult result = executor.validate(query, operationName, variables, extensions);
+            if (result.isFailure()) {
+                return Response.status(400).entity(result.getErrors()).build();
+            } else {
+                return Response.status(200).entity("Query is valid").build();
+            }
+        } else {
+            LOGGER.info("Starting GraphQL Query with executor {}...", executor.getClass().getSimpleName());
+            ExecutionResult result = executor.execute(query, operationName, variables, extensions);
+            Map<String, Object> specResponse = result.toSpecification();
+            int status = GraphQLOverHttp.selectHttpStatus(result);
+            LOGGER.info("Finished GraphQL Query with executor {}, returning status {}", executor.getClass().getSimpleName(),
+                        status);
+            return Response.status(status)
+                           .entity(specResponse)
+                           .header(HttpNames.hContentType, GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON)
+                           .build();
+        }
     }
 
+    /**
+     * Converts a string into a map, throwing an exception if there's a problem or empty map if empty/null string.
+     *
+     * @param mapIsString JSON representation of map
+     * @return a mapping of values
+     * @throws JsonProcessingException if the JSON is invalid
+     */
+    private Map<String, Object> parseJSONStringIntoMap(String mapIsString) throws JsonProcessingException {
+        if (StringUtils.isNotBlank(mapIsString)) {
+            return GraphQLOverHttp.parseMap(mapIsString);
+        } else {
+            return Collections.emptyMap();
+        }
+    }
 }
