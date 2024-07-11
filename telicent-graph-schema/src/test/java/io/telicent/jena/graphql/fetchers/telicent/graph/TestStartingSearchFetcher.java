@@ -242,4 +242,37 @@ public class TestStartingSearchFetcher {
         Assert.assertTrue(actualList.isEmpty());
         WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1&offset=2")));
     }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void givenInvalidLimit_whenUsingSearchFetcher_thenErrorIsThrown()  {
+        // given
+        StartingSearchFetcher fetcher = new StartingSearchFetcher();
+        DatasetGraph dsg = createPagedSearchTestDataset();
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .localContext(context)
+                .arguments(Map.of("searchTerm", "test", "limit", "foo"))
+                .build();
+        // when
+        // then
+        fetcher.get(environment);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void givenInvalidOffset_whenUsingSearchFetcher_thenErrorIsThrown()  {
+        // given
+        StartingSearchFetcher fetcher = new StartingSearchFetcher();
+        DatasetGraph dsg = createPagedSearchTestDataset();
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .localContext(context)
+                .arguments(Map.of("searchTerm", "test", "offset", "foo"))
+                .build();
+        // when
+        // then
+        fetcher.get(environment);
+    }
+
 }
