@@ -18,16 +18,12 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import graphql.ExecutionResult;
 import io.telicent.jena.graphql.execution.AbstractExecutionTests;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
-import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sys.JenaSystem;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

@@ -139,12 +139,12 @@ public class StartingSearchFetcher implements DataFetcher<List<TelicentGraphNode
     }
 
     /**
-     * Builds the API used to issue Search Requests to the underlying Searcn API
-     * @param searchApiUrl
-     * @param searchTerm
-     * @param limit
-     * @param offset
-     * @return
+     * Builds the API used to issue Search Requests to the underlying Search API
+     * @param searchApiUrl Base Search API URL
+     * @param searchTerm Search Term
+     * @param limit Optional limit, ignored if {@code null} or not greater than {@code 0}
+     * @param offset Optional offset, ignored if {@code null} or not greater than {@code 0}
+     * @return Search API Request URL
      */
     public static URI buildSearchApiRequestUri(String searchApiUrl, String searchTerm, Integer limit, Integer offset) {
         StringBuilder builder = new StringBuilder();
