@@ -61,7 +61,7 @@ public class TestStartingSearchFetcher {
 
     // NOTE: All other fetchers use specific exceptions, worth a revisit?
     @Test(expectedExceptions = RuntimeException.class)
-    public void test_get_noSearchTerm()  {
+    public void givenNoSearchTerm_whenUsingSearchFetcher_thenErrorIsThrown()  {
         // given
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
@@ -79,7 +79,7 @@ public class TestStartingSearchFetcher {
     }
 
     @Test(expectedExceptions = RuntimeException.class)
-    public void test_get_failedQuery() {
+    public void givenBadSearchResponse_whenUsingSearchFetcher_thenErrorIsThrown() {
         // given
         WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test"))
                                          .willReturn(notFound()));
@@ -101,7 +101,7 @@ public class TestStartingSearchFetcher {
     }
 
     @Test
-    public void test_get_emptyMapResult() {
+    public void givenEmptySearchResponse_whenUsingSearchFetcher_thenSuccess() {
         // given
         System.setProperty("SEARCH_API_URL", "http://localhost:8181/");
         WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test"))
@@ -128,7 +128,7 @@ public class TestStartingSearchFetcher {
     }
 
     @Test
-    public void test_get_() throws IOException  {
+    public void givenSearchResponse_whenUsingSearchFetcher_thenSuccess() throws IOException  {
         // given
         Map<String, List<Map<String,Object>>> returnedData = Map.of("results", List.of(Map.of("document", Map.of("uri", "subject")), emptyMap(), Map.of("document", Map.of("something", "else"))));
         WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test"))
@@ -150,5 +150,96 @@ public class TestStartingSearchFetcher {
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
         WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test")));
+    }
+
+    private static List<Map<?, ?>> createPagedResultDocuments() {
+        return List.of(Map.of("document", Map.of("uri", "subject")), emptyMap(),
+                       Map.of("document", Map.of("uri", "subject2", "something", "else")));
+    }
+
+    private static DatasetGraph createPagedSearchTestDataset() {
+        DatasetGraph dsg  = DatasetGraphFactory.create();
+        dsg.add(new Quad(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object1")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject2"), RDF.type.asNode(), createLiteralString("object2")));
+        return dsg;
+    }
+
+    @Test
+    public void givenPagedSearchResponse_whenUsingSearchFetcherWithLimit_thenSuccess_andCorrectResults() throws IOException  {
+        // given
+        List<Map<?, ?>> resultItems = createPagedResultDocuments();
+        Map<String, List<?>> pagedData = Map.of("results", resultItems.subList(0, 1));
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1"))
+                                         .willReturn(ok().withBody(MAPPER.writeValueAsString(pagedData))
+                                         ));
+
+        StartingSearchFetcher fetcher = new StartingSearchFetcher();
+        DatasetGraph dsg = createPagedSearchTestDataset();
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .localContext(context)
+                .arguments(Map.of("graph", "graph", "searchTerm","test", "limit", 1))
+                .build();
+        // when
+        List<TelicentGraphNode> actualList = fetcher.get(environment);
+        // then
+        Assert.assertNotNull(actualList);
+        Assert.assertFalse(actualList.isEmpty());
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1")));
+        // and
+        Assert.assertTrue(actualList.stream().anyMatch(n -> n.getUri().equals("subject")));
+    }
+
+    @Test
+    public void givenPagedSearchResponse_whenUsingSearchFetcherWithOffset_thenSuccess_andCorrectResults() throws IOException  {
+        // given
+        List<Map<?, ?>> resultItems = createPagedResultDocuments();
+        Map<String, List<?>> pagedData = Map.of("results", resultItems.subList(1, resultItems.size()));
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&offset=2"))
+                                         .willReturn(ok().withBody(MAPPER.writeValueAsString(pagedData))
+                                         ));
+
+        StartingSearchFetcher fetcher = new StartingSearchFetcher();
+        DatasetGraph dsg = createPagedSearchTestDataset();
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .localContext(context)
+                .arguments(Map.of("graph", "graph", "searchTerm","test", "offset", 2))
+                .build();
+        // when
+        List<TelicentGraphNode> actualList = fetcher.get(environment);
+        // then
+        Assert.assertNotNull(actualList);
+        Assert.assertFalse(actualList.isEmpty());
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&offset=2")));
+        // and
+        Assert.assertTrue(actualList.stream().anyMatch(n -> n.getUri().equals("subject2")));
+    }
+
+    @Test
+    public void givenPagedSearchResponse_whenUsingSearchFetcherWithLimitAndOffset_thenNoResults() throws IOException  {
+        // given
+        List<Map<?, ?>> resultItems = createPagedResultDocuments();
+        Map<String, List<?>> pagedData = Map.of("results", resultItems.subList(1, 2));
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1&offset=2"))
+                                         .willReturn(ok().withBody(MAPPER.writeValueAsString(pagedData))
+                                         ));
+
+        StartingSearchFetcher fetcher = new StartingSearchFetcher();
+        DatasetGraph dsg = createPagedSearchTestDataset();
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .localContext(context)
+                .arguments(Map.of("graph", "graph", "searchTerm","test", "offset", 2, "limit", 1))
+                .build();
+        // when
+        List<TelicentGraphNode> actualList = fetcher.get(environment);
+        // then
+        Assert.assertNotNull(actualList);
+        Assert.assertTrue(actualList.isEmpty());
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1&offset=2")));
     }
 }

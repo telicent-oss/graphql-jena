@@ -45,6 +45,8 @@ type Query {
     search(
         graph: String
         searchTerm: String!
+        limit: Int
+        offset: Int
     ): [Node]
     getAllEntities(graph: String): [Node]
     states(uri: String!): [State]!

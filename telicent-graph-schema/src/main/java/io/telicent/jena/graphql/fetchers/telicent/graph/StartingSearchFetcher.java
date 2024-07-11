@@ -1,11 +1,11 @@
 /**
  * Copyright (C) Telicent Ltd
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
@@ -83,14 +83,14 @@ public class StartingSearchFetcher implements DataFetcher<List<TelicentGraphNode
 
         // Make a search to populate the starts filter
         String searchTerm = environment.getArgument("searchTerm");
-        if(StringUtils.isBlank(searchTerm)) {
-            throw new RuntimeException(
-                    "Failed to make query as no 'searchTerm' argument provided");
+        if (StringUtils.isBlank(searchTerm)) {
+            throw new RuntimeException("Failed to make query as no 'searchTerm' argument provided");
         }
+        Integer limit = environment.getArgument("limit");
+        Integer offset = environment.getArgument("offset");
         List<Node> startFilters = new ArrayList<>();
         HttpRequest.Builder request =
-                HttpRequest.newBuilder(URI.create(this.searchApiUrl + "/documents?query=" + URLEncoder.encode(
-                        searchTerm, StandardCharsets.UTF_8))).GET();
+                HttpRequest.newBuilder(buildSearchApiRequestUri(this.searchApiUrl, searchTerm, limit, offset)).GET();
         if (context.hasAuthToken()) {
             // If we have an authentication token need to copy it to our search request so that our request reflects the
             // requesting users data access
@@ -104,8 +104,8 @@ public class StartingSearchFetcher implements DataFetcher<List<TelicentGraphNode
                              .header(AwsConstants.HEADER_DATA, context.getAuthToken());
         }
         try {
-            HttpResponse<InputStream> response = client.send(request.build(),
-                                                             HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<InputStream> response =
+                    client.send(request.build(), HttpResponse.BodyHandlers.ofInputStream());
             if (response.statusCode() == HttpSC.OK_200) {
                 Map<String, Object> results = JSON.readValue(response.body(), GraphQLOverHttp.GENERIC_MAP_TYPE);
 
@@ -113,7 +113,7 @@ public class StartingSearchFetcher implements DataFetcher<List<TelicentGraphNode
                     List<Map<String, Object>> searchResults = (List<Map<String, Object>>) results.get("results");
                     for (Map<String, Object> result : searchResults) {
                         if (result.containsKey("document")) {
-                            String docUri = (String) ((Map<String, Object>)result.get("document")).get("uri");
+                            String docUri = (String) ((Map<String, Object>) result.get("document")).get("uri");
                             if (StringUtils.isNotBlank(docUri)) {
                                 startFilters.add(StartingNodesFetcher.parseStart(docUri));
                             }
@@ -121,13 +121,12 @@ public class StartingSearchFetcher implements DataFetcher<List<TelicentGraphNode
                     }
                 }
             } else {
-                throw new RuntimeException(
-                        "Failed to make query for search term " + environment.getArgument(
-                                "searchTerm") + ", received status " + response.statusCode());
+                throw new RuntimeException("Failed to make query for search term " + environment.getArgument(
+                        "searchTerm") + ", received status " + response.statusCode());
             }
         } catch (Throwable e) {
-            throw new RuntimeException("Failed to make query for search term " + environment.getArgument("searchTerm") + ".  Search service may be unavailable in your environment.",
-                                       e);
+            throw new RuntimeException("Failed to make query for search term " + environment.getArgument(
+                    "searchTerm") + ".  Search service may be unavailable in your environment.", e);
         }
 
         return startFilters.stream()
@@ -137,6 +136,28 @@ public class StartingSearchFetcher implements DataFetcher<List<TelicentGraphNode
                            .distinct()
                            .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
                            .collect(Collectors.toList());
+    }
+
+    /**
+     * Builds the API used to issue Search Requests to the underlying Searcn API
+     * @param searchApiUrl
+     * @param searchTerm
+     * @param limit
+     * @param offset
+     * @return
+     */
+    public static URI buildSearchApiRequestUri(String searchApiUrl, String searchTerm, Integer limit, Integer offset) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(searchApiUrl)
+               .append("/documents?query=")
+               .append(URLEncoder.encode(searchTerm, StandardCharsets.UTF_8));
+        if (limit != null && limit > 0) {
+            builder.append("&limit=").append(limit);
+        }
+        if (offset != null && offset >= 1) {
+            builder.append("&offset=").append(offset);
+        }
+        return URI.create(builder.toString());
     }
 
     private void configureSearchApiUrl() {
