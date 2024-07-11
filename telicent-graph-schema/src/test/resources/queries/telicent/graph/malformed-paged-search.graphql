@@ -1,0 +1,7 @@
+query {
+    search(searchTerm: "test", limit: "10", offset: "20") {
+        id
+        uri
+        shortUri
+    }
+}
