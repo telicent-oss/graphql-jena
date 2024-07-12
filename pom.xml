@@ -96,9 +96,9 @@
         <dependency.jersey>3.1.7</dependency.jersey>
         <dependency.jwt-servlet>0.15.1</dependency.jwt-servlet>
         <dependency.logback>1.5.6</dependency.logback>
-        <dependency.mockito>5.11.0</dependency.mockito>
+        <dependency.mockito>5.12.0</dependency.mockito>
         <dependency.slf4j>2.0.13</dependency.slf4j>
-        <dependency.smart-caches>0.21.0</dependency.smart-caches>
+        <dependency.smart-caches>0.21.1</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.8.0</dependency.wiremock>
 

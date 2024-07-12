@@ -2,7 +2,17 @@
 
 # 0.7.0
 
-- Upgrades to GraphQL Java 22.1
+- Added ability to validate a query without executing it
+- Telicent Graph Schema adds `limit` and `offset` arguments to the `search` query
+- Dependency upgrades:
+    - GraphQL Java upgraded to 22.1
+    - Jackson upgraded to 2.17.2
+    - Jena dependency changed to specific modules rather than `apache-jena-libs` to trim dependency tree to only
+      essential modules
+    - Jersey upgraded to 3.1.7
+    - JWT Servlet Auth upgraded to 0.15.1
+    - Smart Caches Core upgraded to 0.21.1
+    - Various test and build dependencies upgraded to latest available
 
 # 0.6.0
 
