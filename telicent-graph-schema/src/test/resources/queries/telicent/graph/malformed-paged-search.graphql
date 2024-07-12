@@ -1,0 +1,8 @@
+query {
+    # limit and offset MUST be integer values so this query will fail validation
+    search(searchTerm: "test", limit: "10", offset: "20") {
+        id
+        uri
+        shortUri
+    }
+}

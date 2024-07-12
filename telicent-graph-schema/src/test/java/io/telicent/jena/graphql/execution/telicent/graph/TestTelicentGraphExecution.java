@@ -36,16 +36,16 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         JenaSystem.init();
     }
 
-    private static final String QUERY_BASE = "/queries/telicent/graph/";
+    public static final String QUERY_BASE = "/queries/telicent/graph/";
     public static final String OBI_WAN_KENOBI = "https://starwars.com#person_Obi-WanKenobi";
 
     public static final String JABBA_THE_HUT = "https://starwars.com#hutt_JabbaDesilijicTiure";
 
-    private static String loadQuery(String queryResource) {
+    public static String loadQuery(String queryResource) {
         return loadQuery(QUERY_BASE, queryResource);
     }
 
-    private static GraphQLRequest loadRequest(String requestResource) {
+    public static GraphQLRequest loadRequest(String requestResource) {
         return loadRequest(QUERY_BASE, requestResource);
     }
 
