@@ -1,5 +1,15 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.8.0
+
+- Support for validating only GraphQL endpoints as demonstration functionality in the standalone GraphQL server
+- Telicent Graph Schema adds `limit` and `offset` arguments to `search` queries
+- Build improvements:
+    - Apache Jena upgraded to 5.1.0
+    - JWT Servlet Auth upgraded to 0.15.3
+    - Smart Caches Core Libraries upgraded to 0.21.2
+    - Various build and test dependencies upgraded to latest available
+
 # 0.7.0
 
 - Upgrades to GraphQL Java 22.1
