@@ -127,6 +127,12 @@
                 <groupId>org.apache.jena</groupId>
                 <artifactId>jena-arq</artifactId>
                 <version>${dependency.jena}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-suite-engine</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
