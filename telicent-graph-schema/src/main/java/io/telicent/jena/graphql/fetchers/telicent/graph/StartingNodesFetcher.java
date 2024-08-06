@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +53,14 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
 
         List<TelicentGraphNode> nodes = startFilters.stream()
                                                     .distinct()
-                                                    .flatMap(n -> dsg.stream(graphFilter, n, Node.ANY, Node.ANY))
-                                                    .map(Quad::getSubject)
-                                                    .distinct()
+                                                    .filter(n -> usedAsSubjectOrObject(n, dsg, graphFilter))
                                                     .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
                                                     .collect(Collectors.toList());
         return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
+    }
+
+    private static boolean usedAsSubjectOrObject(Node n, DatasetGraph dsg, Node graphFilter) {
+        return dsg.contains(graphFilter, n, Node.ANY, Node.ANY) || dsg.contains(graphFilter, Node.ANY, Node.ANY, n);
     }
 
     @SuppressWarnings("unchecked")
