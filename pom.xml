@@ -78,7 +78,7 @@
         <plugin.cyclonedx>2.8.1</plugin.cyclonedx>
         <plugin.dependency>3.7.1</plugin.dependency>
         <plugin.editorconfig>0.1.3</plugin.editorconfig>
-        <plugin.gpg>3.2.4</plugin.gpg>
+        <plugin.gpg>3.2.5</plugin.gpg>
         <plugin.jacoco>0.8.12</plugin.jacoco>
         <plugin.jar>3.4.2</plugin.jar>
         <plugin.javadoc>3.8.0</plugin.javadoc>
@@ -90,14 +90,14 @@
 
         <!-- Dependency Versions -->
         <dependency.airline>3.0.0</dependency.airline>
-        <dependency.graphql>22.1</dependency.graphql>
+        <dependency.graphql>22.2</dependency.graphql>
         <dependency.jena>5.1.0</dependency.jena>
         <dependency.jackson>2.17.2</dependency.jackson>
         <dependency.jersey>3.1.8</dependency.jersey>
         <dependency.jwt-servlet>0.15.3</dependency.jwt-servlet>
         <dependency.logback>1.5.6</dependency.logback>
         <dependency.mockito>5.12.0</dependency.mockito>
-        <dependency.slf4j>2.0.13</dependency.slf4j>
+        <dependency.slf4j>2.0.16</dependency.slf4j>
         <dependency.smart-caches>0.21.2</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.9.1</dependency.wiremock>
