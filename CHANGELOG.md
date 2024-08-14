@@ -1,5 +1,14 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.8.1
+
+- Telicent Graph Schema now returns Nodes even if they only occur in the object position of triples in the data
+- Build improvements:
+    - GraphQL Java upgraded to 22.2
+    - Jersey upgraded to 3.1.8
+    - SLF4J upgraded to 2.0.16
+
+
 # 0.8.0
 
 - Support for validating only GraphQL endpoints as demonstration functionality in the standalone GraphQL server
