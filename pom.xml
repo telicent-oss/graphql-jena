@@ -81,7 +81,7 @@
         <plugin.gpg>3.2.5</plugin.gpg>
         <plugin.jacoco>0.8.12</plugin.jacoco>
         <plugin.jar>3.4.2</plugin.jar>
-        <plugin.javadoc>3.8.0</plugin.javadoc>
+        <plugin.javadoc>3.10.0</plugin.javadoc>
         <plugin.license>4.5</plugin.license>
         <plugin.nexus>1.7.0</plugin.nexus>
         <plugin.shade>3.6.0</plugin.shade>
@@ -94,9 +94,9 @@
         <dependency.jena>5.1.0</dependency.jena>
         <dependency.jackson>2.17.2</dependency.jackson>
         <dependency.jersey>3.1.8</dependency.jersey>
-        <dependency.jwt-servlet>0.15.3</dependency.jwt-servlet>
+        <dependency.jwt-servlet>0.16.0</dependency.jwt-servlet>
         <dependency.logback>1.5.7</dependency.logback>
-        <dependency.mockito>5.12.0</dependency.mockito>
+        <dependency.mockito>5.13.0</dependency.mockito>
         <dependency.slf4j>2.0.16</dependency.slf4j>
         <dependency.smart-caches>0.21.2</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
