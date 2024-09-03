@@ -23,9 +23,6 @@ import java.util.List;
 public class IesFetchers {
 
     private IesFetchers(){}
-    /*
-      ies:isStateOf, ies:isStartOf, ies:isEndOf, ies:owns, ies:isPartOf, ies:isParticipant
-    */
 
     /**
      * The IES 4 namespace
@@ -57,7 +54,7 @@ public class IesFetchers {
      */
     public static final List<Node> STATE_PREDICATES =
             List.of(IS_STATE_OF, IS_START_OF, IS_END_OF, iesTerm("owns"),
-                    iesTerm("isPartOf"), iesTerm("isParticipant"));
+                    iesTerm("isPartOf"), iesTerm("isParticipationOf"));
 
     /**
      * Creates a Node for an IES term using the provided local name portion and the predefined {@link #IES_NAMESPACE}

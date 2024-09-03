@@ -1,0 +1,240 @@
+@prefix data: <http://telicent.io/data#> .
+@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rn: <http://royalnavy.mod.uk/ontology#> .
+@prefix telicent: <http://telicent.io/ontology/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+data:1272a066-d2ce-4ea9-8856-8e6cdfe78d0d a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1987> ;
+    ies:isEndOf data:f4286441-1ce0-4278-b0f9-90a3e3a0e799 .
+
+data:17e69563-1fe1-4da2-a466-f98a09d63ef4 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1967> ;
+    ies:isEndOf data:99c4540d-1c10-4660-b2ca-8273446a38bb .
+
+data:1da2e80b-a657-46d5-a76f-85b12e1d256f a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1960> ;
+    ies:isStartOf data:fdfc1bd5-4dab-4e4a-b324-bfe92f199b14 .
+
+data:22359b8b-f65b-4d6e-aff3-f038a10753ca a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1984> ;
+    ies:isEndOf data:47fe1a25-2043-4f86-84ab-4b9350a6316f .
+
+data:24bfaf88-e094-467a-bcf6-251cdfdd0470 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1954-05> ;
+    ies:isStartOf data:3b05f2cb-b773-48ae-92c6-2d59fbfe6e2e .
+
+data:2f0b52db-0782-49f7-88da-98b32ce5668c a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1981-07> ;
+    ies:isEndOf data:7fc366cf-ef3f-46c2-b9a6-2e67fd71a9e7 .
+
+data:31d77650-7768-4bd3-b9ee-4a4122753cfe a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1946> ;
+    ies:isStartOf data:3ecc04bd-f748-45f9-a964-5495131c67b0 .
+
+data:36f50f51-35f5-4958-aeae-067f601dd2ca a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1946> ;
+    ies:isStartOf data:180a7abf-e6d1-4f12-8f1f-c6fbf10714f4 .
+
+data:4f0ae720-93c4-4c00-ba9c-7462552c7af1 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1989> ;
+    ies:isEndOf data:af769397-b54a-4f86-bcc0-5ae667234b82 .
+
+data:561ff1fd-bb53-49f6-a4f1-f0f883268fcb a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1961> ;
+    ies:isEndOf data:4cf1a38a-8c6f-45c9-be8f-915120279399 .
+
+data:633a5f10-b0a9-45a8-aa69-09a3025c2ff5 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1962-05> ;
+    ies:isStartOf data:99c4540d-1c10-4660-b2ca-8273446a38bb .
+
+data:636ecb04-8fe0-4dc9-a6cf-748044ad5e82 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1960> ;
+    ies:isStartOf data:553f3174-0b82-4d2b-b03e-5fd6ffb78ce5 .
+
+data:6a7b8f32-3447-4655-8f37-e5c1b9653d07 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1954-05> ;
+    ies:isEndOf data:180a7abf-e6d1-4f12-8f1f-c6fbf10714f4 .
+
+data:79080cad-fdab-48a3-8c8b-382961f5437b a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1987> ;
+    ies:isStartOf data:af769397-b54a-4f86-bcc0-5ae667234b82 .
+
+data:82a2086b-2c8d-4361-97a3-497f3e23bfe7 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1967> ;
+    ies:isStartOf data:3f773065-ce5c-4b91-bdbb-91e9ab897165 .
+
+data:8bebe462-252b-4f81-a5dc-89a3cb7a8793 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1972> ;
+    ies:isStartOf data:7fc366cf-ef3f-46c2-b9a6-2e67fd71a9e7 .
+
+data:9e9bf47c-50c3-4ad3-883b-4921f33ae592 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1960> ;
+    ies:isStartOf data:4cf1a38a-8c6f-45c9-be8f-915120279399 .
+
+data:AdmiralWoodward_BIRTH a ies:BirthState ;
+    ies:inLocation data:Penzance ;
+    ies:inPeriod <http://iso.org/iso8601#1932-05-01> ;
+    ies:isStartOf data:AdmiralWoodward .
+
+data:AdmiralWoodward_DEATH a ies:DeathState ;
+    ies:inLocation data:Bosham ;
+    ies:inPeriod <http://iso.org/iso8601#2013-08-04> ;
+    ies:isEndOf data:AdmiralWoodward .
+
+data:CommanderOfCarrierForce a ies:Role ;
+    telicent:primaryName "Commander Of Carrier Forces"^^xsd:string .
+
+data:a6aba936-13b1-45b3-9c09-56a274486aec a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1972> ;
+    ies:isEndOf data:3f773065-ce5c-4b91-bdbb-91e9ab897165 .
+
+data:aecf6131-7d34-4780-8e3f-2a128c585e94 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1989> ;
+    ies:isEndOf data:3ecc04bd-f748-45f9-a964-5495131c67b0 .
+
+data:af7069c7-1792-49bf-8be8-fca9c029ef22 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1962-05> ;
+    ies:isEndOf data:3b05f2cb-b773-48ae-92c6-2d59fbfe6e2e .
+
+data:b2ab8343-e9ac-4ab6-a44b-2ba4844c405b a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1981-07> ;
+    ies:isStartOf data:47fe1a25-2043-4f86-84ab-4b9350a6316f .
+
+data:c7a48eb8-187c-4441-9add-31fe615eb801 a ies:BoundingState ;
+    ies:inPeriod <http://iso.org/iso8601#1984> ;
+    ies:isStartOf data:f4286441-1ce0-4278-b0f9-90a3e3a0e799 .
+
+data:charlotte_mcmurtrie_BIRTH a ies:BirthState ;
+    ies:isStartOf data:charlotte_mcmurtrie .
+
+data:e8d61113-1776-4c0c-9348-e48cf9f68b51 a ies:PersonState ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Commander Of Carrier Forces"^^xsd:string .
+
+<http://iso.org/iso8601#1932-05-01> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1932-05-01"^^xsd:string .
+
+<http://iso.org/iso8601#1961> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1961"^^xsd:string .
+
+<http://iso.org/iso8601#2013-08-04> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "2013-08-04"^^xsd:string .
+
+data:2349ee25-d9cd-4923-9709-0863672e66d5 a ies:Nickname ;
+    ies:representationValue "Spock"^^xsd:string .
+
+data:4ddd381f-2cca-407c-8dcc-b98677304743 a ies:Nickname ;
+    ies:representationValue "Sandy"^^xsd:string .
+
+data:AdmiralWoodward_FIRSTNAME a ies:GivenName ;
+    ies:representationValue "John Foster"^^xsd:string .
+
+data:AdmiralWoodward_SURNAME a ies:Surname ;
+    ies:representationValue "Woodward"^^xsd:string .
+
+data:Bosham a ies:RegionOfCountry ;
+    ies:isPartOf <http://iso.org/iso3166-2#GB-WSX> ;
+    telicent:primaryName "Bosham"^^xsd:string .
+
+data:Penzance a ies:RegionOfCountry ;
+    ies:isPartOf <http://iso.org/iso3166-2#GB-CON> ;
+    telicent:primaryName "Penzance"^^xsd:string .
+
+data:charlotte_mcmurtrie_FIRSTNAME a ies:GivenName ;
+    ies:representationValue "Charlotte"^^xsd:string .
+
+data:charlotte_mcmurtrie_SURNAME a ies:Surname ;
+    ies:representationValue "McMurtrie"^^xsd:string .
+
+data:fdfc1bd5-4dab-4e4a-b324-bfe92f199b14 a ies:Married ;
+    ies:isParticipantIn data:553f3174-0b82-4d2b-b03e-5fd6ffb78ce5 ;
+    ies:isParticipationOf data:charlotte_mcmurtrie .
+
+<http://iso.org/iso8601#1946> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1946"^^xsd:string .
+
+<http://iso.org/iso8601#1954-05> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1954-05"^^xsd:string .
+
+<http://iso.org/iso8601#1962-05> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1962-05"^^xsd:string .
+
+<http://iso.org/iso8601#1967> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1967"^^xsd:string .
+
+<http://iso.org/iso8601#1972> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1972"^^xsd:string .
+
+<http://iso.org/iso8601#1981-07> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1981-07"^^xsd:string .
+
+<http://iso.org/iso8601#1984> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1984"^^xsd:string .
+
+<http://iso.org/iso8601#1987> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1987"^^xsd:string .
+
+<http://iso.org/iso8601#1989> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1989"^^xsd:string .
+
+data:180a7abf-e6d1-4f12-8f1f-c6fbf10714f4 a rn:Officer ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Officer Woodward"^^xsd:string .
+
+data:3b05f2cb-b773-48ae-92c6-2d59fbfe6e2e a rn:Lieutenant ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Lieutenant Woodward"^^xsd:string .
+
+data:3ecc04bd-f748-45f9-a964-5495131c67b0 a ies:PersonState ;
+    ies:isStateOf data:AdmiralWoodward ;
+    ies:worksFor data:RoyalNavy .
+
+data:3f773065-ce5c-4b91-bdbb-91e9ab897165 a rn:Commander ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Commander Woodward"^^xsd:string .
+
+data:47fe1a25-2043-4f86-84ab-4b9350a6316f a rn:RearAdmiral ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Rear Admiral Woodward"^^xsd:string .
+
+data:4cf1a38a-8c6f-45c9-be8f-915120279399 a ies:Married ;
+    ies:isParticipantIn data:553f3174-0b82-4d2b-b03e-5fd6ffb78ce5 ;
+    ies:isParticipationOf data:AdmiralWoodward .
+
+data:7fc366cf-ef3f-46c2-b9a6-2e67fd71a9e7 a rn:Captain ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Captain Woodward"^^xsd:string .
+
+data:99c4540d-1c10-4660-b2ca-8273446a38bb a rn:LieutenantCommander ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Lieutenant Commander Woodward"^^xsd:string .
+
+data:af769397-b54a-4f86-bcc0-5ae667234b82 a rn:Admiral ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Admiral Woodward"^^xsd:string .
+
+data:charlotte_mcmurtrie a ies:Person ;
+    ies:hasName data:charlotte_mcmurtrie_FIRSTNAME,
+        data:charlotte_mcmurtrie_SURNAME ;
+    telicent:primaryName "MCMURTRIE, Charlotte"^^xsd:string .
+
+data:f4286441-1ce0-4278-b0f9-90a3e3a0e799 a rn:ViceAdmiral ;
+    ies:isStateOf data:AdmiralWoodward ;
+    telicent:primaryName "Vice Admiral Woodward"^^xsd:string .
+
+<http://iso.org/iso8601#1960> a ies:ParticularPeriod ;
+    ies:iso8601PeriodRepresentation "1960"^^xsd:string .
+
+data:553f3174-0b82-4d2b-b03e-5fd6ffb78ce5 a ies:Marriage .
+
+data:AdmiralWoodward a ies:Person ;
+    ies:hasName data:2349ee25-d9cd-4923-9709-0863672e66d5,
+        data:4ddd381f-2cca-407c-8dcc-b98677304743,
+        data:AdmiralWoodward_FIRSTNAME,
+        data:AdmiralWoodward_SURNAME ;
+    telicent:primaryName "John Foster Woodward"^^xsd:string,
+        "WOODWARD, John Foster"^^xsd:string ;
+    rdfs:comment "Admiral Sir John Forster 'Sandy' Woodward, GBE, KCB (1 May 1932 - 4 August 2013) was a senior Royal Navy officer who commanded the Task Force of the Falklands War."^^xsd:string .
+
