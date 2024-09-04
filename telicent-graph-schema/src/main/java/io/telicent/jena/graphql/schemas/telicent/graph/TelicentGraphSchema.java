@@ -57,6 +57,8 @@ public class TelicentGraphSchema {
      * State type
      */
     public static final String TYPE_STATE = "State";
+
+    public static final String TYPE_SEARCH_RESULTS = "SearchResults";
     /**
      * Non-directional relationship type
      */
@@ -65,6 +67,10 @@ public class TelicentGraphSchema {
      * Search query
      */
     public static final String QUERY_SEARCH = "search";
+    /**
+     * Search query version 2
+     */
+    public static final String QUERY_SEARCH_V2 = "searchV2";
     /**
      * Single node query
      */
@@ -97,6 +103,22 @@ public class TelicentGraphSchema {
      * Search term argument used to specify the search term passed onto Telicent Search API
      */
     public static final String ARGUMENT_SEARCH_TERM = "searchTerm";
+    /**
+     * Search type arguments used to specify the type of search used for the Telicent Search API
+     */
+    public static final String ARGUMENT_SEARCH_TYPE = "searchType";
+    /**
+     * Limit argument used to control paging on queries that support it
+     */
+    public static final String ARGUMENT_LIMIT = "limit";
+    /**
+     * Offset argument used to control paging on queries that support it
+     */
+    public static final String ARGUMENT_OFFSET = "offset";
+    /**
+     * Type filter argument used to specify a type filter for the Telicent Search API
+     */
+    public static final String ARGUMENT_TYPE_FILTER = "typeFilter";
     /**
      * Type field
      */
@@ -157,6 +179,7 @@ public class TelicentGraphSchema {
      * Relations field
      */
     public static final String FIELD_RELATIONS = "relations";
+
     /**
      * Extension property used to supply the users authentication token that may be passed on by some
      * {@link graphql.schema.DataFetcher} instances when they need to query other Telicent services

@@ -13,12 +13,15 @@
 package io.telicent.jena.graphql.execution.telicent.graph;
 
 import graphql.schema.PropertyDataFetcher;
+import graphql.schema.idl.NaturalEnumValuesProvider;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import io.telicent.jena.graphql.execution.AbstractDatasetExecutor;
 import io.telicent.jena.graphql.fetchers.telicent.graph.*;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
+import io.telicent.jena.graphql.schemas.models.NodeKind;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.io.IOException;
@@ -52,12 +55,14 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
     @Override
     protected RuntimeWiring.Builder buildRuntimeWiring() {
         final StatePeriodFetcher periodFetcher = new StatePeriodFetcher();
+        NaturalEnumValuesProvider<SearchType> nodeKinds = new NaturalEnumValuesProvider<>(SearchType.class);
         //@formatter:off
         return RuntimeWiring.newRuntimeWiring()
                             .type("Query",
                                   t -> t.dataFetcher(TelicentGraphSchema.QUERY_SINGLE_NODE, new StartingNodesFetcher(false))
                                         .dataFetcher(TelicentGraphSchema.QUERY_MULTIPLE_NODES, new StartingNodesFetcher(true))
                                         .dataFetcher(TelicentGraphSchema.QUERY_SEARCH, new StartingSearchFetcher())
+                                        .dataFetcher(TelicentGraphSchema.QUERY_SEARCH_V2, new StartingSearchV2Fetcher()).enumValues(nodeKinds)
                                         .dataFetcher(TelicentGraphSchema.QUERY_STATES, new StartingStatesFetcher())
                                         .dataFetcher(TelicentGraphSchema.QUERY_GET_ALL_ENTITIES, new AllEntitiesFetcher()))
                             .type(TelicentGraphSchema.TYPE_NODE,
