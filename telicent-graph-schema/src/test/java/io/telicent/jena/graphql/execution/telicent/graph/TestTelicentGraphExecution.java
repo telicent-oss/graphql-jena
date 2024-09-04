@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public class TestTelicentGraphExecution extends AbstractExecutionTests {
@@ -63,76 +64,86 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
 
     public static final String SEARCH_QUERY = loadQuery("search.graphql");
 
-    private final TelicentGraphExecutor executor;
+    private final TelicentGraphExecutor starwars, falklands;
 
     public TestTelicentGraphExecution() throws IOException {
-        DatasetGraph dsg = RDFParserBuilder.create()
-                                           .lang(Lang.TURTLE)
-                                           .source(TestTelicentGraphExecution.class.getResourceAsStream(
-                                                   "/data/starwars.ttl"))
-                                           .toDatasetGraph();
-        this.executor = new TelicentGraphExecutor(dsg);
+        DatasetGraph starwars = RDFParserBuilder.create()
+                                                .lang(Lang.TURTLE)
+                                                .source(TestTelicentGraphExecution.class.getResourceAsStream(
+                                                        "/data/starwars.ttl"))
+                                                .toDatasetGraph();
+        this.starwars = new TelicentGraphExecutor(starwars);
+
+        DatasetGraph sandyWoodward = RDFParserBuilder.create()
+                                                     .lang(Lang.TURTLE)
+                                                     .source(TestTelicentGraphExecution.class.getResourceAsStream(
+                                                             "/data/sandy_woodward.ttl"))
+                                                     .toDatasetGraph();
+        this.falklands = new TelicentGraphExecutor(sandyWoodward);
     }
 
     @Test
-    public void telicent_graph_empty_01() throws IOException {
+    public void givenEmptyData_whenQueryingForSingleNode_thenEmptyResults() throws IOException {
+        // Given
         DatasetGraph dsg = DatasetGraphFactory.empty();
         TelicentGraphExecutor execution = new TelicentGraphExecutor(dsg);
 
+        // When
         ExecutionResult result = verifyExecution(execution, SINGLE_NODE_QUERY);
+
+        // Then
         Assert.assertTrue(result.isDataPresent());
         Assert.assertNotNull(result.getData());
-
         Map<String, Object> data = result.getData();
         Assert.assertNull(data.get(TelicentGraphSchema.QUERY_SINGLE_NODE));
     }
 
     @Test
-    public void telicent_graph_single_node_01() {
-        ExecutionResult result = verifyExecution(this.executor, SINGLE_NODE_QUERY);
+    public void givenStarWarsData_whenQueryingForSingleNode_thenSingleResult() {
+        // Given and When
+        ExecutionResult result = verifyExecution(this.starwars, SINGLE_NODE_QUERY);
+
+        // Then
         Assert.assertTrue(result.isDataPresent());
         Assert.assertNotNull(result.getData());
-
         Map<String, Object> data = result.getData();
         Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_SINGLE_NODE));
         data = (Map<String, Object>) data.get(TelicentGraphSchema.QUERY_SINGLE_NODE);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_URI), OBI_WAN_KENOBI);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_ID), OBI_WAN_KENOBI);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_SHORT_URI), "starwars:person_Obi-WanKenobi");
+        verifyNodeResult(data, OBI_WAN_KENOBI, "starwars:person_Obi-WanKenobi");
         Assert.assertNotNull(data.get(TelicentGraphSchema.FIELD_INSTANCES));
         Assert.assertTrue(((List<Object>) data.get(TelicentGraphSchema.FIELD_INSTANCES)).isEmpty());
     }
 
-    @Test
-    public void telicent_graph_multiple_nodes_01() {
-        ExecutionResult result = verifyExecution(this.executor, MULTIPLE_NODES_QUERY);
-        Assert.assertTrue(result.isDataPresent());
-        Assert.assertNotNull(result.getData());
-
-        Map<String, Object> data = result.getData();
-        Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_MULTIPLE_NODES));
-        List<Map<String, Object>> nodes =
-                (List<Map<String, Object>>) data.get(TelicentGraphSchema.QUERY_MULTIPLE_NODES);
-        Assert.assertFalse(nodes.isEmpty());
-        Assert.assertEquals(nodes.size(), 2);
-
-        data = nodes.get(0);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_URI), OBI_WAN_KENOBI);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_ID), OBI_WAN_KENOBI);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_SHORT_URI), "starwars:person_Obi-WanKenobi");
-
-        data = nodes.get(1);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_URI), JABBA_THE_HUT);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_ID), JABBA_THE_HUT);
-        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_SHORT_URI), "starwars:hutt_JabbaDesilijicTiure");
+    private static void verifyNodeResult(Map<String, Object> data, String fullUri, String shortUri) {
+        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_URI), fullUri);
+        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_ID), fullUri);
+        Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_SHORT_URI), shortUri);
     }
 
     @Test
-    public void telicent_graph_instances_01() {
-        ExecutionResult result = verifyExecution(this.executor, INSTANCES_QUERY);
+    public void givenStarWarsData_whenQueryingForMultipleNodes_thenMultipleResults() {
+        // Given and When
+        ExecutionResult result = verifyExecution(this.starwars, MULTIPLE_NODES_QUERY);
+
+        // Then
         Assert.assertTrue(result.isDataPresent());
         Assert.assertNotNull(result.getData());
+        Map<String, Object> data = result.getData();
+        List<Map<String, Object>> nodes = verifyStates(data, TelicentGraphSchema.QUERY_MULTIPLE_NODES, 2);
+        data = nodes.get(0);
+        verifyNodeResult(data, OBI_WAN_KENOBI, "starwars:person_Obi-WanKenobi");
+        data = nodes.get(1);
+        verifyNodeResult(data, JABBA_THE_HUT, "starwars:hutt_JabbaDesilijicTiure");
+    }
 
+    @Test
+    public void givenStarWarsData_whenQueryingForInstances_thenInstanceResults() {
+        // Given and When
+        ExecutionResult result = verifyExecution(this.starwars, INSTANCES_QUERY);
+
+        // Then
+        Assert.assertTrue(result.isDataPresent());
+        Assert.assertNotNull(result.getData());
         Map<String, Object> data = result.getData();
         Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_SINGLE_NODE));
         data = (Map<String, Object>) data.get(TelicentGraphSchema.QUERY_SINGLE_NODE);
@@ -149,7 +160,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         request.setQuery(SEARCH_QUERY);
 
         // When
-        ExecutionResult result = this.executor.execute(request);
+        ExecutionResult result = this.starwars.execute(request);
 
         // Then
         Assert.assertFalse(result.getErrors().isEmpty());
@@ -158,27 +169,60 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     }
 
     @Test
-    public void telicent_graph_states_01() {
-        ExecutionResult result = verifyExecution(this.executor, STATES_REQUEST);
+    public void givenStarWarsData_whenQueryingForLukeStates_thenStatesAreReturned() {
+        // Given and When
+        ExecutionResult result = verifyExecution(this.starwars, STATES_REQUEST);
 
+        // Then
         Map<String, Object> data = result.getData();
-        Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_STATES));
-        List<Map<String, Object>> states = (List<Map<String, Object>>) data.get(TelicentGraphSchema.QUERY_STATES);
+        verifyStates(data, TelicentGraphSchema.QUERY_STATES, 71);
+    }
+
+    private static List<Map<String, Object>> verifyStates(Map<String, Object> data, String queryStates,
+                                                          int expectedStates) {
+        Assert.assertNotNull(data.get(queryStates));
+        List<Map<String, Object>> states = (List<Map<String, Object>>) data.get(queryStates);
         Assert.assertFalse(states.isEmpty());
-        Assert.assertEquals(states.size(), 71);
+        Assert.assertEquals(states.size(), expectedStates);
+        return states;
     }
 
     @Test
-    public void telicent_graph_states_02() {
+    public void givenStarWarsData_whenQueryingForTatooineStates_thenEmptyResults() {
+        // Given
         GraphQLRequest request = new GraphQLRequest();
         request.setQuery(STATES_QUERY);
         request.setVariables(Map.of("stateUri", "https://starwars.com#planet_Tatooine"));
         request.setOperationName("State");
-        ExecutionResult result = verifyExecution(this.executor, request);
 
+        // When
+        ExecutionResult result = verifyExecution(this.starwars, request);
+
+        // Then
         Map<String, Object> data = result.getData();
         Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_STATES));
         List<Map<String, Object>> states = (List<Map<String, Object>>) data.get(TelicentGraphSchema.QUERY_STATES);
         Assert.assertTrue(states.isEmpty());
+    }
+
+    @Test
+    public void givenFalklandsData_whenQueryingForAdmiralWoodward_thenStatesAreReturned_andMarriageIsAState() {
+        // Given
+        GraphQLRequest request = new GraphQLRequest();
+        request.setQuery(STATES_QUERY);
+        request.setVariables(Map.of("stateUri", "http://telicent.io/data#AdmiralWoodward"));
+        request.setOperationName("State");
+
+        // When
+        ExecutionResult result = verifyExecution(this.falklands, request);
+
+        // Then
+        Map<String, Object> data = result.getData();
+        List<Map<String, Object>> states = verifyStates(data, TelicentGraphSchema.QUERY_STATES, 13);
+
+        // And
+        Assert.assertTrue(states.stream()
+                                .anyMatch(s -> Objects.equals(s.get(TelicentGraphSchema.FIELD_URI),
+                                                              "http://telicent.io/data#4cf1a38a-8c6f-45c9-be8f-915120279399")));
     }
 }
