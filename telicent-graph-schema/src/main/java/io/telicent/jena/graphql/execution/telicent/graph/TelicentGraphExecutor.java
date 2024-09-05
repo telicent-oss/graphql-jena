@@ -19,7 +19,6 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import io.telicent.jena.graphql.execution.AbstractDatasetExecutor;
 import io.telicent.jena.graphql.fetchers.telicent.graph.*;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
-import io.telicent.jena.graphql.schemas.models.NodeKind;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
 import org.apache.jena.sparql.core.DatasetGraph;

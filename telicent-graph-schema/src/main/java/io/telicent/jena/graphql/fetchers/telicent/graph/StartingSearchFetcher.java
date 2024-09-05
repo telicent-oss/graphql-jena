@@ -33,7 +33,6 @@ public class StartingSearchFetcher extends AbstractSearchFetcher<List<TelicentGr
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<TelicentGraphNode> get(DataFetchingEnvironment environment) {
         TelicentSearchResults results = searchCommon(environment);
         return results.getNodes();

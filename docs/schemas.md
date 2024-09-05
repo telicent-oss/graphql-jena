@@ -280,7 +280,8 @@ these arguments may be used on both the `outgoing` and `incoming` fields.
 
 
 ## Telicent (IES)
-In telicent deployments, we make use of an Information Exchange Standard (IES) compliant schema. The IES is 
+
+In telicent deployments, we make use of an Information Exchange Standard (IES) compliant schema. The IES ontology is 
 an open standard developed by the UK Government for making the sharing of information across knowledge stores easier 
 and less complex by means of a common vocabulary. More information can be found [here](https://github.com/dstl/IES4)
 
@@ -331,21 +332,53 @@ type NonDirectionalRel {
     predicate: String!
     entity: Node!
 }
+
+enum SearchType {
+    QUERY,
+    TERM,
+    PHRASE,
+    WILDCARD
+}
+
+type SearchResults {
+    searchTerm: String!
+    searchType: SearchType!
+    limit: Int!
+    offset: Int!
+    maybeMore: Boolean!
+    nodes: [Node]
+}
 ```
 
-Furthermore, the following Query types are defined for operations that should be self-evident:
-- search
-- getAllEntities
-- states
-- node
-- nodes
+While this is still fairly RDF centric it models data quite differently than the simpler [Dataset](#dataset) or
+[Traversal](#traversal) schemas do, and includes higher level IES concepts like states.  It has the following query
+operations defined:
+
+- `search` and `searchV2` for using a search against Telicent Search API as the starting point for retrieving nodes in 
+  the dataset
+- `getAllEntities` for retreiving all nodes in the dataset
+- `states` for retrieving states (an IES ontology concept) of other entities in the dataset
+- `node` for retrieving a single ndoe from the dataset
+- `nodes` for retrieving multiple nodes from the dataset
 
 ```graphql
 type Query {
     search(
         graph: String
         searchTerm: String!
-    ): [Node]
+        searchType: SearchType
+        limit: Int
+        offset: Int
+        typeFilter: String
+    ): [Node] @deprecated(reason: "Use `searchV2` which offers richer response schema")
+    searchV2(
+        graph: String
+        searchTerm: String!
+        searchType: SearchType
+        limit: Int
+        offset: Int
+        typeFilter: String
+    ): SearchResults
     getAllEntities(graph: String): [Node]
     states(uri: String!): [State]!
     node(graph: String, uri: String!): Node
