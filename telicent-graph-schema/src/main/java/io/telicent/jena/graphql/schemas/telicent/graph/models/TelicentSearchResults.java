@@ -49,17 +49,65 @@ public class TelicentSearchResults {
         this.nodes = nodes;
     }
 
+    /**
+     * Sets the result nodes
+     *
+     * @param nodes Result nodes
+     */
     public void setNodes(List<TelicentGraphNode> nodes) {
         this.nodes.clear();
         this.nodes.addAll(nodes);
     }
 
+    /**
+     * Given a map of raw search results returned by the Telicent Search API convert into the GraphQL model of those
+     * results
+     *
+     * @param map Raw results map
+     * @return Telicent Search Results
+     */
     public static TelicentSearchResults fromMap(Map<String, Object> map) {
         return new TelicentSearchResults((String) map.get("query"),
-                                         SearchType.valueOf(map.get("type").toString().toUpperCase(Locale.ROOT)),
-                                         (Integer) map.get(TelicentGraphSchema.ARGUMENT_LIMIT),
-                                         (Integer) map.get(TelicentGraphSchema.ARGUMENT_OFFSET),
-                                         (Boolean) map.get("maybeMore"), new ArrayList<>());
+                                         parseSearchType(map),
+                                         parseInteger(map, TelicentGraphSchema.ARGUMENT_LIMIT),
+                                         parseInteger(map, TelicentGraphSchema.ARGUMENT_OFFSET),
+                                         parseMaybeMore(map), new ArrayList<>());
+    }
+
+    private static Boolean parseMaybeMore(Map<String, Object> map) {
+        Object rawValue = map.get("maybeMore");
+        if (rawValue == null) {
+            return false;
+        } else if (rawValue instanceof Boolean) {
+            return (Boolean) rawValue;
+        } else if (rawValue instanceof String) {
+            return Boolean.parseBoolean((String) rawValue);
+        } else {
+            return false;
+        }
+    }
+
+    private static Integer parseInteger(Map<String, Object> map, String field) {
+        Object rawValue = map.get(field);
+        if (rawValue == null) {
+            return -1;
+        } else if (rawValue instanceof Integer) {
+            return (Integer) rawValue;
+        } else if (rawValue instanceof String) {
+            try {
+                return Integer.parseInt((String) rawValue);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
+
+    private static SearchType parseSearchType(Map<String, Object> map) {
+        Object rawSearchType = map.get("type");
+        return rawSearchType != null ? SearchType.valueOf(rawSearchType.toString().toUpperCase(Locale.ROOT)) :
+               SearchType.QUERY;
     }
 
     /**

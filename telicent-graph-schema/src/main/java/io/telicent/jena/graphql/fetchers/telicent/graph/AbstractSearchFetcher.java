@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import graphql.com.google.common.collect.Streams;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
@@ -46,6 +47,7 @@ import java.util.Map;
 
 /**
  * An abstract GraphQL fetcher for Search based queries
+ * @param <T> Returned model type
  */
 public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
     /**
@@ -60,6 +62,13 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
     private static final ObjectMapper JSON = new ObjectMapper();
     private final HttpClient client = HttpClient.newBuilder().build();
     private String searchApiUrl = null;
+
+    /**
+     * Creates a new abstract search fetcher
+     */
+    public AbstractSearchFetcher() {
+
+    }
 
     /**
      * Builds the API used to issue Search Requests to the underlying Search API
@@ -91,9 +100,9 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
         }
         String typeFilter = environment.getArgument(TelicentGraphSchema.ARGUMENT_TYPE_FILTER);
         if (StringUtils.isNotBlank(typeFilter)) {
-            builder.append("&typeFilter=")
+            builder.append("&type-filter=")
                    .append(Base64.encodeBase64URLSafeString(typeFilter.getBytes(StandardCharsets.UTF_8)))
-                   .append("is-type-filter-base64=true");
+                   .append("&is-type-filter-base64=true");
         }
         return URI.create(builder.toString());
     }
@@ -108,6 +117,15 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
         return System.getProperty(ENV_SEARCH_API_URL, DEFAULT_SEARCH_API_URL);
     }
 
+    /**
+     * Implements the common functionality of dispatching a search request off to the configured Telicent Search API
+     * service and the basic translation of Search Results back into GraphQL model classes.  Derived {@link DataFetcher}
+     * implementations are expected to call this method and then use the search results to produce the actual model
+     * classes that they return.
+     *
+     * @param environment Data Fetching environment
+     * @return Telicent Search Results
+     */
     @SuppressWarnings("unchecked")
     protected TelicentSearchResults searchCommon(DataFetchingEnvironment environment) {
         configureSearchApiUrl();
@@ -123,10 +141,8 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
             throw new RuntimeException("Failed to make query as no 'searchTerm' argument provided");
         }
         List<Node> startFilters = new ArrayList<>();
-        HttpRequest.Builder request =
-                HttpRequest.newBuilder(
-                                   AbstractSearchFetcher.buildSearchApiRequestUri(this.searchApiUrl, searchTerm, environment))
-                           .GET();
+        HttpRequest.Builder request = HttpRequest.newBuilder(
+                AbstractSearchFetcher.buildSearchApiRequestUri(this.searchApiUrl, searchTerm, environment)).GET();
         if (context.hasAuthToken()) {
             // If we have an authentication token need to copy it to our search request so that our request reflects the
             // requesting users data access
@@ -169,9 +185,8 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
 
         List<TelicentGraphNode> nodes = startFilters.stream()
                                                     .distinct()
-                                                    .flatMap(n -> dsg.stream(graphFilter, n, Node.ANY, Node.ANY))
-                                                    .map(Quad::getSubject)
-                                                    .distinct()
+                                                    .filter(n -> StartingNodesFetcher.usedAsSubjectOrObject(n, dsg,
+                                                                                                            graphFilter))
                                                     .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
                                                     .toList();
         telicentResults.setNodes(nodes);

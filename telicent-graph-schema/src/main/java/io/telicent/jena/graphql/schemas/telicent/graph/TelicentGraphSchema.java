@@ -57,7 +57,9 @@ public class TelicentGraphSchema {
      * State type
      */
     public static final String TYPE_STATE = "State";
-
+    /**
+     * Search results type
+     */
     public static final String TYPE_SEARCH_RESULTS = "SearchResults";
     /**
      * Non-directional relationship type

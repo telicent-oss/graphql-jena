@@ -59,7 +59,14 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
         return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
     }
 
-    private static boolean usedAsSubjectOrObject(Node n, DatasetGraph dsg, Node graphFilter) {
+    /**
+     * Given a node checks whether it is used as either the subject/object of any quads in the dataset
+     * @param n Node
+     * @param dsg Dataset
+     * @param graphFilter Graph node
+     * @return True if used as a subject/object, false otherwise
+     */
+    public static boolean usedAsSubjectOrObject(Node n, DatasetGraph dsg, Node graphFilter) {
         return dsg.contains(graphFilter, n, Node.ANY, Node.ANY) || dsg.contains(graphFilter, Node.ANY, Node.ANY, n);
     }
 
