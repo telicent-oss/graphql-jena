@@ -3,8 +3,8 @@
 # 0.8.2
 
 - Telicent Graph Schema improvements:
-    - Added new `searchV2()` query with richer response schema
-    - Added optional `searchType` and `typeFilter` arguments to both `search()` and `searchV2()` queries
+    - Added new `searchWithMetadata()` query with richer response schema
+    - Added optional `searchType` and `typeFilter` arguments to both `search()` and `searchWithMetadata()` queries
     - Search queries have behavioural parity with `node()` and `nodes()` queries in treating any returned URI from
       search as node if it occurs in the subject/object of any triples in the data
 

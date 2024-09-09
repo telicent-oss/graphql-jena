@@ -354,9 +354,10 @@ While this is still fairly RDF centric it models data quite differently than the
 [Traversal](#traversal) schemas do, and includes higher level IES concepts like states.  It has the following query
 operations defined:
 
-- `search` and `searchV2` for using a search against Telicent Search API as the starting point for retrieving nodes in 
+- `search` and `searchWithMetadata` for using a search against Telicent Search API as the starting point for retrieving 
+  nodes in 
   the dataset
-- `getAllEntities` for retreiving all nodes in the dataset
+- `getAllEntities` for retrieving all nodes in the dataset
 - `states` for retrieving states (an IES ontology concept) of other entities in the dataset
 - `node` for retrieving a single ndoe from the dataset
 - `nodes` for retrieving multiple nodes from the dataset
@@ -370,8 +371,8 @@ type Query {
         limit: Int
         offset: Int
         typeFilter: String
-    ): [Node] @deprecated(reason: "Use `searchV2` which offers richer response schema")
-    searchV2(
+    ): [Node] @deprecated(reason: "Use `searchWithMetadata` which offers richer response schema")
+    searchWithMetadata(
         graph: String
         searchTerm: String!
         searchType: SearchType

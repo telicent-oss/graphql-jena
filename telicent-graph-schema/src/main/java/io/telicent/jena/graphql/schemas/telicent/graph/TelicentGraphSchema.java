@@ -72,7 +72,7 @@ public class TelicentGraphSchema {
     /**
      * Search query version 2
      */
-    public static final String QUERY_SEARCH_V2 = "searchV2";
+    public static final String QUERY_SEARCH_WITH_METADATA = "searchWithMetadata";
     /**
      * Single node query
      */

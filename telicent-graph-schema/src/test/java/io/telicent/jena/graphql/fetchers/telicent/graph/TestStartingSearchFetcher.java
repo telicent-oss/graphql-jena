@@ -215,7 +215,7 @@ public class TestStartingSearchFetcher {
     }
 
     @Test
-    public void givenPagedSearchResponse_whenUsingSearchV2FetcherWithLimit_thenSuccess_andCorrectMetadataAndResults() throws
+    public void givenPagedSearchResponse_whenUsingSearchWithMetadataFetcherWithLimit_thenSuccess_andCorrectMetadataAndResults() throws
             IOException {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
@@ -223,7 +223,7 @@ public class TestStartingSearchFetcher {
         WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
-        StartingSearchV2Fetcher fetcher = new StartingSearchV2Fetcher();
+        StartingSearchWithMetadataFetcher fetcher = new StartingSearchWithMetadataFetcher();
         DatasetGraph dsg = createPagedSearchTestDataset();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
@@ -274,7 +274,7 @@ public class TestStartingSearchFetcher {
     }
 
     @Test
-    public void givenPagedSearchResponse_whenUsingSearchFetcherV2WithOffset_thenSuccess_andCorrectMetadataAndResults() throws
+    public void givenPagedSearchResponse_whenUsingSearchWithMetadataFetcherWithOffset_thenSuccess_andCorrectMetadataAndResults() throws
             IOException {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
@@ -282,7 +282,7 @@ public class TestStartingSearchFetcher {
         WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&offset=2")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
-        StartingSearchV2Fetcher fetcher = new StartingSearchV2Fetcher();
+        StartingSearchWithMetadataFetcher fetcher = new StartingSearchWithMetadataFetcher();
         DatasetGraph dsg = createPagedSearchTestDataset();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
@@ -331,7 +331,7 @@ public class TestStartingSearchFetcher {
     }
 
     @Test
-    public void givenPagedSearchResponse_whenUsingSearchFetcherV2WithLimitAndOffset_thenMetadataAndNoResults() throws
+    public void givenPagedSearchResponse_whenUsingSearchWithMetadataFetcherWithLimitAndOffset_thenMetadataAndNoResults() throws
             IOException {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
@@ -339,7 +339,7 @@ public class TestStartingSearchFetcher {
         WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1&offset=4")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
-        StartingSearchV2Fetcher fetcher = new StartingSearchV2Fetcher();
+        StartingSearchWithMetadataFetcher fetcher = new StartingSearchWithMetadataFetcher();
         DatasetGraph dsg = createPagedSearchTestDataset();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()

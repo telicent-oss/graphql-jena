@@ -61,7 +61,7 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                   t -> t.dataFetcher(TelicentGraphSchema.QUERY_SINGLE_NODE, new StartingNodesFetcher(false))
                                         .dataFetcher(TelicentGraphSchema.QUERY_MULTIPLE_NODES, new StartingNodesFetcher(true))
                                         .dataFetcher(TelicentGraphSchema.QUERY_SEARCH, new StartingSearchFetcher())
-                                        .dataFetcher(TelicentGraphSchema.QUERY_SEARCH_V2, new StartingSearchV2Fetcher()).enumValues(nodeKinds)
+                                        .dataFetcher(TelicentGraphSchema.QUERY_SEARCH_WITH_METADATA, new StartingSearchWithMetadataFetcher()).enumValues(nodeKinds)
                                         .dataFetcher(TelicentGraphSchema.QUERY_STATES, new StartingStatesFetcher())
                                         .dataFetcher(TelicentGraphSchema.QUERY_GET_ALL_ENTITIES, new AllEntitiesFetcher()))
                             .type(TelicentGraphSchema.TYPE_NODE,

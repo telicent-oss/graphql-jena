@@ -65,8 +65,8 @@ type Query {
         limit: Int
         offset: Int
         typeFilter: String
-    ): [Node] @deprecated(reason: "Use `searchV2` which offers richer response schema")
-    searchV2(
+    ): [Node] @deprecated(reason: "Use `searchWithMetadata` which offers richer response schema")
+    searchWithMetadata(
         graph: String
         searchTerm: String!
         searchType: SearchType
