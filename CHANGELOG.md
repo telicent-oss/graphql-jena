@@ -7,6 +7,11 @@
     - Added optional `searchType` and `typeFilter` arguments to both `search()` and `searchWithMetadata()` queries
     - Search queries have behavioural parity with `node()` and `nodes()` queries in treating any returned URI from
       search as node if it occurs in the subject/object of any triples in the data
+- Build improvements:
+    - Logback upgraded to 1.5.8
+    - JWT Servlet Auth upgraded to 0.16.0
+    - Smart Caches Core Libraries upgraded to 0.22.0
+    - Various build and test dependencies upgraded to latest available
 
 # 0.8.1
 
