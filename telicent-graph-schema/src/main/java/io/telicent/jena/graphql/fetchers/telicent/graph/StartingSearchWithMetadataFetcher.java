@@ -14,28 +14,25 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentSearchResults;
-
-import java.util.*;
 
 /**
  * A GraphQL {@link DataFetcher} that finds the starting points for a query based upon search terms which are passed on
  * to the Telicent Search REST API to find the matching entities
  */
-public class StartingSearchFetcher extends AbstractSearchFetcher<List<TelicentGraphNode>> {
+public class StartingSearchWithMetadataFetcher extends AbstractSearchFetcher<TelicentSearchResults> {
 
     /**
      * Creates a new fetcher that uses a search query to find nodes of interest
      */
-    public StartingSearchFetcher() {
+    public StartingSearchWithMetadataFetcher() {
 
     }
 
     @Override
-    public List<TelicentGraphNode> get(DataFetchingEnvironment environment) {
-        TelicentSearchResults results = searchCommon(environment);
-        return results.getNodes();
+    @SuppressWarnings("unchecked")
+    public TelicentSearchResults get(DataFetchingEnvironment environment) {
+        return searchCommon(environment);
     }
 
 }

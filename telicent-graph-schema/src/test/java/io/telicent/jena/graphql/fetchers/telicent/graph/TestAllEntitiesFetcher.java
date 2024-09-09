@@ -12,7 +12,6 @@
  */
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
-import graphql.Assert;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
@@ -21,6 +20,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.vocabulary.RDF;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
