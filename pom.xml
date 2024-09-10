@@ -4,7 +4,7 @@
 
     <groupId>io.telicent.jena.graphql</groupId>
     <artifactId>parent</artifactId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Telicent - GraphQL for Apache Jena - Parent</name>
     <description>Provides GraphQL extensions for use with Apache Jena</description>
@@ -95,10 +95,10 @@
         <dependency.jackson>2.17.2</dependency.jackson>
         <dependency.jersey>3.1.8</dependency.jersey>
         <dependency.jwt-servlet>0.16.0</dependency.jwt-servlet>
-        <dependency.logback>1.5.7</dependency.logback>
+        <dependency.logback>1.5.8</dependency.logback>
         <dependency.mockito>5.13.0</dependency.mockito>
         <dependency.slf4j>2.0.16</dependency.slf4j>
-        <dependency.smart-caches>0.21.2</dependency.smart-caches>
+        <dependency.smart-caches>0.22.0</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.9.1</dependency.wiremock>
 
@@ -467,7 +467,7 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>${plugin.versions}</version>
                 <configuration>
-                    <ignoredVersions>.*[-\.]M.*,.*-alpha.*,.*-RC.*</ignoredVersions>
+                    <ignoredVersions>.*[-\.]M.*,.*-alpha.*,.*-beta.*,.*-RC.*,.*rc.*</ignoredVersions>
                 </configuration>
             </plugin>
 

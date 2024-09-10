@@ -15,6 +15,7 @@ package io.telicent.jena.graphql.server.application;
 import io.telicent.jena.graphql.server.application.errors.UnknownOperationMapper;
 import io.telicent.jena.graphql.server.application.resources.DatasetResource;
 import io.telicent.smart.cache.server.jaxrs.applications.AbstractApplication;
+import io.telicent.smart.cache.server.jaxrs.resources.AbstractHealthResource;
 
 import java.util.Set;
 
@@ -38,5 +39,11 @@ public class GraphQLApplication extends AbstractApplication {
         // Resources
         classes.add(DatasetResource.class);
         return classes;
+    }
+
+    @Override
+    protected Class<? extends AbstractHealthResource> getHealthResourceClass() {
+        // No /healthz endpoint will be provided in this demo server
+        return null;
     }
 }
