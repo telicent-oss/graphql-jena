@@ -19,6 +19,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.LiteralProperty;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,9 +42,14 @@ public class LiteralPropertiesFetcher implements DataFetcher<List<LiteralPropert
         DatasetGraph dsg = context.getDatasetGraph();
         TelicentGraphNode node = environment.getSource();
 
+        return Txn.calculateRead(dsg, () -> findLiterals(dsg, node));
+    }
+
+    private static List<LiteralProperty> findLiterals(DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, node.getNode(), Node.ANY, Node.ANY)
                   .filter(q -> q.getObject().isLiteral())
-                  .map(q -> new LiteralProperty(q.getPredicate(), q.getObject(), dsg.prefixes()))
+                  .map(q -> new LiteralProperty(q.getPredicate(), q.getObject(),
+                                                dsg.prefixes()))
                   .collect(Collectors.toList());
     }
 }

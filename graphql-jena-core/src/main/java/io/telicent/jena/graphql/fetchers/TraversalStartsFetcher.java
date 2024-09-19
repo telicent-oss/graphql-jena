@@ -20,6 +20,7 @@ import io.telicent.jena.graphql.utils.NodeFilter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,12 +42,12 @@ public class TraversalStartsFetcher implements DataFetcher<List<TraversalNode>> 
         DatasetGraph dsg = environment.getLocalContext();
         List<Node> startFilters = NodeFilter.parseList(environment.getArgument(TraversalSchema.STARTS_ARGUMENT));
 
-        return startFilters.stream()
-                           .distinct()
-                           .flatMap(n -> dsg.stream(Node.ANY, n, Node.ANY, Node.ANY))
-                           .map(Quad::getSubject)
-                           .distinct()
-                           .map(TraversalNode::of)
-                           .collect(Collectors.toList());
+        return Txn.calculateRead(dsg, () -> startFilters.stream()
+                                                        .distinct()
+                                                        .flatMap(n -> dsg.stream(Node.ANY, n, Node.ANY, Node.ANY))
+                                                        .map(Quad::getSubject)
+                                                        .distinct()
+                                                        .map(TraversalNode::of)
+                                                        .collect(Collectors.toList()));
     }
 }

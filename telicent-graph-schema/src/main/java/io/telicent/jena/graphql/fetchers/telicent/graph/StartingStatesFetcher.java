@@ -20,6 +20,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.State;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
@@ -43,14 +44,24 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
         DatasetGraph dsg = context.getDatasetGraph();
         Node node = StartingNodesFetcher.parseStart(environment.getArgument(TelicentGraphSchema.ARGUMENT_URI));
 
+        return Txn.calculateRead(dsg, () -> findStates(dsg, node));
+    }
+
+    private static List<State> findStates(DatasetGraph dsg, Node node) {
         return IesFetchers.STATE_PREDICATES.stream()
-                                           .flatMap(p -> dsg.stream(Node.ANY, Node.ANY, p, node)
-                                                .filter(q -> (q.getSubject().isURI() || q.getSubject()
-                                                                                         .isBlank()) && dsg.contains(
-                                                        Node.ANY, q.getSubject(), RDF.type.asNode(), Node.ANY))
-                                                .map(Quad::getSubject)
-                                                .distinct()
-                                                .map(n -> new State(n, p, node)))
+                                           .flatMap(p -> dsg.stream(Node.ANY, Node.ANY, p,
+                                                                    node)
+                                                            .filter(q -> (q.getSubject()
+                                                                           .isURI() || q.getSubject()
+                                                                                        .isBlank()) && dsg.contains(
+                                                                    Node.ANY,
+                                                                    q.getSubject(),
+                                                                    RDF.type.asNode(),
+                                                                    Node.ANY))
+                                                            .map(Quad::getSubject)
+                                                            .distinct()
+                                                            .map(n -> new State(n, p,
+                                                                                node)))
                                            .collect(Collectors.toList());
     }
 }

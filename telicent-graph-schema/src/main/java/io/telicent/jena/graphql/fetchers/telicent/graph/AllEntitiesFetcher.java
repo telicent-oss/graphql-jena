@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class AllEntitiesFetcher implements DataFetcher<List<TelicentGraphNode>> 
         String rawGraph = environment.getArgument(TelicentGraphSchema.ARGUMENT_GRAPH);
         Node graphFilter = StringUtils.isNotBlank(rawGraph) ? StartingNodesFetcher.parseStart(rawGraph) : Node.ANY;
 
+        return Txn.calculateRead(dsg, () -> findEntities(dsg, graphFilter));
+    }
+
+    private static List<TelicentGraphNode> findEntities(DatasetGraph dsg, Node graphFilter) {
         return dsg.stream(graphFilter, Node.ANY, RDF.type.asNode(), Node.ANY)
                   .filter(q -> q.getSubject().isURI() || q.getSubject().isBlank())
                   .map(Quad::getSubject)

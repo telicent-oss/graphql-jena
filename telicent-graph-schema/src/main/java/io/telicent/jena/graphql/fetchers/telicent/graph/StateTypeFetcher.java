@@ -20,6 +20,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.State;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
@@ -41,18 +42,20 @@ public class StateTypeFetcher implements DataFetcher<String> {
         DatasetGraph dsg = context.getDatasetGraph();
         State state = environment.getSource();
 
-        List<Node> types = dsg.stream(Node.ANY, state.getStateNode(), RDF.type.asNode(), Node.ANY)
-                              .map(Quad::getObject)
-                              .filter(t -> t.isURI() || t.isBlank())
-                              .toList();
-        if (types.isEmpty()) {
-            throw new IllegalStateException("No types available for state " + state.getUri());
-        }
-        Node primaryType = types.get(0);
-        if (primaryType.isURI()) {
-            return primaryType.getURI();
-        } else {
-            return TelicentGraphSchema.BLANK_NODE_PREFIX + primaryType.getBlankNodeLabel();
-        }
+        return Txn.calculateRead(dsg, () -> {
+            List<Node> types = dsg.stream(Node.ANY, state.getStateNode(), RDF.type.asNode(), Node.ANY)
+                                  .map(Quad::getObject)
+                                  .filter(t -> t.isURI() || t.isBlank())
+                                  .toList();
+            if (types.isEmpty()) {
+                throw new IllegalStateException("No types available for state " + state.getUri());
+            }
+            Node primaryType = types.get(0);
+            if (primaryType.isURI()) {
+                return primaryType.getURI();
+            } else {
+                return TelicentGraphSchema.BLANK_NODE_PREFIX + primaryType.getBlankNodeLabel();
+            }
+        });
     }
 }

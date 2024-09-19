@@ -19,6 +19,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
@@ -44,6 +45,10 @@ public class InstancesFetcher implements DataFetcher<List<TelicentGraphNode>> {
         DatasetGraph dsg = context.getDatasetGraph();
         TelicentGraphNode node = environment.getSource();
 
+        return Txn.calculateRead(dsg, () -> findInstances(dsg, node));
+    }
+
+    private static List<TelicentGraphNode> findInstances(DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, Node.ANY, RDF_TYPE, node.getNode())
                   .filter(q -> q.getSubject().isURI() || q.getSubject().isBlank())
                   .map(Quad::getSubject)

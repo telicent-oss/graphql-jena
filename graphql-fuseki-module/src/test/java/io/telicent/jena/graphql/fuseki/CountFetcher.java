@@ -15,11 +15,12 @@ package io.telicent.jena.graphql.fuseki;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
 
 public class CountFetcher implements DataFetcher<Integer> {
     @Override
     public Integer get(DataFetchingEnvironment environment) {
         DatasetGraph dsg = environment.getLocalContext();
-        return (int) dsg.stream().count();
+        return Txn.calculateRead(dsg, () -> (int) dsg.stream().count());
     }
 }

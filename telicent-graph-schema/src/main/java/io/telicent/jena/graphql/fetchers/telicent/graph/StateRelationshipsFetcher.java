@@ -22,6 +22,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.State;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
@@ -46,16 +47,23 @@ public class StateRelationshipsFetcher implements DataFetcher<List<NonDirectiona
         DatasetGraph dsg = context.getDatasetGraph();
         State target = environment.getSource();
 
-        return Streams.concat(outbound(dsg, target)
-                                      .filter(q -> q.getObject().isURI() || q.getObject().isBlank())
-                                      .map(q -> new NonDirectionalRelationship(
-                                              new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
-                                              new TelicentGraphNode(q.getObject(), dsg.prefixes()))),
-                              inbound(dsg, target).filter(q -> q.getSubject().isURI() || q.getSubject().isBlank())
-                                                  .map(q -> new NonDirectionalRelationship(
-                                                          new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
-                                                          new TelicentGraphNode(q.getSubject(), dsg.prefixes()))))
-                      .collect(Collectors.toList());
+        return Txn.calculateRead(dsg, () -> Streams.concat(outboundRelationships(dsg, target),
+                                                           inboundRelationships(dsg, target))
+                                                   .collect(Collectors.toList()));
+    }
+
+    private static Stream<NonDirectionalRelationship> inboundRelationships(DatasetGraph dsg, State target) {
+        return inbound(dsg, target).filter(q -> q.getSubject().isURI() || q.getSubject().isBlank())
+                                   .map(q -> new NonDirectionalRelationship(
+                                           new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
+                                           new TelicentGraphNode(q.getSubject(), dsg.prefixes())));
+    }
+
+    private static Stream<NonDirectionalRelationship> outboundRelationships(DatasetGraph dsg, State target) {
+        return outbound(dsg, target).filter(q -> q.getObject().isURI() || q.getObject().isBlank())
+                                    .map(q -> new NonDirectionalRelationship(
+                                            new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
+                                            new TelicentGraphNode(q.getObject(), dsg.prefixes())));
     }
 
     private static Stream<Quad> outbound(DatasetGraph dsg, State target) {

@@ -22,6 +22,7 @@ import io.telicent.jena.graphql.schemas.models.TraversalNode;
 import io.telicent.jena.graphql.utils.NodeFilter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -49,8 +50,9 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
         List<Node> predicateFilters = NodeFilter.parseList(environment.getArgument(TraversalSchema.PREDICATE_FIELD));
         EnumSet<NodeKind> kinds = NodeFilter.parseKinds(environment.getArgument(TraversalSchema.KINDS_ARGUMENT));
 
-        List<TraversalEdge> edges = switch (environment.getField().getName()) {
-            //@formatter:off
+        return Txn.calculateRead(dsg, () -> {
+            List<TraversalEdge> edges = switch (environment.getField().getName()) {
+                //@formatter:off
             case TraversalSchema.INCOMING_FIELD ->
                     predicateFilters
                           .stream()
@@ -68,8 +70,9 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
                           .filter(e -> kinds.contains(e.getTarget().getNode().getKind()))
                           .collect(Collectors.toList());
             //@formatter:on
-            default -> throw new IllegalArgumentException("Unrecognised field " + environment.getField().getName());
-        };
-        return !edges.isEmpty() ? edges : null;
+                default -> throw new IllegalArgumentException("Unrecognised field " + environment.getField().getName());
+            };
+            return !edges.isEmpty() ? edges : null;
+        });
     }
 }

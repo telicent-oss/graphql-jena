@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 
 /**
  * A GraphQL {@link DataFetcher} that finds the period information for a state
@@ -40,42 +41,44 @@ public class StatePeriodFetcher implements DataFetcher<String> {
         DatasetGraph dsg = context.getDatasetGraph();
         State state = environment.getSource();
 
-        // Get the period associated with the state (using cached value if available)
-        Node period = state.hasPeriod() ? state.getPeriod() :
-                      findPeriodNode(dsg, state.getStateNode());
-        state.setPeriod(period != null ? period : Node.ANY);
-        String periodValue = findPeriodValue(dsg, period);
+        return Txn.calculateRead(dsg, () -> {
+            // Get the period associated with the state (using cached value if available)
+            Node period = state.hasPeriod() ? state.getPeriod() : findPeriodNode(dsg, state.getStateNode());
+            state.setPeriod(period != null ? period : Node.ANY);
+            String periodValue = findPeriodValue(dsg, period);
 
-        switch (environment.getField().getName()) {
-            case TelicentGraphSchema.FIELD_START -> {
-                if (StringUtils.isNotBlank(periodValue) && state.getPredicateNode().equals(IesFetchers.IS_START_OF)) {
-                    return periodValue;
-                } else {
-                    // Is there a bounding state of this state that declares a start?
-                    Node startState = findSubState(dsg, IesFetchers.IS_START_OF, state);
-                    return findPeriodValue(dsg, findPeriodNode(dsg, startState));
+            switch (environment.getField().getName()) {
+                case TelicentGraphSchema.FIELD_START -> {
+                    if (StringUtils.isNotBlank(periodValue) && state.getPredicateNode()
+                                                                    .equals(IesFetchers.IS_START_OF)) {
+                        return periodValue;
+                    } else {
+                        // Is there a bounding state of this state that declares a start?
+                        Node startState = findSubState(dsg, IesFetchers.IS_START_OF, state);
+                        return findPeriodValue(dsg, findPeriodNode(dsg, startState));
+                    }
                 }
-            }
-            case TelicentGraphSchema.FIELD_END -> {
-                if (StringUtils.isNotBlank(periodValue) && state.getPredicateNode().equals(IesFetchers.IS_END_OF)) {
-                    return periodValue;
-                } else {
-                    // Is there a bounding state of this state that declares an end?
-                    Node endState = findSubState(dsg, IesFetchers.IS_END_OF, state);
-                    return findPeriodValue(dsg, findPeriodNode(dsg, endState));
+                case TelicentGraphSchema.FIELD_END -> {
+                    if (StringUtils.isNotBlank(periodValue) && state.getPredicateNode().equals(IesFetchers.IS_END_OF)) {
+                        return periodValue;
+                    } else {
+                        // Is there a bounding state of this state that declares an end?
+                        Node endState = findSubState(dsg, IesFetchers.IS_END_OF, state);
+                        return findPeriodValue(dsg, findPeriodNode(dsg, endState));
+                    }
                 }
-            }
-            case TelicentGraphSchema.FIELD_PERIOD -> {
-                // This is only relevant when the period is attached directly to the state and not via any bounding
-                // states
-                if (StringUtils.isNotBlank(periodValue)) {
-                    return periodValue;
+                case TelicentGraphSchema.FIELD_PERIOD -> {
+                    // This is only relevant when the period is attached directly to the state and not via any bounding
+                    // states
+                    if (StringUtils.isNotBlank(periodValue)) {
+                        return periodValue;
+                    }
                 }
+                default -> throw new IllegalArgumentException(
+                        "Field " + environment.getField().getName() + " not handled by this DataFetcher");
             }
-            default -> throw new IllegalArgumentException(
-                    "Field " + environment.getField().getName() + " not handled by this DataFetcher");
-        }
-        return null;
+            return null;
+        });
     }
 
     private static Node findSubState(DatasetGraph dsg, Node subStateRelationship, State state) {

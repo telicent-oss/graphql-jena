@@ -16,6 +16,7 @@ import graphql.execution.MergedField;
 import graphql.language.Field;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.testng.annotations.Test;
 
 public class TestTraversalEdgesFetcher {
@@ -26,6 +27,7 @@ public class TestTraversalEdgesFetcher {
         MergedField mergedField = MergedField.newMergedField().addField(new Field("NoMatch")).build();
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()
+                .localContext(DatasetGraphFactory.empty())
                 .mergedField(mergedField)
                 .build();
         TraversalEdgesFetcher traversalEdgesFetcher = new TraversalEdgesFetcher();

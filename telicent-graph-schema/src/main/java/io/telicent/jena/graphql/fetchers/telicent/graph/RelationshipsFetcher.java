@@ -21,6 +21,7 @@ import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,12 +49,15 @@ public class RelationshipsFetcher implements DataFetcher<List<Relationship>> {
         DatasetGraph dsg = context.getDatasetGraph();
         TelicentGraphNode target = environment.getSource();
 
-        return stream(dsg, target)
-                .filter(q -> q.getObject().isURI() || q.getObject().isBlank())
-                .map(q -> new Relationship(new TelicentGraphNode(q.getSubject(), dsg.prefixes()),
-                                           new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
-                                           new TelicentGraphNode(q.getObject(), dsg.prefixes())))
-                .collect(Collectors.toList());
+        return Txn.calculateRead(dsg, () -> findRelationships(dsg, target));
+    }
+
+    private List<Relationship> findRelationships(DatasetGraph dsg, TelicentGraphNode target) {
+        return stream(dsg, target).filter(q -> q.getObject().isURI() || q.getObject().isBlank())
+                                  .map(q -> new Relationship(new TelicentGraphNode(q.getSubject(), dsg.prefixes()),
+                                                             new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
+                                                             new TelicentGraphNode(q.getObject(), dsg.prefixes())))
+                                  .collect(Collectors.toList());
     }
 
     private Stream<Quad> stream(DatasetGraph dsg, TelicentGraphNode target) {
