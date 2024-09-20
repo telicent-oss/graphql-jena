@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ import java.util.Map;
 
 /**
  * An abstract GraphQL fetcher for Search based queries
+ *
  * @param <T> Returned model type
  */
 public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
@@ -183,12 +185,13 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
                     "searchTerm") + ".  Search service may be unavailable in your environment.", e);
         }
 
-        List<TelicentGraphNode> nodes = startFilters.stream()
-                                                    .distinct()
-                                                    .filter(n -> StartingNodesFetcher.usedAsSubjectOrObject(n, dsg,
-                                                                                                            graphFilter))
-                                                    .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
-                                                    .toList();
+        List<TelicentGraphNode> nodes = Txn.calculateRead(dsg, () -> startFilters.stream()
+                                                                                 .distinct()
+                                                                                 .filter(n -> StartingNodesFetcher.usedAsSubjectOrObject(
+                                                                                         n, dsg, graphFilter))
+                                                                                 .map(n -> new TelicentGraphNode(n,
+                                                                                                                 dsg.prefixes()))
+                                                                                 .toList());
         telicentResults.setNodes(nodes);
         return telicentResults;
     }

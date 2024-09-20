@@ -19,6 +19,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
@@ -35,12 +36,17 @@ public class NodeTypesFetcher implements DataFetcher<List<TelicentGraphNode>> {
     public NodeTypesFetcher() {
 
     }
+
     @Override
     public List<TelicentGraphNode> get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
         TelicentGraphNode node = environment.getSource();
 
+        return Txn.calculateRead(dsg, () -> findRdfTypes(dsg, node));
+    }
+
+    private static List<TelicentGraphNode> findRdfTypes(DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
                   .map(Quad::getObject)
                   .filter(t -> t.isURI() || t.isBlank())

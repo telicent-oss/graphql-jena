@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +52,14 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
         List<Node> startFilters = parseStarts(multiSelect ? environment.getArgument(TelicentGraphSchema.ARGUMENT_URIS) :
                                               environment.getArgument(TelicentGraphSchema.ARGUMENT_URI));
 
-        List<TelicentGraphNode> nodes = startFilters.stream()
-                                                    .distinct()
-                                                    .filter(n -> usedAsSubjectOrObject(n, dsg, graphFilter))
-                                                    .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
-                                                    .collect(Collectors.toList());
-        return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
+        return Txn.calculateRead(dsg, () -> {
+            List<TelicentGraphNode> nodes = startFilters.stream()
+                                                        .distinct()
+                                                        .filter(n -> usedAsSubjectOrObject(n, dsg, graphFilter))
+                                                        .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
+                                                        .collect(Collectors.toList());
+            return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
+        });
     }
 
     /**

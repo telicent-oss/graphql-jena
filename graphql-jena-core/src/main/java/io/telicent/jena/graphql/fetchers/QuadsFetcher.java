@@ -19,6 +19,7 @@ import io.telicent.jena.graphql.utils.NodeFilter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,19 +53,21 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
 
         DatasetGraph dsg = environment.getLocalContext();
 
-        if (!includesAll) {
-            if (includesTriple) {
-                return dsg.stream(graph, subject, predicate, object)
-                          .map(Quad::asTriple)
-                          .collect(Collectors.toList());
-            } else {
-                return dsg.stream(graph, subject, predicate, object)
-                          .map(q -> map(q, includesSubject, includesPredicate, includesObject, includesGraph))
-                          .collect(
-                                  Collectors.toList());
+        return Txn.calculateRead(dsg, () -> {
+            if (!includesAll) {
+                if (includesTriple) {
+                    return dsg.stream(graph, subject, predicate, object)
+                              .map(Quad::asTriple)
+                              .collect(Collectors.toList());
+                } else {
+                    return dsg.stream(graph, subject, predicate, object)
+                              .map(q -> map(q, includesSubject, includesPredicate, includesObject, includesGraph))
+                              .collect(
+                                      Collectors.toList());
+                }
             }
-        }
-        return dsg.stream(graph, subject, predicate, object).collect(Collectors.toList());
+            return dsg.stream(graph, subject, predicate, object).collect(Collectors.toList());
+        });
     }
 
     private Object map(Quad q, boolean includesSubject, boolean includesPredicate, boolean includesObject,
