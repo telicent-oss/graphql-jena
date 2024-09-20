@@ -78,7 +78,7 @@
         <plugin.cyclonedx>2.8.1</plugin.cyclonedx>
         <plugin.dependency>3.8.0</plugin.dependency>
         <plugin.editorconfig>0.1.3</plugin.editorconfig>
-        <plugin.gpg>3.2.5</plugin.gpg>
+        <plugin.gpg>3.2.6</plugin.gpg>
         <plugin.jacoco>0.8.12</plugin.jacoco>
         <plugin.jar>3.4.2</plugin.jar>
         <plugin.javadoc>3.10.0</plugin.javadoc>
