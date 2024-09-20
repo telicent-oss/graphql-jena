@@ -128,9 +128,15 @@
                 <artifactId>jena-arq</artifactId>
                 <version>${dependency.jena}</version>
                 <exclusions>
+                    <!-- Excluded due to upstream Jena issue https://github.com/apache/jena/issues/2593 -->
                     <exclusion>
                         <groupId>org.junit.platform</groupId>
                         <artifactId>junit-platform-suite-engine</artifactId>
+                    </exclusion>
+                    <!-- Excluded due to CVE-2024-7254, GraphQL code doesn't need Protobuf anyway -->
+                    <exclusion>
+                        <groupId>com.google.protobuf</groupId>
+                        <artifactId>protobuf-java</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
