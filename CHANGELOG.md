@@ -1,5 +1,16 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.9.0
+
+- General improvements:
+    - All `DataFetcher` implementations that interact with a `DatasetGraph` now do so inside a `Txn.calculateRead()` to
+      fix an intermittent `Not in a transaction` error caused by how GraphQL Java dispatches query execution potentially
+      across multiple threads
+- Build improvements:
+    - GraphQL Java upgraded to 22.3
+    - Excluded vulnerable Protobuf dependency as isn't needed by these libraries
+    - Various build and test dependencies upgraded to latest available
+
 # 0.8.2
 
 - Telicent Graph Schema improvements:
