@@ -13,7 +13,6 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import graphql.com.google.common.collect.Streams;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
@@ -28,7 +27,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.Txn;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;

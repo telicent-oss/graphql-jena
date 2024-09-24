@@ -94,11 +94,11 @@
         <dependency.jena>5.1.0</dependency.jena>
         <dependency.jackson>2.17.2</dependency.jackson>
         <dependency.jersey>3.1.8</dependency.jersey>
-        <dependency.jwt-servlet>0.16.0</dependency.jwt-servlet>
+        <dependency.jwt-servlet>0.17.0</dependency.jwt-servlet>
         <dependency.logback>1.5.8</dependency.logback>
         <dependency.mockito>5.13.0</dependency.mockito>
         <dependency.slf4j>2.0.16</dependency.slf4j>
-        <dependency.smart-caches>0.22.0</dependency.smart-caches>
+        <dependency.smart-caches>0.23.0</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.9.1</dependency.wiremock>
 
@@ -170,6 +170,16 @@
                 <artifactId>wiremock</artifactId>
                 <version>${dependency.wiremock}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.checkerframework</groupId>
+                        <artifactId>checker-qual</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

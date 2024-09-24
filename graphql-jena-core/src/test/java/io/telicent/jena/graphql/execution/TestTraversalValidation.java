@@ -12,14 +12,11 @@
  */
 package io.telicent.jena.graphql.execution;
 
-import graphql.ExecutionResult;
 import io.telicent.jena.graphql.schemas.TraversalSchema;
-import io.telicent.jena.graphql.schemas.models.NodeKind;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sparql.vocabulary.FOAF;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
