@@ -12,23 +12,11 @@
  */
 package io.telicent.jena.graphql.execution;
 
-import graphql.ErrorType;
-import graphql.GraphQLError;
-import graphql.ParseAndValidateResult;
-import graphql.validation.ValidationError;
-import io.telicent.jena.graphql.schemas.CoreSchema;
-import io.telicent.jena.graphql.utils.NodeFilter;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.vocabulary.RDFS;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import static graphql.validation.ValidationErrorType.InvalidSyntax;
 
 @SuppressWarnings("unchecked")
 public class TestDatasetValidation extends AbstractExecutionTests {

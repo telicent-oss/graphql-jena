@@ -61,4 +61,4 @@ The standalone server offers the following GraphQL endpoints:
 
 - `/dataset/graphql` - GraphQL Queries using the [Dataset](schemas.md#dataset) schema.
 - `/dataset/traversal/graphql` - GraphQL Queries using the [Traversal](schemas.md#traversal) schema.
-- `/dataset/telicent/graphql` - GraphQL Queries using the [Telicent](schemas.md#telicent) schema.
+- `/dataset/telicent/graphql` - GraphQL Queries using the [Telicent](schemas.md#telicent-ies) schema.
