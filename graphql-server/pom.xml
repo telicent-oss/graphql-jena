@@ -25,6 +25,12 @@
             <groupId>io.telicent.smart-caches</groupId>
             <artifactId>jaxrs-base-server</artifactId>
             <version>${dependency.smart-caches}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.checkerframework</groupId>
+                    <artifactId>checker-qual</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
