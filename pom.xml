@@ -302,6 +302,7 @@
                         <exclude>*-code-style.xml</exclude>
                         <exclude>docs/images/</exclude>
                         <exclude>temp.token</exclude>
+                        <exclude>.trivy/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -332,6 +333,7 @@
                                 <exclude>**/*.graphqls</exclude>
                                 <exclude>**/*.trig</exclude>
                                 <exclude>**/graphql-jena-server</exclude>
+                                <exclude>.trivy/**</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
