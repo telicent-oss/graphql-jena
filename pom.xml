@@ -91,7 +91,7 @@
         <!-- Dependency Versions -->
         <dependency.airline>3.0.0</dependency.airline>
         <dependency.graphql>22.3</dependency.graphql>
-        <dependency.jena>5.1.0</dependency.jena>
+        <dependency.jena>5.2.0</dependency.jena>
         <dependency.jackson>2.18.0</dependency.jackson>
         <dependency.jersey>3.1.8</dependency.jersey>
         <dependency.jwt-servlet>0.17.2</dependency.jwt-servlet>
@@ -132,11 +132,6 @@
                     <exclusion>
                         <groupId>org.junit.platform</groupId>
                         <artifactId>junit-platform-suite-engine</artifactId>
-                    </exclusion>
-                    <!-- Excluded due to CVE-2024-7254, GraphQL code doesn't need Protobuf anyway -->
-                    <exclusion>
-                        <groupId>com.google.protobuf</groupId>
-                        <artifactId>protobuf-java</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
