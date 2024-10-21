@@ -75,13 +75,13 @@
 
         <!-- Plugin Versions -->
         <plugin.compiler>3.13.0</plugin.compiler>
-        <plugin.cyclonedx>2.8.2</plugin.cyclonedx>
+        <plugin.cyclonedx>2.9.0</plugin.cyclonedx>
         <plugin.dependency>3.8.0</plugin.dependency>
         <plugin.editorconfig>0.1.3</plugin.editorconfig>
         <plugin.gpg>3.2.7</plugin.gpg>
         <plugin.jacoco>0.8.12</plugin.jacoco>
         <plugin.jar>3.4.2</plugin.jar>
-        <plugin.javadoc>3.10.0</plugin.javadoc>
+        <plugin.javadoc>3.10.1</plugin.javadoc>
         <plugin.license>4.6</plugin.license>
         <plugin.nexus>1.7.0</plugin.nexus>
         <plugin.shade>3.6.0</plugin.shade>
@@ -93,12 +93,12 @@
         <dependency.graphql>22.3</dependency.graphql>
         <dependency.jena>5.2.0</dependency.jena>
         <dependency.jackson>2.18.0</dependency.jackson>
-        <dependency.jersey>3.1.8</dependency.jersey>
-        <dependency.jwt-servlet>0.17.2</dependency.jwt-servlet>
-        <dependency.logback>1.5.8</dependency.logback>
-        <dependency.mockito>5.14.1</dependency.mockito>
+        <dependency.jersey>3.1.9</dependency.jersey>
+        <dependency.jwt-servlet>0.17.4</dependency.jwt-servlet>
+        <dependency.logback>1.5.11</dependency.logback>
+        <dependency.mockito>5.14.2</dependency.mockito>
         <dependency.slf4j>2.0.16</dependency.slf4j>
-        <dependency.smart-caches>0.23.0</dependency.smart-caches>
+        <dependency.smart-caches>0.24.0</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
         <dependency.wiremock>3.9.1</dependency.wiremock>
 
