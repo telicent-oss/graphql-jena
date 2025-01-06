@@ -95,7 +95,7 @@
         <dependency.jackson>2.18.2</dependency.jackson>
         <dependency.jersey>3.1.9</dependency.jersey>
         <dependency.jwt-servlet>0.17.5</dependency.jwt-servlet>
-        <dependency.logback>1.5.12</dependency.logback>
+        <dependency.logback>1.5.15</dependency.logback>
         <dependency.mockito>5.14.2</dependency.mockito>
         <dependency.slf4j>2.0.16</dependency.slf4j>
         <dependency.smart-caches>0.25.1</dependency.smart-caches>
