@@ -91,7 +91,7 @@
         <!-- Dependency Versions -->
         <dependency.airline>3.0.0</dependency.airline>
         <dependency.graphql>22.3</dependency.graphql>
-        <dependency.jena>5.2.0</dependency.jena>
+        <dependency.jena>5.3.0</dependency.jena>
         <dependency.jackson>2.18.2</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
         <dependency.jwt-servlet>0.17.5</dependency.jwt-servlet>
@@ -100,7 +100,7 @@
         <dependency.slf4j>2.0.16</dependency.slf4j>
         <dependency.smart-caches>0.26.2</dependency.smart-caches>
         <dependency.testng>7.10.2</dependency.testng>
-        <dependency.wiremock>3.10.0</dependency.wiremock>
+        <dependency.wiremock>3.11.0</dependency.wiremock>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
