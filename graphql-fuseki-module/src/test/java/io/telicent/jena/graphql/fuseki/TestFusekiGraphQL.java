@@ -105,7 +105,8 @@ public class TestFusekiGraphQL {
             InterruptedException {
         // Given
         FusekiServer server =
-                build(new File("src/test/files/config-graphql.ttl")).fusekiModules(FusekiAutoModules.load()).build();
+                build(new File("src/test/files/config-graphql.ttl")).fusekiModules(FusekiModules.getSystemModules())
+                                                                    .build();
 
         // When
         try {
