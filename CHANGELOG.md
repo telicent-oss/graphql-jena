@@ -1,6 +1,16 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.9.2
+
+- Build improvements:
+  - Jackson upgraded to 2.18.2
+  - Jena upgraded to 5.3.0
+  - Logback upgraded to 1.5.16
+  - Smart Caches Core upgraded to 0.27.0
+  - Various build and test libraries upgraded to latest available
+
 # 0.9.1
+
 - Build improvements:
   - Updating Jena dependency to 5.2.0
 
