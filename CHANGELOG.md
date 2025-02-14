@@ -6,7 +6,7 @@
   - Jackson upgraded to 2.18.2
   - Jena upgraded to 5.3.0
   - Logback upgraded to 1.5.16
-  - Smart Caches Core upgraded to 0.27.0
+  - Smart Caches Core upgraded to 0.27.1
   - Various build and test libraries upgraded to latest available
 
 # 0.9.1
