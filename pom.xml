@@ -90,7 +90,7 @@
 
         <!-- Dependency Versions -->
         <dependency.airline>3.0.0</dependency.airline>
-        <dependency.graphql>23.0</dependency.graphql>
+        <dependency.graphql>23.1</dependency.graphql>
         <dependency.jena>5.3.0</dependency.jena>
         <dependency.jackson>2.18.3</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
