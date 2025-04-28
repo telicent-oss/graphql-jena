@@ -94,7 +94,7 @@
         <dependency.jena>5.3.0</dependency.jena>
         <dependency.jackson>2.18.3</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
-        <dependency.jwt-servlet>0.17.6</dependency.jwt-servlet>
+        <dependency.jwt-servlet>1.0.1</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.17.0</dependency.mockito>
         <dependency.slf4j>2.0.17</dependency.slf4j>
