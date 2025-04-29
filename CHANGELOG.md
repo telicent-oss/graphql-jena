@@ -1,5 +1,7 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.9.3
+
 # 0.9.2
 
 - Build improvements:

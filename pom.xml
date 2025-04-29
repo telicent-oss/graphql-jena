@@ -308,6 +308,7 @@
                         <exclude>docs/images/</exclude>
                         <exclude>temp.token</exclude>
                         <exclude>.trivy/**</exclude>
+                        <exclude>*-trivy-*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
