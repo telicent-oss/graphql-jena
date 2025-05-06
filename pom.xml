@@ -98,7 +98,7 @@
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.17.0</dependency.mockito>
         <dependency.slf4j>2.0.17</dependency.slf4j>
-        <dependency.smart-caches>0.28.2</dependency.smart-caches>
+        <dependency.smart-caches>0.29.0</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
         <dependency.wiremock>3.13.0</dependency.wiremock>
 
