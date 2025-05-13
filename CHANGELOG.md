@@ -2,6 +2,16 @@
 
 # 0.9.3
 
+- Build improvements:
+    - Apache Jena upgraded to 5.4.0
+    - GraphQL Java upgraded to 23.1
+    - Jackson upgraded to 2.19.0
+    - JWT Servlet Auth upgrade to 1.0.1
+    - Logback upgraded to 1.5.18
+    - SLF4J upgraded to 2.0.17
+    - Smart Caches Core upgraded to 0.28.2
+    - Various build and test dependencies upgraded to latest available
+
 # 0.9.2
 
 - Build improvements:

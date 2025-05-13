@@ -33,7 +33,7 @@
         <connection>scm:git:https://github.com/telicent-oss/graphql-jena</connection>
         <developerConnection>scm:git:ssh://git@github.com/telicent-oss/graphql-jena</developerConnection>
         <url>https://github.com/telicent-oss/graphql-jena</url>
-        <tag>HEAD</tag>
+        <tag>0.9.3</tag>
     </scm>
 
     <developers>
