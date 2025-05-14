@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.telicent.jena.graphql</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.4-SNAPSHOT</version>
     </parent>
     <artifactId>graphql-fuseki-module</artifactId>
     <name>Telicent - GraphQL for Apache Jena - Fuseki Module</name>
