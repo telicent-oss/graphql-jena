@@ -50,6 +50,10 @@ public class TelicentGraphSchema {
      */
     public static final String TYPE_RELATIONSHIP = "Rel";
     /**
+     * Relationship counts type
+     */
+    public static final String TYPE_RELATIONSHIP_COUNTS = "RelCounts";
+    /**
      * Property type
      */
     public static final String TYPE_PROPERTY = "Property";
@@ -142,6 +146,10 @@ public class TelicentGraphSchema {
      */
     public static final String FIELD_OUTBOUND_RELATIONSHIPS = "outRels";
     /**
+     * Relationship counts field
+     */
+    public static final String FIELD_RELATIONSHIP_COUNTS = "relCounts";
+    /**
      * URI field
      */
     public static final String FIELD_URI = ARGUMENT_URI;
@@ -181,6 +189,14 @@ public class TelicentGraphSchema {
      * Relations field
      */
     public static final String FIELD_RELATIONS = "relations";
+    /**
+     * In field
+     */
+    public static final String FIELD_IN = "in";
+    /**
+     * Out field
+     */
+    public static final String FIELD_OUT = "out";
 
     /**
      * Extension property used to supply the users authentication token that may be passed on by some

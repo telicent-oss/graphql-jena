@@ -34,9 +34,9 @@ public class TestRelationshipsFetcher {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject1"), createLiteralString("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject2"), createLiteralString("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject3"), createLiteralString("predicate3"), createURI("object")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject3"), createURI("predicate3"), createURI("object")));
 
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -56,9 +56,9 @@ public class TestRelationshipsFetcher {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject1"), createLiteralString("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject2"), createLiteralString("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject3"), createLiteralString("predicate3"), createURI("object")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
+        dsg.add(new Quad(createURI("graph"), createURI("subject3"), createURI("predicate3"), createURI("object")));
 
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl

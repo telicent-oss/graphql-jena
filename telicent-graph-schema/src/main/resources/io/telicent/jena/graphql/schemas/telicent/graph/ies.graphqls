@@ -7,6 +7,7 @@ type Node {
     properties: [Property]! #An array of literal properties of the Node
     outRels: [Rel]! #An array of Rels where the current Node is in the domain position
     inRels: [Rel]! #An array of Rels where the current Node is in the range position
+    relCounts: RelCounts!
     instances: [Node] #If the node is a class, this will return an array of its instances
 }
 
@@ -17,6 +18,11 @@ type Rel { #A subject-predicate-object statement
     predicate: String! #AKA property
     range_id: String!
     range: Node! #AKA object
+}
+
+type RelCounts {
+    in: Int
+    out: Int
 }
 
 type Property { #A literal property

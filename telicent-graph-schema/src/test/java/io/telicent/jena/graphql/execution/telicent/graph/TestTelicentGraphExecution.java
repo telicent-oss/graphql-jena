@@ -99,7 +99,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     }
 
     @Test
-    public void givenStarWarsData_whenQueryingForSingleNode_thenSingleResult() {
+    public void givenStarWarsData_whenQueryingForSingleNode_thenSingleResult_andRelCountsAreAccurate() {
         // Given and When
         ExecutionResult result = verifyExecution(this.starwars, SINGLE_NODE_QUERY);
 
@@ -112,6 +112,16 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         verifyNodeResult(data, OBI_WAN_KENOBI, "starwars:person_Obi-WanKenobi");
         Assert.assertNotNull(data.get(TelicentGraphSchema.FIELD_INSTANCES));
         Assert.assertTrue(((List<Object>) data.get(TelicentGraphSchema.FIELD_INSTANCES)).isEmpty());
+
+        // And
+        Map<String, Object> relCounts = (Map<String, Object>) data.get(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS);
+        Assert.assertNotNull(relCounts);
+        List<?> outRels = (List<?>)data.get(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS);
+        List<?> inRels = (List<?>)data.get(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS);
+        Assert.assertNotNull(outRels);
+        Assert.assertNotNull(inRels);
+        Assert.assertEquals(outRels.size(), (Integer)relCounts.get(TelicentGraphSchema.FIELD_OUT));
+        Assert.assertEquals(inRels.size(), (Integer)relCounts.get(TelicentGraphSchema.FIELD_IN));
     }
 
     private static void verifyNodeResult(Map<String, Object> data, String fullUri, String shortUri) {

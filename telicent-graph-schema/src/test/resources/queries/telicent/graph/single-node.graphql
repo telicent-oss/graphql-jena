@@ -23,6 +23,10 @@ query {
             }
             range_id
         }
+        relCounts {
+            in
+            out
+        }
         instances {
             uri
         }

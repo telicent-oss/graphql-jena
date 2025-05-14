@@ -53,17 +53,22 @@ public class RelationshipsFetcher implements DataFetcher<List<Relationship>> {
     }
 
     private List<Relationship> findRelationships(DatasetGraph dsg, TelicentGraphNode target) {
-        return stream(dsg, target).filter(q -> q.getObject().isURI() || q.getObject().isBlank())
-                                  .map(q -> new Relationship(new TelicentGraphNode(q.getSubject(), dsg.prefixes()),
-                                                             new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
-                                                             new TelicentGraphNode(q.getObject(), dsg.prefixes())))
-                                  .collect(Collectors.toList());
+        return stream(dsg, target)
+                .map(q -> new Relationship(new TelicentGraphNode(q.getSubject(), dsg.prefixes()),
+                                           new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
+                                           new TelicentGraphNode(q.getObject(), dsg.prefixes())))
+                .collect(Collectors.toList());
     }
 
     private Stream<Quad> stream(DatasetGraph dsg, TelicentGraphNode target) {
+        // NB - We filter() because we only care about relationships to other nodes, not literals, the filter is
+        //      different depending on the edge direction as it's the target node we care about, which is either the
+        //      object for OUT relationships, or the subject for IN relationships
         return switch (this.direction) {
-            case OUT -> dsg.stream(Node.ANY, target.getNode(), Node.ANY, Node.ANY);
-            case IN -> dsg.stream(Node.ANY, Node.ANY, Node.ANY, target.getNode());
+            case OUT -> dsg.stream(Node.ANY, target.getNode(), Node.ANY, Node.ANY)
+                           .filter(q -> q.getObject().isURI() || q.getObject().isBlank());
+            case IN -> dsg.stream(Node.ANY, Node.ANY, Node.ANY, target.getNode())
+                          .filter(q -> q.getSubject().isURI() || q.getSubject().isBlank());
         };
     }
 }
