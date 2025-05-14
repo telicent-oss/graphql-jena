@@ -69,6 +69,7 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                         .dataFetcher(TelicentGraphSchema.FIELD_PROPERTIES, new LiteralPropertiesFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, new RelationshipsFetcher(EdgeDirection.IN))
                                         .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, new RelationshipsFetcher(EdgeDirection.OUT))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS, new RelationshipCountsFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_INSTANCES, new InstancesFetcher()))
                             .type(TelicentGraphSchema.TYPE_RELATIONSHIP,
                                   // The Telicent Graph schema uses underscores in these property names which defeats
@@ -76,6 +77,7 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                   // have to explicitly declare the fetchers for these
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_DOMAIN_ID, new PropertyDataFetcher<String>("domainId"))
                                         .dataFetcher(TelicentGraphSchema.FIELD_RANGE_ID, new PropertyDataFetcher<String>("rangeId")))
+                            // NB - As RelationshipsCount is a simple POJO no explicit wiring needing for RelCounts type
                             .type(TelicentGraphSchema.TYPE_STATE,
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_TYPE, new StateTypeFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_RELATIONS, new StateRelationshipsFetcher())

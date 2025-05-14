@@ -1,5 +1,10 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.0
+
+- Telicent Graph Schema improvements:
+    - Added new `relCounts` property to `Node` type to allow summarising available relationships
+
 # 0.9.3
 
 - Build improvements:
