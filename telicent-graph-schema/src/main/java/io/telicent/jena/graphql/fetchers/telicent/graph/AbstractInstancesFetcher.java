@@ -12,32 +12,29 @@
  */
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.vocabulary.RDF;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A GraphQL {@link DataFetcher} that finds instances of a type
+ * An abstract paging data fetcher that finds instances of types
+ *
+ * @param <TOutput> Output type
  */
-public class InstancesFetcher
-        extends AbstractInstancesFetcher<List<TelicentGraphNode>> {
-
-    /**
-     * Creates a fetcher that finds all instances of a type
-     */
-    public InstancesFetcher() {
-
-    }
+public abstract class AbstractInstancesFetcher<TOutput>
+        extends AbstractLimitOffsetPagingFetcher<TelicentGraphNode, Node, TOutput> {
+    private static final Node RDF_TYPE = RDF.type.asNode();
 
     @Override
-    protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg,
-                                          TelicentGraphNode source, Stream<Node> input) {
-        return input.map(n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
+    protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
+        return dsg.stream(Node.ANY, Node.ANY, RDF_TYPE, node.getNode())
+                  .filter(q -> q.getSubject().isURI() || q.getSubject().isBlank())
+                  .map(Quad::getSubject)
+                  .distinct();
     }
 }

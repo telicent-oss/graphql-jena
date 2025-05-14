@@ -29,7 +29,6 @@ import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.servlets.CrossOriginFilter;

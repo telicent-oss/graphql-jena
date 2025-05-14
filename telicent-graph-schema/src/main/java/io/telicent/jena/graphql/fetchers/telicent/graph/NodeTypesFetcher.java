@@ -14,21 +14,19 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.system.Txn;
-import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A GraphQL {@link DataFetcher} that fetches the defined {@code rdf:type}'s of a node
  */
-public class NodeTypesFetcher implements DataFetcher<List<TelicentGraphNode>> {
+public class NodeTypesFetcher
+        extends AbstractNodeTypesFetcher<List<TelicentGraphNode>> {
 
     /**
      * Creates a fetcher that finds the types for nodes
@@ -38,19 +36,8 @@ public class NodeTypesFetcher implements DataFetcher<List<TelicentGraphNode>> {
     }
 
     @Override
-    public List<TelicentGraphNode> get(DataFetchingEnvironment environment) {
-        TelicentExecutionContext context = environment.getLocalContext();
-        DatasetGraph dsg = context.getDatasetGraph();
-        TelicentGraphNode node = environment.getSource();
-
-        return Txn.calculateRead(dsg, () -> findRdfTypes(dsg, node));
-    }
-
-    private static List<TelicentGraphNode> findRdfTypes(DatasetGraph dsg, TelicentGraphNode node) {
-        return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
-                  .map(Quad::getObject)
-                  .filter(t -> t.isURI() || t.isBlank())
-                  .map(t -> new TelicentGraphNode(t, dsg.prefixes()))
-                  .collect(Collectors.toList());
+    protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
+                                          Stream<Node> input) {
+        return input.map(t -> new TelicentGraphNode(t, dsg.prefixes())).collect(Collectors.toList());
     }
 }

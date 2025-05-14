@@ -1,22 +1,24 @@
-query {
+query($limit: Int, $offset: Int) {
     node(uri: "https://starwars.com#person_Obi-WanKenobi") {
         id
         uri
         shortUri
-        properties {
+        properties(limit: $limit, offset: $offset) {
             predicate
             value
             datatype
             language
         }
-        inRels {
+        inRels(limit: $limit, offset: $offset) {
+            id
             domain {
                 uri
             }
             domain_id
             predicate
         }
-        outRels {
+        outRels(limit: $limit, offset: $offset) {
+            id
             predicate
             range {
                 uri
@@ -26,10 +28,11 @@ query {
         relCounts {
             inRels
             outRels
-            properties
             instances
+            properties
         }
-        instances {
+        instances(limit: $limit, offset: $offset) {
+            id
             uri
         }
     }

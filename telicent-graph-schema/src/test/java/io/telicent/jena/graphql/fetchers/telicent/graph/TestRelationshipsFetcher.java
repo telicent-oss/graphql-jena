@@ -12,12 +12,14 @@
  */
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
+import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.DataFetchingEnvironmentImpl;
-import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
+import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.Relationship;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -28,48 +30,93 @@ import java.util.List;
 
 import static org.apache.jena.graph.NodeFactory.*;
 
-public class TestRelationshipsFetcher {
+public class TestRelationshipsFetcher extends AbstractFetcherTests {
     @Test
-    public void test_get_blankNode() {
+    public void test_get_blankNode() throws Exception {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
         DatasetGraph dsg  = DatasetGraphFactory.create();
         dsg.add(new Quad(createURI("graph"), createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
         dsg.add(new Quad(createURI("graph"), createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
         dsg.add(new Quad(createURI("graph"), createURI("subject3"), createURI("predicate3"), createURI("object")));
+        DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(createBlankNode("object"), null));
 
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
-                .newDataFetchingEnvironment()
-                .localContext(context)
-                .source(new TelicentGraphNode(createBlankNode("object"), null))
-                .build();
         // when
         List<Relationship> actualList = fetcher.get(environment);
+
         // then
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
     }
 
     @Test
-    public void test_get_uriNode() {
+    public void test_get_uriNode() throws Exception {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
         DatasetGraph dsg  = DatasetGraphFactory.create();
         dsg.add(new Quad(createURI("graph"), createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
         dsg.add(new Quad(createURI("graph"), createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
         dsg.add(new Quad(createURI("graph"), createURI("subject3"), createURI("predicate3"), createURI("object")));
+        DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(createURI("object"), null));
 
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
-                .newDataFetchingEnvironment()
-                .localContext(context)
-                .source(new TelicentGraphNode(createURI("object"), null))
-                .build();
         // when
         List<Relationship> actualList = fetcher.get(environment);
+
         // then
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
+    }
+
+    @Test
+    public void givenGraphWithManyRelationships_whenFetchingNodeTypes_thenPagingIsApplied() throws Exception {
+        // Given
+        RelationshipsFetcher inFetcher = new RelationshipsFetcher(EdgeDirection.IN);
+        RelationshipsFetcher outFetcher = new RelationshipsFetcher(EdgeDirection.OUT);
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = createURI("graph");
+        Node subject = createURI("subject");
+        generateManyRelationships(dsg, graph, subject);
+        DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(subject, null));
+
+        // When
+        List<Relationship> inRels = inFetcher.get(environment);
+        List<Relationship> outRels = outFetcher.get(environment);
+
+        // Then
+        Assert.assertNotNull(inRels);
+        Assert.assertEquals(inRels.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+        Assert.assertNotNull(outRels);
+        Assert.assertEquals(outRels.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+    }
+
+    @Test
+    public void givenGraphWithManyRelationships_whenCountingNodeTypes_thenCountIsCorrect() throws Exception {
+        // Given
+        DataFetcher<Integer> inFetcher = new RelationshipCountsFetcher(EdgeDirection.IN);
+        DataFetcher<Integer> outFetcher = new RelationshipCountsFetcher(EdgeDirection.OUT);
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = createURI("graph");
+        Node subject = createURI("subject");
+        generateManyRelationships(dsg, graph, subject);
+        DataFetchingEnvironment environment =
+                prepareFetchingEnvironment(dsg, new RelationshipCounts(new TelicentGraphNode(subject, null)));
+
+        // When
+        Integer inCount = inFetcher.get(environment);
+        Integer outCount = outFetcher.get(environment);
+
+        // Then
+        Assert.assertNotNull(inCount);
+        Assert.assertEquals(inCount, 1_000);
+        Assert.assertNotNull(outCount);
+        Assert.assertEquals(outCount, 1_000);
+    }
+
+    private static void generateManyRelationships(DatasetGraph dsg, Node graph, Node subject) {
+        Node predicate = createURI("predicate");
+        for (int i = 0; i < 1_000; i++) {
+            dsg.add(graph, subject, predicate, createURI("object" + i));
+            dsg.add(graph, createURI("subject" + i), predicate, subject);
+        }
     }
 }

@@ -23,12 +23,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class TestTelicentGraphExecution extends AbstractExecutionTests {
@@ -51,6 +50,8 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     }
 
     public static final String SINGLE_NODE_QUERY = loadQuery("single-node.graphql");
+
+    public static final String PAGED_NODE_QUERY = loadQuery("single-node-with-paging.graphql");
 
     public static final String MULTIPLE_NODES_QUERY = loadQuery("multiple-nodes.graphql");
 
@@ -114,14 +115,166 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         Assert.assertTrue(((List<Object>) data.get(TelicentGraphSchema.FIELD_INSTANCES)).isEmpty());
 
         // And
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, (int) TelicentGraphSchema.DEFAULT_LIMIT,
+                        1);
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, (int) TelicentGraphSchema.DEFAULT_LIMIT,
+                        1);
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_PROPERTIES, (int) TelicentGraphSchema.DEFAULT_LIMIT, 1);
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_INSTANCES, (int) TelicentGraphSchema.DEFAULT_LIMIT, 1);
+    }
+
+    @DataProvider(name = "paging")
+    public Object[][] pageParameters() {
+        return new Object[][] {
+                // Limit 10 with varying offsets
+                { 10, 1 },
+                { 10, 2 },
+                { 10, 3 },
+                { 10, 4 },
+                { 10, 5 },
+                { 10, 100 },
+                // Limit 25 paging through
+                { 25, 1 },
+                { 25, 26 },
+                { 25, 51 },
+                // Limit 100 with varying offsets
+                { 100, 1 },
+                { 100, 50 },
+                { 100, 100 }
+        };
+    }
+
+    private int verifyRelCounts(Map<String, Object> data, String field, int limit, int offset) {
         Map<String, Object> relCounts = (Map<String, Object>) data.get(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS);
         Assert.assertNotNull(relCounts);
-        List<?> outRels = (List<?>)data.get(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS);
-        List<?> inRels = (List<?>)data.get(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS);
-        Assert.assertNotNull(outRels);
-        Assert.assertNotNull(inRels);
-        Assert.assertEquals(outRels.size(), (Integer)relCounts.get(TelicentGraphSchema.FIELD_OUT));
-        Assert.assertEquals(inRels.size(), (Integer)relCounts.get(TelicentGraphSchema.FIELD_IN));
+        List<?> fieldData = (List<?>) data.get(field);
+        Assert.assertNotNull(fieldData);
+        verifyPagedResults(fieldData, (Integer) relCounts.get(field),
+                           limit, offset);
+
+        return fieldData.size();
+    }
+
+    @Test(dataProvider = "paging")
+    public void givenStarWarsData_whenQueryingForSingleNodeWithPaging_thenPagedResultsCorrectly(int limit, int offset) {
+        // Given and When
+        ExecutionResult result =
+                verifyExecution(this.starwars, PAGED_NODE_QUERY, Map.of("limit", limit, "offset", offset));
+
+        // Then
+        Assert.assertTrue(result.isDataPresent());
+        Assert.assertNotNull(result.getData());
+        Map<String, Object> data = result.getData();
+        Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_SINGLE_NODE));
+        data = (Map<String, Object>) data.get(TelicentGraphSchema.QUERY_SINGLE_NODE);
+        verifyNodeResult(data, OBI_WAN_KENOBI, "starwars:person_Obi-WanKenobi");
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, limit, offset);
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, limit, offset);
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_PROPERTIES, limit, offset);
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_INSTANCES, limit, offset);
+    }
+
+    static void updatePagedResults(Map<String, Object> data, Map<String, Set<String>> pagedResults, String field,
+                                   String subField) {
+        List<Map<String, Object>> list = (List<Map<String, Object>>) data.get(field);
+        Set<String> resultSet = pagedResults.computeIfAbsent(field, k -> new HashSet<>());
+        for (Map<String, Object> item : list) {
+            resultSet.add(item.get(subField).toString());
+        }
+    }
+
+    @DataProvider(name = "pageSizes")
+    private static Object[][] pageSizes() {
+        return new Object[][] {
+                { 1 },
+                { 5 },
+                { 10 },
+                { 25 },
+                { 50 },
+                { 100 },
+                { (int) TelicentGraphSchema.MAX_LIMIT }
+        };
+    }
+
+    @Test(dataProvider = "pageSizes")
+    public void givenStarWarsData_whenQueryingForSingleNodeWithSequentialPaging_thenPagedResultsCorrectly(
+            int pageSize) {
+        // Given
+        Map<String, Set<String>> pagedResults = new HashMap<>();
+        int offset = 1;
+        int pagesRetrieved = 0;
+        int expectedPages = 68 > pageSize ? (68 / pageSize) + (68 % pageSize != 0 ? 1 : 0) + 1 : 2;
+
+        // When
+        while (true) {
+            ExecutionResult result =
+                    verifyExecution(this.starwars, PAGED_NODE_QUERY, Map.of("limit", pageSize, "offset", offset));
+            pagesRetrieved++;
+
+            Assert.assertTrue(result.isDataPresent());
+            Assert.assertNotNull(result.getData());
+            Map<String, Object> data = result.getData();
+            Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_SINGLE_NODE));
+            data = (Map<String, Object>) data.get(TelicentGraphSchema.QUERY_SINGLE_NODE);
+            verifyNodeResult(data, OBI_WAN_KENOBI, "starwars:person_Obi-WanKenobi");
+            int outRels = verifyRelCounts(data, TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, pageSize, offset);
+            updatePagedResults(data, pagedResults, TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS,
+                               TelicentGraphSchema.FIELD_ID);
+            int inRels = verifyRelCounts(data, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, pageSize, offset);
+            updatePagedResults(data, pagedResults, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS,
+                               TelicentGraphSchema.FIELD_ID);
+            int props = verifyRelCounts(data, TelicentGraphSchema.FIELD_PROPERTIES, pageSize, offset);
+            updatePagedResults(data, pagedResults, TelicentGraphSchema.FIELD_PROPERTIES,
+                               TelicentGraphSchema.FIELD_VALUE);
+            int instances = verifyRelCounts(data, TelicentGraphSchema.FIELD_INSTANCES, pageSize, offset);
+            updatePagedResults(data, pagedResults, TelicentGraphSchema.FIELD_INSTANCES, TelicentGraphSchema.FIELD_ID);
+
+            // Increment page size for next go around
+            offset += pageSize;
+
+            // Check whether to stop asking for more pages, basically are all the fields we care about now empty lists?
+            if (outRels + inRels + props + instances == 0) {
+                break;
+            }
+        }
+
+        // Then
+        Assert.assertEquals(pagedResults.get(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS).size(), 68);
+        Assert.assertEquals(pagedResults.get(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS).size(), 4);
+        Assert.assertEquals(pagedResults.get(TelicentGraphSchema.FIELD_PROPERTIES).size(), 3);
+        Assert.assertEquals(pagedResults.get(TelicentGraphSchema.FIELD_INSTANCES).size(), 0);
+        Assert.assertEquals(pagesRetrieved, expectedPages);
+    }
+
+    private static void verifyPagedResults(List<?> actualResults, Integer totalResults, long limit, int offset) {
+        Assert.assertNotNull(actualResults);
+        Assert.assertNotNull(totalResults);
+
+        // Calculate how many results we expect to see in this page
+        int expected;
+        if (limit > totalResults) {
+            if (offset == 1) {
+                // Limit greater than total available, and offset=1, so expect all results
+                expected = totalResults;
+            } else if (offset > totalResults) {
+                // Offset greater than total available, so expect no results
+                expected = 0;
+            } else {
+                // Limit greater than total available, and offset>1 so expect fewer than total results
+                expected = totalResults - offset + 1;
+            }
+        } else {
+            if (offset == 1) {
+                // More results than limit, and offset=1, so expect limit results
+                expected = Math.toIntExact(limit);
+            } else if (offset > totalResults) {
+                // Offset greater than total available, so expect no results
+                expected = 0;
+            } else {
+                expected = Math.toIntExact(Math.min(totalResults - offset + 1, limit));
+            }
+        }
+        Assert.assertEquals(actualResults.size(), expected);
     }
 
     private static void verifyNodeResult(Map<String, Object> data, String fullUri, String shortUri) {
@@ -147,7 +300,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     }
 
     @Test
-    public void givenStarWarsData_whenQueryingForInstances_thenInstanceResults() {
+    public void givenStarWarsData_whenQueryingForInstances_thenInstanceResults_andRelCountsAreCorrect() {
         // Given and When
         ExecutionResult result = verifyExecution(this.starwars, INSTANCES_QUERY);
 
@@ -161,6 +314,9 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         Assert.assertNotNull(data.get(TelicentGraphSchema.FIELD_INSTANCES));
         List<Map<String, Object>> instances = (List<Map<String, Object>>) data.get(TelicentGraphSchema.FIELD_INSTANCES);
         Assert.assertFalse(instances.isEmpty());
+
+        // And
+        verifyRelCounts(data, TelicentGraphSchema.FIELD_INSTANCES, 10, 1);
     }
 
     @Test

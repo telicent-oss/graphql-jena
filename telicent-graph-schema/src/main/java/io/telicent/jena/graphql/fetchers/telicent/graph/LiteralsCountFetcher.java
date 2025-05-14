@@ -12,32 +12,33 @@
  */
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
-import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A GraphQL {@link DataFetcher} that finds instances of a type
+ * A data fetcher that simply counts the literal properties directly attached to a node
  */
-public class InstancesFetcher
-        extends AbstractInstancesFetcher<List<TelicentGraphNode>> {
-
-    /**
-     * Creates a fetcher that finds all instances of a type
-     */
-    public InstancesFetcher() {
-
+public class LiteralsCountFetcher extends AbstractLiteralsFetcher<Integer> {
+    @Override
+    protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
+        RelationshipCounts counts = environment.getSource();
+        return counts.parent();
     }
 
     @Override
-    protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg,
-                                          TelicentGraphNode source, Stream<Node> input) {
-        return input.map(n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
+    protected Stream<Quad> applyLimitAndOffset(DataFetchingEnvironment environment, Stream<Quad> stream) {
+        // Want to get the total count so don't apply paging
+        return stream;
+    }
+
+    @Override
+    protected Integer map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
+                          Stream<Quad> input) {
+        return Math.toIntExact(input.count());
     }
 }

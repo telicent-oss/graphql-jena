@@ -12,10 +12,12 @@
  */
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
+import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.DataFetchingEnvironmentImpl;
-import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
+import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -27,10 +29,10 @@ import java.util.List;
 
 import static org.apache.jena.graph.NodeFactory.*;
 
-public class TestNodeTypesFetcher {
+public class TestNodeTypesFetcher extends AbstractFetcherTests {
 
     @Test
-    public void test_get_blankNode() {
+    public void test_get_blankNode() throws Exception {
         // given
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
@@ -41,12 +43,8 @@ public class TestNodeTypesFetcher {
         dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createURI("object")));
 
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
-                .newDataFetchingEnvironment()
-                .localContext(context)
-                .source(new TelicentGraphNode(createBlankNode("subject"), null))
-                .build();
+        DataFetchingEnvironment environment =
+                prepareFetchingEnvironment(dsg, new TelicentGraphNode(createBlankNode("subject"), null));
         // when
         List<TelicentGraphNode> actualList = fetcher.get(environment);
         // then
@@ -55,7 +53,7 @@ public class TestNodeTypesFetcher {
     }
 
     @Test
-    public void test_get_uriNode() {
+    public void test_get_uriNode() throws Exception {
         // given
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
@@ -66,12 +64,8 @@ public class TestNodeTypesFetcher {
         dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createURI("object")));
 
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
-                .newDataFetchingEnvironment()
-                .localContext(context)
-                .source(new TelicentGraphNode(createURI("subject"), null))
-                .build();
+        DataFetchingEnvironment environment =
+                prepareFetchingEnvironment(dsg, new TelicentGraphNode(createURI("subject"), null));
         // when
         List<TelicentGraphNode> actualList = fetcher.get(environment);
         // then
@@ -80,7 +74,7 @@ public class TestNodeTypesFetcher {
     }
 
     @Test
-    public void test_get_literalNode() {
+    public void test_get_literalNode() throws Exception {
         // given
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
@@ -91,16 +85,56 @@ public class TestNodeTypesFetcher {
         dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
                          createURI("object")));
 
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
-                .newDataFetchingEnvironment()
-                .localContext(context)
-                .source(new TelicentGraphNode(createLiteralString("subject"), null))
-                .build();
+        DataFetchingEnvironment environment =
+                prepareFetchingEnvironment(dsg, new TelicentGraphNode(createLiteralString("subject"), null));
         // when
         List<TelicentGraphNode> actualList = fetcher.get(environment);
         // then
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
     }
+
+    @Test
+    public void givenGraphWithManyTypes_whenFetchingNodeTypes_thenPagingIsApplied() throws Exception {
+        // Given
+        NodeTypesFetcher fetcher = new NodeTypesFetcher();
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = createURI("graph");
+        Node subject = createURI("subject");
+        generateManyTypes(dsg, graph, subject);
+        DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(subject, null));
+
+        // When
+        List<TelicentGraphNode> types = fetcher.get(environment);
+
+        // Then
+        Assert.assertNotNull(types);
+        Assert.assertEquals(types.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+    }
+
+    @Test
+    public void givenGraphWithManyTypes_whenCountingNodeTypes_thenCountIsCorrect() throws Exception {
+        // Given
+        DataFetcher<Integer> fetcher = new NodeTypeCountsFetcher();
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = createURI("graph");
+        Node subject = createURI("subject");
+        generateManyTypes(dsg, graph, subject);
+        DataFetchingEnvironment environment =
+                prepareFetchingEnvironment(dsg, new RelationshipCounts(new TelicentGraphNode(subject, null)));
+
+        // When
+        Integer count = fetcher.get(environment);
+
+        // Then
+        Assert.assertNotNull(count);
+        Assert.assertEquals(count, 1_000);
+    }
+
+    private static void generateManyTypes(DatasetGraph dsg, Node graph, Node subject) {
+        for (int i = 0; i < 1_000; i++) {
+            dsg.add(graph, subject, RDF.type.asNode(), createURI("type" + i));
+        }
+    }
+
 }

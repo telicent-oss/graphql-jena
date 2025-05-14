@@ -4,6 +4,8 @@
 
 - Telicent Graph Schema improvements:
     - Added new `relCounts` property to `Node` type to allow summarising available relationships
+    - Added `limit` and `offset` parameters to various list fields, in combination with the new `relCounts` field this
+      allows paging through the results
 
 # 0.9.3
 

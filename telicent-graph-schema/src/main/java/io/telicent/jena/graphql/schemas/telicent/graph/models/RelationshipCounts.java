@@ -13,41 +13,9 @@
 package io.telicent.jena.graphql.schemas.telicent.graph.models;
 
 /**
- * Holds information about relationship counts
- * <p>
- * This is intentionally an object so we can potentially augment this with further fields in the future if we need to.
- * </p>
+ * Placeholder for relationship counts
+ *
+ * @param parent Parent node
  */
-public class RelationshipCounts {
-
-    private final int in, out;
-
-    /**
-     * Creates new relationship counts
-     *
-     * @param in  Count of incoming relationships
-     * @param out Count of outgoing relationships
-     */
-    public RelationshipCounts(int in, int out) {
-        this.in = in;
-        this.out = out;
-    }
-
-    /**
-     * Gets the count of incoming relationships
-     *
-     * @return Incoming relationships count
-     */
-    public int getIn() {
-        return in;
-    }
-
-    /**
-     * Gets the count of outgoing relationships
-     *
-     * @return Outgoing relationships count
-     */
-    public int getOut() {
-        return out;
-    }
+public record RelationshipCounts(TelicentGraphNode parent) {
 }

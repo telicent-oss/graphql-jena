@@ -22,6 +22,15 @@ import java.io.IOException;
  */
 public class TelicentGraphSchema {
 
+    /**
+     * Default limit applied to fields that support paging
+     */
+    public static final long DEFAULT_LIMIT = 50;
+    /**
+     * Maximum permitted limit applied to fields that support paging
+     */
+    public static final long MAX_LIMIT = 250;
+
     private TelicentGraphSchema() {}
     /**
      * The classpath resource that contains the GraphQL schema file
@@ -190,14 +199,9 @@ public class TelicentGraphSchema {
      */
     public static final String FIELD_RELATIONS = "relations";
     /**
-     * In field
+     * Value field
      */
-    public static final String FIELD_IN = "in";
-    /**
-     * Out field
-     */
-    public static final String FIELD_OUT = "out";
-
+    public static final String FIELD_VALUE = "value";
     /**
      * Extension property used to supply the users authentication token that may be passed on by some
      * {@link graphql.schema.DataFetcher} instances when they need to query other Telicent services

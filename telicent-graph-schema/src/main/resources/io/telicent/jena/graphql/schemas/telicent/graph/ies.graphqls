@@ -3,12 +3,12 @@ type Node {
     uri: String! #The uri of the resource
     uriHash: String! @deprecated #A SHA1 hash of the uri
     shortUri: String! #If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
-    types: [Node]! #An array of types for the Node - i.e. the classes it is an instance of.
-    properties: [Property]! #An array of literal properties of the Node
-    outRels: [Rel]! #An array of Rels where the current Node is in the domain position
-    inRels: [Rel]! #An array of Rels where the current Node is in the range position
+    types(limit: Int = 50, offset: Int = 1): [Node]! #An array of types for the Node - i.e. the classes it is an instance of.
+    properties(limit: Int = 50, offset: Int = 1): [Property]! #An array of literal properties of the Node
+    outRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the domain position
+    inRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the range position
     relCounts: RelCounts!
-    instances: [Node] #If the node is a class, this will return an array of its instances
+    instances(limit: Int = 50, offset: Int = 1): [Node] #If the node is a class, this will return an array of its instances
 }
 
 type Rel { #A subject-predicate-object statement
@@ -21,8 +21,11 @@ type Rel { #A subject-predicate-object statement
 }
 
 type RelCounts {
-    in: Int
-    out: Int
+    inRels: Int
+    outRels: Int
+    properties: Int
+    types: Int
+    instances: Int
 }
 
 type Property { #A literal property
@@ -39,7 +42,7 @@ type State {
     start: String
     end: String
     period: String
-    relations: [NonDirectionalRel]!
+    relations(limit: Int = 50, offset: Int = 1): [NonDirectionalRel]!
 }
 
 type NonDirectionalRel {
