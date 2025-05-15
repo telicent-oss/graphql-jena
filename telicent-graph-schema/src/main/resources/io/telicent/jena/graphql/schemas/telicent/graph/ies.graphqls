@@ -1,26 +1,26 @@
 type Node {
-    id: ID! #Used if you want client-side caching, but will return the same string as uri
-    uri: String! #The uri of the resource
-    uriHash: String! @deprecated #A SHA1 hash of the uri
-    shortUri: String! #If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
-    types(limit: Int = 50, offset: Int = 1): [Node]! #An array of types for the Node - i.e. the classes it is an instance of.
-    properties(limit: Int = 50, offset: Int = 1): [Property]! #An array of literal properties of the Node
-    outRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the domain position
-    inRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the range position
-    relCounts: RelCounts!
-    instances(limit: Int = 50, offset: Int = 1): [Node] #If the node is a class, this will return an array of its instances
+    id: ID! # Used if you want client-side caching, but will return the same string as uri
+    uri: String! # The uri of the resource
+    uriHash: String! @deprecated # A SHA1 hash of the uri
+    shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    types(limit: Int = 50, offset: Int = 1): [Node]! # An array of types for the Node - i.e. the classes it is an instance of.
+    properties(limit: Int = 50, offset: Int = 1): [Property]! # An array of literal properties of the Node
+    outRels(limit: Int = 50, offset: Int = 1): [Rel]! # An array of Rels where the current Node is in the domain position
+    inRels(limit: Int = 50, offset: Int = 1): [Rel]! # An array of Rels where the current Node is in the range position
+    relCounts: NodeRelCounts! # Relationship counts information
+    instances(limit: Int = 50, offset: Int = 1): [Node] # If the node is a class, this will return an array of its instances
 }
 
-type Rel { #A subject-predicate-object statement
-    id: ID! #A (sorta) unique ID made from hashing (SHA1) the "<subject> <predicate> <object>" string
-    domain: Node! #AKA subject
+type Rel { # A subject-predicate-object statement
+    id: ID! # A (sorta) unique ID made from hashing (SHA1) the "<subject> <predicate> <object>" string
+    domain: Node! # AKA subject
     domain_id: String!
-    predicate: String! #AKA property
+    predicate: String! # AKA property
     range_id: String!
-    range: Node! #AKA object
+    range: Node! # AKA object
 }
 
-type RelCounts {
+type NodeRelCounts { # Counts of relationships available for a Node
     inRels: Int
     outRels: Int
     properties: Int
@@ -43,6 +43,11 @@ type State {
     end: String
     period: String
     relations(limit: Int = 50, offset: Int = 1): [NonDirectionalRel]!
+    relCounts: StateRelCounts!
+}
+
+type StateRelCounts {
+    relations: Int
 }
 
 type NonDirectionalRel {

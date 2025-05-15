@@ -61,7 +61,7 @@ public class TelicentGraphSchema {
     /**
      * Relationship counts type
      */
-    public static final String TYPE_RELATIONSHIP_COUNTS = "RelCounts";
+    public static final String TYPE_RELATIONSHIP_COUNTS = "NodeRelCounts";
     /**
      * Property type
      */
@@ -70,6 +70,10 @@ public class TelicentGraphSchema {
      * State type
      */
     public static final String TYPE_STATE = "State";
+    /**
+     * State relationship counts type
+     */
+    public static final String TYPE_STATE_RELATIONSHIP_COUNTS = "StateRelCounts";
     /**
      * Search results type
      */

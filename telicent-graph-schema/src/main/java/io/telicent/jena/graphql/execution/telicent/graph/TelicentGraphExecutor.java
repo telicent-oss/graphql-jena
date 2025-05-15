@@ -21,6 +21,7 @@ import io.telicent.jena.graphql.fetchers.telicent.graph.*;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.io.IOException;
@@ -63,32 +64,40 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                         .dataFetcher(TelicentGraphSchema.QUERY_SEARCH, new StartingSearchFetcher())
                                         .dataFetcher(TelicentGraphSchema.QUERY_SEARCH_WITH_METADATA, new StartingSearchWithMetadataFetcher()).enumValues(nodeKinds)
                                         .dataFetcher(TelicentGraphSchema.QUERY_STATES, new StartingStatesFetcher())
-                                        .dataFetcher(TelicentGraphSchema.QUERY_GET_ALL_ENTITIES, new AllEntitiesFetcher()))
+                                        .dataFetcher(TelicentGraphSchema.QUERY_GET_ALL_ENTITIES, new AllEntitiesFetcher())
+                            )
                             .type(TelicentGraphSchema.TYPE_NODE,
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_TYPES, new NodeTypesFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_PROPERTIES, new LiteralPropertiesFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, new RelationshipsFetcher(EdgeDirection.IN))
                                         .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, new RelationshipsFetcher(EdgeDirection.OUT))
                                         .dataFetcher(TelicentGraphSchema.FIELD_INSTANCES, new InstancesFetcher())
-                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS, new RelationshipCountsPlaceholderFetcher()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS, new RelationshipCountsPlaceholderFetcher())
+                            )
                             .type(TelicentGraphSchema.TYPE_RELATIONSHIP,
                                   // The Telicent Graph schema uses underscores in these property names which defeats
                                   // graphql-java's default logic of looking for an equivalent Java property name so
                                   // have to explicitly declare the fetchers for these
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_DOMAIN_ID, new PropertyDataFetcher<String>("domainId"))
-                                        .dataFetcher(TelicentGraphSchema.FIELD_RANGE_ID, new PropertyDataFetcher<String>("rangeId")))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RANGE_ID, new PropertyDataFetcher<String>("rangeId"))
+                            )
                             .type(TelicentGraphSchema.TYPE_RELATIONSHIP_COUNTS,
                                         t -> t.dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, new RelationshipCountsFetcher(EdgeDirection.IN))
                                               .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, new RelationshipCountsFetcher(EdgeDirection.OUT))
                                               .dataFetcher(TelicentGraphSchema.FIELD_INSTANCES, new InstancesCountFetcher())
                                               .dataFetcher(TelicentGraphSchema.FIELD_TYPES, new NodeTypeCountsFetcher())
-                                              .dataFetcher(TelicentGraphSchema.FIELD_PROPERTIES, new LiteralsCountFetcher()))
+                                              .dataFetcher(TelicentGraphSchema.FIELD_PROPERTIES, new LiteralsCountFetcher())
+                            )
                             .type(TelicentGraphSchema.TYPE_STATE,
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_TYPE, new StateTypeFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_RELATIONS, new StateRelationshipsFetcher())
                                         .dataFetcher(TelicentGraphSchema.FIELD_START, periodFetcher)
                                         .dataFetcher(TelicentGraphSchema.FIELD_END, periodFetcher)
                                         .dataFetcher(TelicentGraphSchema.FIELD_PERIOD, periodFetcher)
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS, new StateRelationshipCountsPlaceholderFetcher())
+                            )
+                            .type(TelicentGraphSchema.TYPE_STATE_RELATIONSHIP_COUNTS,
+                                  t -> t.dataFetcher(TelicentGraphSchema.FIELD_RELATIONS, new StateRelationshipCountsFetcher())
                             );
         //@formatter:on
     }
