@@ -192,7 +192,8 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
                 { 25 },
                 { 50 },
                 { 100 },
-                { (int) TelicentGraphSchema.MAX_LIMIT }
+                { (int) TelicentGraphSchema.MAX_LIMIT },
+                { 5_000 }
         };
     }
 
@@ -204,6 +205,17 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         int offset = 1;
         int pagesRetrieved = 0;
         int expectedPages = 68 > pageSize ? (68 / pageSize) + (68 % pageSize != 0 ? 1 : 0) + 1 : 2;
+
+        if (pageSize > TelicentGraphSchema.MAX_LIMIT) {
+            GraphQLRequest request = new GraphQLRequest();
+            request.setQuery(PAGED_NODE_QUERY);
+            request.setVariables(Map.of("limit", pageSize, "offset", offset));
+            ExecutionResult failedResult = verifyExecutionErrors(this.starwars, request);
+            Assert.assertTrue(failedResult.getErrors()
+                                          .stream()
+                                          .anyMatch(e -> e.getMessage().contains("exceeds the maximum limit")));
+            return;
+        }
 
         // When
         while (true) {
@@ -341,7 +353,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
 
         // Then
         Map<String, Object> data = result.getData();
-        verifyStates(data, TelicentGraphSchema.QUERY_STATES, 71);
+        verifyStates(data, TelicentGraphSchema.QUERY_STATES, 50);
     }
 
     private static List<Map<String, Object>> verifyStates(Map<String, Object> data, String queryStates,

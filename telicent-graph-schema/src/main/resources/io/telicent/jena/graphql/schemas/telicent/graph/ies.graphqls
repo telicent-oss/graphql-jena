@@ -89,7 +89,7 @@ type Query {
         typeFilter: String
     ): SearchResults
     getAllEntities(graph: String): [Node]
-    states(uri: String!): [State]!
+    states(uri: String!, limit: Int = 50, offset: Int = 1): [State]!
     node(graph: String, uri: String!): Node
-    nodes(graph: String, uris: [String!]!): [Node]
+    nodes(graph: String, uris: [String!]!, limit: Int = 50, offset: Int = 1): [Node]
 }

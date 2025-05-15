@@ -107,15 +107,33 @@ public abstract class AbstractLimitOffsetPagingFetcher<TSource, TInput, TOutput>
      * @return Stream with paging applied
      */
     protected Stream<TInput> applyLimitAndOffset(DataFetchingEnvironment environment, Stream<TInput> stream) {
+        return applyLimitAndOffset(environment, stream, this.defaultLimit, this.maxLimit);
+    }
+
+    /**
+     * Applies limit and offset, if any, to the given stream
+     *
+     * @param environment  Data Fetching environment
+     * @param stream       Stream to apply paging to
+     * @param defaultLimit Default limit to apply if not provided in arguments
+     * @param maxLimit     Maximum limit to apply
+     * @param <T>          Element type
+     * @return Stream with paging applied
+     */
+    public static <T> Stream<T> applyLimitAndOffset(DataFetchingEnvironment environment, Stream<T> stream,
+                                                    long defaultLimit, long maxLimit) {
         Integer limit = environment.getArgument(TelicentGraphSchema.ARGUMENT_LIMIT);
         Integer offset = environment.getArgument(TelicentGraphSchema.ARGUMENT_OFFSET);
         if (offset != null && offset > 1) {
             stream = stream.skip(offset.longValue() - 1);
         }
         if (limit != null && limit > 0) {
-            stream = stream.limit(Math.min(limit.longValue(), this.maxLimit));
+            if (limit > maxLimit) {
+                throw new IllegalArgumentException("Requested limit " + limit + " exceeds the maximum limit " + maxLimit);
+            }
+            stream = stream.limit(limit.longValue());
         } else {
-            stream = stream.limit(this.defaultLimit);
+            stream = stream.limit(defaultLimit);
         }
         return stream;
     }
