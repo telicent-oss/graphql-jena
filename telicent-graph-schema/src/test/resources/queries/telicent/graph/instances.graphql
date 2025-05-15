@@ -1,11 +1,14 @@
-query {
+query($limit : Int = 10, $offset : Int = 1) {
     node(uri: "http://ies.data.gov.uk/ontology/ies4#Person") {
         id
         uri
         shortUri
-        instances {
+        instances(limit: $limit, offset: $offset) {
             uri
             shortUri
+        }
+        relCounts {
+            instances
         }
     }
 }

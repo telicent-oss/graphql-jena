@@ -14,20 +14,20 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.LiteralProperty;
-import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sparql.core.Quad;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A GraphQL {@link DataFetcher} that fetches the literal properties of a node
  */
-public class LiteralPropertiesFetcher implements DataFetcher<List<LiteralProperty>> {
+public class LiteralPropertiesFetcher
+        extends AbstractLiteralsFetcher<List<LiteralProperty>> {
 
     /**
      * Creates a fetcher that finds the literal properties associated with a node
@@ -37,19 +37,9 @@ public class LiteralPropertiesFetcher implements DataFetcher<List<LiteralPropert
     }
 
     @Override
-    public List<LiteralProperty> get(DataFetchingEnvironment environment) {
-        TelicentExecutionContext context = environment.getLocalContext();
-        DatasetGraph dsg = context.getDatasetGraph();
-        TelicentGraphNode node = environment.getSource();
-
-        return Txn.calculateRead(dsg, () -> findLiterals(dsg, node));
-    }
-
-    private static List<LiteralProperty> findLiterals(DatasetGraph dsg, TelicentGraphNode node) {
-        return dsg.stream(Node.ANY, node.getNode(), Node.ANY, Node.ANY)
-                  .filter(q -> q.getObject().isLiteral())
-                  .map(q -> new LiteralProperty(q.getPredicate(), q.getObject(),
-                                                dsg.prefixes()))
-                  .collect(Collectors.toList());
+    protected List<LiteralProperty> map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
+                                        Stream<Quad> input) {
+        return input.map(q -> new LiteralProperty(q.getPredicate(), q.getObject(), dsg.prefixes()))
+                    .collect(Collectors.toList());
     }
 }

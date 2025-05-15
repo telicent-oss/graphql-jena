@@ -31,7 +31,7 @@ import static org.apache.jena.graph.NodeFactory.*;
 
 public class TestStateRelationshipsFetcher {
     @Test
-    public void test_get_literalNode() {
+    public void test_get_literalNode() throws Exception {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
@@ -53,7 +53,7 @@ public class TestStateRelationshipsFetcher {
     }
 
     @Test
-    public void test_get_blankNode() {
+    public void test_get_blankNode() throws Exception {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
@@ -75,7 +75,7 @@ public class TestStateRelationshipsFetcher {
     }
 
     @Test
-    public void test_get_uriNode_outbound() {
+    public void test_get_uriNode_outbound() throws Exception {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
@@ -97,7 +97,7 @@ public class TestStateRelationshipsFetcher {
     }
 
     @Test
-    public void test_get_uriNode_inbound() {
+    public void test_get_uriNode_inbound() throws Exception {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();

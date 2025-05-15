@@ -14,30 +14,21 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
- * A GraphQL {@link DataFetcher} that finds instances of a type
+ * A placeholder fetcher that returns a simple record class with a reference back to the parent node
+ * <p>
+ * This is needed because GraphQL Java doesn't allow a non-scalar typed field to have an empty value (unless explicitly
+ * nullable), and we need to have a placeholder object present so that the fetchers that actually compute the counts
+ * can get access to the parent {@link TelicentGraphNode} they need to find the things to count.
+ * </p>
  */
-public class InstancesFetcher
-        extends AbstractInstancesFetcher<List<TelicentGraphNode>> {
-
-    /**
-     * Creates a fetcher that finds all instances of a type
-     */
-    public InstancesFetcher() {
-
-    }
-
+public class RelationshipCountsPlaceholderFetcher implements DataFetcher<RelationshipCounts> {
     @Override
-    protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg,
-                                          TelicentGraphNode source, Stream<Node> input) {
-        return input.map(n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
+    public RelationshipCounts get(DataFetchingEnvironment environment) throws Exception {
+        TelicentGraphNode source = environment.getSource();
+        return new RelationshipCounts(source);
     }
 }

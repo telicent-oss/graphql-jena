@@ -12,32 +12,33 @@
  */
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A GraphQL {@link DataFetcher} that finds instances of a type
+ * A data fetcher that calculates the total number of instances available
  */
-public class InstancesFetcher
-        extends AbstractInstancesFetcher<List<TelicentGraphNode>> {
-
-    /**
-     * Creates a fetcher that finds all instances of a type
-     */
-    public InstancesFetcher() {
-
+public class InstancesCountFetcher extends AbstractInstancesFetcher<Integer> {
+    @Override
+    protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
+        RelationshipCounts counts = environment.getSource();
+        return counts.parent();
     }
 
     @Override
-    protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg,
-                                          TelicentGraphNode source, Stream<Node> input) {
-        return input.map(n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
+    protected Integer map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
+                          Stream<Node> input) {
+        return Math.toIntExact(input.count());
+    }
+
+    @Override
+    protected Stream<Node> applyLimitAndOffset(DataFetchingEnvironment environment, Stream<Node> stream) {
+        // Want the full count so don't apply paging
+        return stream;
     }
 }

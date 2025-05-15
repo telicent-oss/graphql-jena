@@ -290,28 +290,39 @@ The schema definition can be found in the `ies.graphqls` file within the resourc
 `io.telicent.jena.graphql.schemas` package.
 
 The schema is defined as follows:
+
 ```graphql
 type Node {
-    id: ID!
-    uri: String!
-    shortUri: String!
-    types: [Node]!
-    properties: [Property]!
-    outRels: [Rel]!
-    inRels: [Rel]!
-    instances: [Node]
+    id: ID! #Used if you want client-side caching, but will return the same string as uri
+    uri: String! #The uri of the resource
+    uriHash: String! @deprecated #A SHA1 hash of the uri
+    shortUri: String! #If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    types(limit: Int = 50, offset: Int = 1): [Node]! #An array of types for the Node - i.e. the classes it is an instance of.
+    properties(limit: Int = 50, offset: Int = 1): [Property]! #An array of literal properties of the Node
+    outRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the domain position
+    inRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the range position
+    relCounts: RelCounts!
+    instances(limit: Int = 50, offset: Int = 1): [Node] #If the node is a class, this will return an array of its instances
 }
 
-type Rel {
-    id: ID!
-    domain: Node!
+type Rel { #A subject-predicate-object statement
+    id: ID! #A (sorta) unique ID made from hashing (SHA1) the "<subject> <predicate> <object>" string
+    domain: Node! #AKA subject
     domain_id: String!
-    predicate: String! 
+    predicate: String! #AKA property
     range_id: String!
-    range: Node!
+    range: Node! #AKA object
 }
 
-type Property { 
+type RelCounts {
+    inRels: Int
+    outRels: Int
+    properties: Int
+    types: Int
+    instances: Int
+}
+
+type Property { #A literal property
     predicate: String!
     shortPredicate: String!
     value: String!
@@ -325,7 +336,7 @@ type State {
     start: String
     end: String
     period: String
-    relations: [NonDirectionalRel]!
+    relations(limit: Int = 50, offset: Int = 1): [NonDirectionalRel]!
 }
 
 type NonDirectionalRel {
@@ -386,3 +397,15 @@ type Query {
     nodes(graph: String, uris: [String!]!): [Node]
 }
 ```
+
+### Paging in the Telicent (IES) Schema
+
+As of `0.10.0` the Telicent (IES) Schema offers paging capabilities on schema fields that return arrays.  Paging is
+achieved by supplying `limit` and `offset` arguments to the relevant fields, bear in mind the following:
+
+- A maximum limit of `250` is enforced in the implementation even if a higher `limit` value is supplied.
+- Offsets are 1 based i.e. `offset: 1` means start from the 1st result
+
+In order to determine whether to page clients can request the `relCounts` field on the `Node` and `State` types, this
+field provides total counts for all paging enabled fields.  Clients can use these counts, and the knowledge of the
+`limit` and `offset` values they passed in, to determine whether they have retrieved all results.  
