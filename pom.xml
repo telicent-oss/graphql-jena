@@ -340,6 +340,7 @@
                                 <exclude>**/*.trig</exclude>
                                 <exclude>**/graphql-jena-server</exclude>
                                 <exclude>.trivy/**</exclude>
+                                <exclude>*-trivy-*</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
