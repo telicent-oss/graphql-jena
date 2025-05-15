@@ -63,6 +63,14 @@ public class TelicentGraphSchema {
      */
     public static final String TYPE_RELATIONSHIP_COUNTS = "NodeRelCounts";
     /**
+     * Node relationship facets type
+     */
+    public static final String TYPE_RELATIONSHIP_FACETS = "NodeRelFacets";
+    /**
+     * Relationship facet information type
+     */
+    public static final String TYPE_RELATIONSHIP_FACET_INFO = "RelFacetInfo";
+    /**
      * Property type
      */
     public static final String TYPE_PROPERTY = "Property";
@@ -147,6 +155,10 @@ public class TelicentGraphSchema {
      */
     public static final String FIELD_TYPES = "types";
     /**
+     * Predicates field
+     */
+    public static final String FIELD_PREDICATES = "predicates";
+    /**
      * Properties field
      */
     public static final String FIELD_PROPERTIES = "properties";
@@ -162,6 +174,10 @@ public class TelicentGraphSchema {
      * Relationship counts field
      */
     public static final String FIELD_RELATIONSHIP_COUNTS = "relCounts";
+    /**
+     * Relationship facets field
+     */
+    public static final String FIELD_RELATIONSHIP_FACETS = "relFacets";
     /**
      * URI field
      */

@@ -13,9 +13,9 @@
 package io.telicent.jena.graphql.schemas.telicent.graph.models;
 
 /**
- * Placeholder for relationship counts
+ * Placeholder for holding a node
  *
  * @param parent Parent node
  */
-public record RelationshipCounts(TelicentGraphNode parent) {
+public record NodePlaceholder(TelicentGraphNode parent) {
 }

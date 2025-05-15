@@ -16,7 +16,7 @@ import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.LiteralProperty;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -58,7 +58,7 @@ public class TestLiteralsFetcher extends AbstractFetcherTests {
         Node subject = createURI("subject");
         generateManyLiterals(dsg, graph, subject);
         DataFetchingEnvironment environment =
-                prepareFetchingEnvironment(dsg, new RelationshipCounts(new TelicentGraphNode(subject, null)));
+                prepareFetchingEnvironment(dsg, new NodePlaceholder(new TelicentGraphNode(subject, null)));
 
         // When
         Integer count = fetcher.get(environment);
