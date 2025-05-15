@@ -31,6 +31,28 @@ query($limit: Int, $offset: Int) {
             instances
             properties
         }
+        relFacets {
+            inRels {
+                predicates {
+                    uri
+                    count
+                }
+                types {
+                    uri
+                    count
+                }
+            }
+            outRels {
+                predicates {
+                    uri
+                    count
+                }
+                types {
+                    uri
+                    count
+                }
+            }
+        }
         instances(limit: $limit, offset: $offset) {
             id
             uri

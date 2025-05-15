@@ -15,7 +15,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -120,7 +120,7 @@ public class TestInstancesFetcher extends AbstractFetcherTests {
         Node type = createURI("SomeType");
         generateManyInstances(dsg, graph, type);
         DataFetchingEnvironment environment =
-                prepareFetchingEnvironment(dsg, new RelationshipCounts(new TelicentGraphNode(type, null)));
+                prepareFetchingEnvironment(dsg, new NodePlaceholder(new TelicentGraphNode(type, null)));
 
         // When
         Integer count = fetcher.get(environment);

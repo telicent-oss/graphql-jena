@@ -14,29 +14,29 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 
 /**
  * A placeholder fetcher that returns a simple record class with a reference back to the parent node
  * <p>
  * This is needed because GraphQL Java doesn't allow a non-scalar typed field to have an empty value (unless explicitly
- * nullable), and we need to have a placeholder object present so that the fetchers that actually compute the counts
- * can get access to the parent {@link TelicentGraphNode} they need to find the things to count.
+ * nullable), and we need to have a placeholder object present so that the fetchers that actually compute further
+ * information can get access to the parent {@link TelicentGraphNode} they need to find the things to fetch.
  * </p>
  */
-public class RelationshipCountsPlaceholderFetcher implements DataFetcher<RelationshipCounts> {
+public class NodePlaceholderFetcher implements DataFetcher<NodePlaceholder> {
 
     /**
-     * Default constructor
+     * Creates a new fetcher
      */
-    public RelationshipCountsPlaceholderFetcher() {
-        super();
+    public NodePlaceholderFetcher() {
+
     }
 
     @Override
-    public RelationshipCounts get(DataFetchingEnvironment environment) throws Exception {
+    public NodePlaceholder get(DataFetchingEnvironment environment) throws Exception {
         TelicentGraphNode source = environment.getSource();
-        return new RelationshipCounts(source);
+        return new NodePlaceholder(source);
     }
 }

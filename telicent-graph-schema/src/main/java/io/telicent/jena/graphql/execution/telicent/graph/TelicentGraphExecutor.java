@@ -54,6 +54,7 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
     @Override
     protected RuntimeWiring.Builder buildRuntimeWiring() {
         final StatePeriodFetcher periodFetcher = new StatePeriodFetcher();
+        final NodePlaceholderFetcher nodePlaceholderFetcher = new NodePlaceholderFetcher();
         NaturalEnumValuesProvider<SearchType> nodeKinds = new NaturalEnumValuesProvider<>(SearchType.class);
         //@formatter:off
         return RuntimeWiring.newRuntimeWiring()
@@ -71,7 +72,8 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                         .dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, new RelationshipsFetcher(EdgeDirection.IN))
                                         .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, new RelationshipsFetcher(EdgeDirection.OUT))
                                         .dataFetcher(TelicentGraphSchema.FIELD_INSTANCES, new InstancesFetcher())
-                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS, new RelationshipCountsPlaceholderFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_COUNTS, nodePlaceholderFetcher)
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RELATIONSHIP_FACETS, nodePlaceholderFetcher)
                             )
                             .type(TelicentGraphSchema.TYPE_RELATIONSHIP,
                                   // The Telicent Graph schema uses underscores in these property names which defeats
@@ -86,6 +88,21 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                               .dataFetcher(TelicentGraphSchema.FIELD_INSTANCES, new InstancesCountFetcher())
                                               .dataFetcher(TelicentGraphSchema.FIELD_TYPES, new NodeTypeCountsFetcher())
                                               .dataFetcher(TelicentGraphSchema.FIELD_PROPERTIES, new LiteralsCountFetcher())
+                            )
+                            // The facets are a bit of a workaround
+                            // We want to lazily compute the facet information BUT it's nested two levels beneath our
+                            // Node type.  Therefore, for the NodeRelFacets type we use a fetcher that simply injects
+                            // a placeholder value that includes the fetchers to use at the lower level.
+                            .type(TelicentGraphSchema.TYPE_RELATIONSHIP_FACETS,
+                                        t -> t.dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, new FacetPlaceholderFetcher(new RelationshipPredicateFacetsFetcher(EdgeDirection.IN), new RelationshipTypeFacetsFetcher(EdgeDirection.IN)))
+                                              .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, new FacetPlaceholderFetcher(new RelationshipPredicateFacetsFetcher(EdgeDirection.OUT), new RelationshipTypeFacetsFetcher(EdgeDirection.OUT)))
+                            )
+                            // Then at the RelFacetInfo level we use the general purpose FacetsFetcher, this inspects
+                            // the placeholder to find the Node we're computing facets for and selects the appropriate
+                            // fetcher to actually call based upon the field being fetched
+                            .type(TelicentGraphSchema.TYPE_RELATIONSHIP_FACET_INFO,
+                                        t -> t.dataFetcher(TelicentGraphSchema.FIELD_TYPES, new FacetsFetcher())
+                                                     .dataFetcher(TelicentGraphSchema.FIELD_PREDICATES, new FacetsFetcher())
                             )
                             .type(TelicentGraphSchema.TYPE_STATE,
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_TYPE, new StateTypeFetcher())

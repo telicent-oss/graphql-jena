@@ -17,7 +17,7 @@ import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.Relationship;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -99,7 +99,7 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         Node subject = createURI("subject");
         generateManyRelationships(dsg, graph, subject);
         DataFetchingEnvironment environment =
-                prepareFetchingEnvironment(dsg, new RelationshipCounts(new TelicentGraphNode(subject, null)));
+                prepareFetchingEnvironment(dsg, new NodePlaceholder(new TelicentGraphNode(subject, null)));
 
         // When
         Integer inCount = inFetcher.get(environment);

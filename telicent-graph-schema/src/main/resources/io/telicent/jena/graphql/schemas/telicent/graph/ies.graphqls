@@ -8,6 +8,7 @@ type Node {
     outRels(limit: Int = 50, offset: Int = 1): [Rel]! # An array of Rels where the current Node is in the domain position
     inRels(limit: Int = 50, offset: Int = 1): [Rel]! # An array of Rels where the current Node is in the range position
     relCounts: NodeRelCounts! # Relationship counts information
+    relFacets: NodeRelFacets!
     instances(limit: Int = 50, offset: Int = 1): [Node] # If the node is a class, this will return an array of its instances
 }
 
@@ -26,6 +27,22 @@ type NodeRelCounts { # Counts of relationships available for a Node
     properties: Int
     types: Int
     instances: Int
+}
+
+type NodeRelFacets {
+    inRels: RelFacetInfo!
+    outRels: RelFacetInfo!
+}
+
+type RelFacetInfo {
+    types: [FacetInfo!]!
+    predicates: [FacetInfo!]!
+}
+
+type FacetInfo {
+    uri: String! # Full URI
+    shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    count: Int
 }
 
 type Property { #A literal property
