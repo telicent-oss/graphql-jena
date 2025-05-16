@@ -63,6 +63,14 @@ public class TelicentGraphSchema {
      */
     public static final String TYPE_RELATIONSHIP_COUNTS = "NodeRelCounts";
     /**
+     * Node relationship facets type
+     */
+    public static final String TYPE_RELATIONSHIP_FACETS = "NodeRelFacets";
+    /**
+     * Relationship facet information type
+     */
+    public static final String TYPE_RELATIONSHIP_FACET_INFO = "RelFacetInfo";
+    /**
      * Property type
      */
     public static final String TYPE_PROPERTY = "Property";
@@ -119,6 +127,18 @@ public class TelicentGraphSchema {
      */
     public static final String ARGUMENT_GRAPH = "graph";
     /**
+     * Argument for specifying predicate filters
+     */
+    public static final String ARGUMENT_PREDICATE_FILTER = "predicateFilter";
+    /**
+     * Values argument used in URI filters
+     */
+    public static final String ARGUMENT_VALUES = "values";
+    /**
+     * Mode argument used in URI filters
+     */
+    public static final String ARGUMENT_MODE = "mode";
+    /**
      * Search term argument used to specify the search term passed onto Telicent Search API
      */
     public static final String ARGUMENT_SEARCH_TERM = "searchTerm";
@@ -135,7 +155,7 @@ public class TelicentGraphSchema {
      */
     public static final String ARGUMENT_OFFSET = "offset";
     /**
-     * Type filter argument used to specify a type filter for the Telicent Search API
+     * Type filter argument used to specify a type filter
      */
     public static final String ARGUMENT_TYPE_FILTER = "typeFilter";
     /**
@@ -146,6 +166,10 @@ public class TelicentGraphSchema {
      * Types field
      */
     public static final String FIELD_TYPES = "types";
+    /**
+     * Predicates field
+     */
+    public static final String FIELD_PREDICATES = "predicates";
     /**
      * Properties field
      */
@@ -162,6 +186,10 @@ public class TelicentGraphSchema {
      * Relationship counts field
      */
     public static final String FIELD_RELATIONSHIP_COUNTS = "relCounts";
+    /**
+     * Relationship facets field
+     */
+    public static final String FIELD_RELATIONSHIP_FACETS = "relFacets";
     /**
      * URI field
      */

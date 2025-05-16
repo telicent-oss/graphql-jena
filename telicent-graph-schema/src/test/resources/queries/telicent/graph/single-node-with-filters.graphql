@@ -1,15 +1,10 @@
-query($limit: Int, $offset: Int) {
+query($predFilter: UriFilter, $typeFilter: UriFilter) {
     node(uri: "https://starwars.com#person_Obi-WanKenobi") {
         id
         uri
         shortUri
-        properties(limit: $limit, offset: $offset) {
-            predicate
-            value
-            datatype
-            language
-        }
-        inRels(limit: $limit, offset: $offset) {
+        # We can filter relationships by both predicate and/or type
+        inRels(predicateFilter: $predFilter, typeFilter: $typeFilter) {
             id
             domain {
                 uri
@@ -17,7 +12,7 @@ query($limit: Int, $offset: Int) {
             domain_id
             predicate
         }
-        outRels(limit: $limit, offset: $offset) {
+        outRels(predicateFilter: $predFilter, typeFilter: $typeFilter) {
             id
             predicate
             range {
@@ -26,10 +21,10 @@ query($limit: Int, $offset: Int) {
             range_id
         }
         relCounts {
-            inRels
-            outRels
-            instances
-            properties
+            # NB - If we also supply our filters to the relCounts sub-fields then those counts will reflect our filter
+            #      conditions, if we don't do this then they still reflect total counts
+            inRels(predicateFilter: $predFilter, typeFilter: $typeFilter)
+            outRels(predicateFilter: $predFilter, typeFilter: $typeFilter)
         }
         relFacets {
             inRels {
@@ -52,10 +47,6 @@ query($limit: Int, $offset: Int) {
                     count
                 }
             }
-        }
-        instances(limit: $limit, offset: $offset) {
-            id
-            uri
         }
     }
 }

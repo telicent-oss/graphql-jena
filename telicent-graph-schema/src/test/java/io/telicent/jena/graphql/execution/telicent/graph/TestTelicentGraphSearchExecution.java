@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sys.JenaSystem;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -36,6 +37,10 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 
 @SuppressWarnings("unchecked")
 public class TestTelicentGraphSearchExecution extends AbstractExecutionTests {
+
+    static {
+        JenaSystem.init();
+    }
 
     private static ObjectMapper MAPPER = new ObjectMapper();
 

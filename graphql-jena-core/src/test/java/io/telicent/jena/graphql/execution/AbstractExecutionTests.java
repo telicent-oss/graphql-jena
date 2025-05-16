@@ -102,6 +102,18 @@ public class AbstractExecutionTests {
     }
 
     /**
+     * Verifies that executing the given request generates a result that contains errors
+     * @param execution Execution to run the query against
+     * @param request Query request
+     * @return Execution results
+     */
+    protected static ExecutionResult verifyExecutionErrors(GraphQLExecutor execution, GraphQLRequest request) {
+        ExecutionResult result = execution.execute(request);
+        Assert.assertFalse(result.getErrors().isEmpty());
+        return result;
+    }
+
+    /**
      * Verifies that the given query is valid
      *
      * @param execution Execution to validate the query against
@@ -121,7 +133,7 @@ public class AbstractExecutionTests {
      * @return Validation result
      */
     protected static ParseAndValidateResult verifyValidationSuccess(GraphQLExecutor execution, String query,
-                                                     Map<String, Object> variables) {
+                                                                    Map<String, Object> variables) {
         return verifyValidationSuccess(execution, query, variables, Collections.emptyMap());
     }
 
@@ -135,7 +147,8 @@ public class AbstractExecutionTests {
      * @return Validation result
      */
     protected static ParseAndValidateResult verifyValidationSuccess(GraphQLExecutor execution, String query,
-                                                                    Map<String, Object> variables, Map<String,Object> extensions) {
+                                                                    Map<String, Object> variables,
+                                                                    Map<String, Object> extensions) {
         ParseAndValidateResult result = execution.validate(query, "test", variables, extensions);
         Assert.assertFalse(result.isFailure());
         Assert.assertTrue(result.getErrors().isEmpty());
@@ -165,6 +178,7 @@ public class AbstractExecutionTests {
                                                                     Map<String, Object> variables) {
         return verifyValidationFailure(execution, query, variables, Collections.emptyMap());
     }
+
     /**
      * Verifies that the given query is invalid
      *
@@ -175,7 +189,8 @@ public class AbstractExecutionTests {
      * @return Validation result
      */
     protected static ParseAndValidateResult verifyValidationFailure(GraphQLExecutor execution, String query,
-                                                                    Map<String, Object> variables, Map<String,Object> extensions) {
+                                                                    Map<String, Object> variables,
+                                                                    Map<String, Object> extensions) {
         ParseAndValidateResult result = execution.validate(query, "test", variables, extensions);
         Assert.assertTrue(result.isFailure());
         Assert.assertFalse(result.getErrors().isEmpty());

@@ -14,11 +14,13 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.AbstractFilter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.vocabulary.RDF;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -27,9 +29,10 @@ import java.util.stream.Stream;
  * @param <TOutput> Output type
  */
 public abstract class AbstractNodeTypesFetcher<TOutput>
-        extends AbstractLimitOffsetPagingFetcher<TelicentGraphNode, Node, TOutput> {
+        extends AbstractPagingFetcher<TelicentGraphNode, Node, TOutput> {
     @Override
-    protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
+    protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node, List<AbstractFilter> filters) {
+        // NB - Filters not enabled for node types
         return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
                   .map(Quad::getObject)
                   .filter(t -> t.isURI() || t.isBlank());
