@@ -23,7 +23,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,9 +65,9 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
     private static Stream<Node> select(DataFetchingEnvironment environment, Set<Node> startFilters, DatasetGraph dsg,
                                        Node graphFilter) {
         Stream<Node> selection = startFilters.stream().filter(n -> usedAsSubjectOrObject(n, dsg, graphFilter));
-        return AbstractLimitOffsetPagingFetcher.applyLimitAndOffset(environment, selection,
-                                                                    TelicentGraphSchema.DEFAULT_LIMIT,
-                                                                    TelicentGraphSchema.MAX_LIMIT);
+        return AbstractPagingFetcher.applyLimitAndOffset(environment, selection,
+                                                         TelicentGraphSchema.DEFAULT_LIMIT,
+                                                         TelicentGraphSchema.MAX_LIMIT);
     }
 
     /**
@@ -113,7 +112,12 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
         }
     }
 
-    static Node parseStart(String uri) {
+    /**
+     * Parses a {@link Node} from a string
+     * @param uri String URI
+     * @return Node
+     */
+    public static Node parseStart(String uri) {
         if (uri.startsWith(TelicentGraphSchema.BLANK_NODE_PREFIX)) {
             return NodeFactory.createBlankNode(uri.substring(2));
         } else {

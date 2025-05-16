@@ -18,6 +18,8 @@ import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContex
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
 
+import java.util.Map;
+
 public class AbstractFetcherTests {
 
     static {
@@ -30,6 +32,16 @@ public class AbstractFetcherTests {
                 .newDataFetchingEnvironment()
                 .localContext(context)
                 .source(source)
+                .build();
+    }
+
+    protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(DatasetGraph dsg, T source, Map<String, Object> arguments) {
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        return DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .localContext(context)
+                .source(source)
+                .arguments(arguments)
                 .build();
     }
 }

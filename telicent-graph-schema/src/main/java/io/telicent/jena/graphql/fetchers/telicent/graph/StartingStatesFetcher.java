@@ -45,11 +45,11 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
         DatasetGraph dsg = context.getDatasetGraph();
         Node node = StartingNodesFetcher.parseStart(environment.getArgument(TelicentGraphSchema.ARGUMENT_URI));
 
-        return Txn.calculateRead(dsg, () -> AbstractLimitOffsetPagingFetcher.applyLimitAndOffset(environment,
-                                                                                                 findStates(dsg, node),
-                                                                                                 TelicentGraphSchema.DEFAULT_LIMIT,
-                                                                                                 TelicentGraphSchema.MAX_LIMIT)
-                                                                            .collect(Collectors.toList()));
+        return Txn.calculateRead(dsg, () -> AbstractPagingFetcher.applyLimitAndOffset(environment,
+                                                                                      findStates(dsg, node),
+                                                                                      TelicentGraphSchema.DEFAULT_LIMIT,
+                                                                                      TelicentGraphSchema.MAX_LIMIT)
+                                                                 .collect(Collectors.toList()));
     }
 
     private static Stream<State> findStates(DatasetGraph dsg, Node node) {

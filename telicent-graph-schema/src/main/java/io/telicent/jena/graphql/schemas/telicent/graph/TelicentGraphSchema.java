@@ -127,6 +127,18 @@ public class TelicentGraphSchema {
      */
     public static final String ARGUMENT_GRAPH = "graph";
     /**
+     * Argument for specifying predicate filters
+     */
+    public static final String ARGUMENT_PREDICATE_FILTER = "predicateFilter";
+    /**
+     * Values argument used in URI filters
+     */
+    public static final String ARGUMENT_VALUES = "values";
+    /**
+     * Mode argument used in URI filters
+     */
+    public static final String ARGUMENT_MODE = "mode";
+    /**
      * Search term argument used to specify the search term passed onto Telicent Search API
      */
     public static final String ARGUMENT_SEARCH_TERM = "searchTerm";
@@ -143,7 +155,7 @@ public class TelicentGraphSchema {
      */
     public static final String ARGUMENT_OFFSET = "offset";
     /**
-     * Type filter argument used to specify a type filter for the Telicent Search API
+     * Type filter argument used to specify a type filter
      */
     public static final String ARGUMENT_TYPE_FILTER = "typeFilter";
     /**
