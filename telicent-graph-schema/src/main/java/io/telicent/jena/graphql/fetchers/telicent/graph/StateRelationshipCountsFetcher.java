@@ -24,6 +24,14 @@ import java.util.stream.Stream;
  * A data fetcher that counts the available relationships for a state
  */
 public class StateRelationshipCountsFetcher extends AbstractStateRelationshipsFetcher<Integer> {
+
+    /**
+     * Default constructor
+     */
+    public StateRelationshipCountsFetcher() {
+        super();
+    }
+
     @Override
     protected State getSource(DataFetchingEnvironment environment) {
         StateRelationshipCounts counts = environment.getSource();

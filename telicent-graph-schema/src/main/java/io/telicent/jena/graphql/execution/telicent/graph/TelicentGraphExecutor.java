@@ -21,7 +21,6 @@ import io.telicent.jena.graphql.fetchers.telicent.graph.*;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.io.IOException;

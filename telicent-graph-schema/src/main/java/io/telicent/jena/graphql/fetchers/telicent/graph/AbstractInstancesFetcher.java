@@ -30,6 +30,13 @@ public abstract class AbstractInstancesFetcher<TOutput>
         extends AbstractLimitOffsetPagingFetcher<TelicentGraphNode, Node, TOutput> {
     private static final Node RDF_TYPE = RDF.type.asNode();
 
+    /**
+     * Creates a new instance fetcher with default paging settings.
+     */
+    protected AbstractInstancesFetcher() {
+        super();
+    }
+
     @Override
     protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, Node.ANY, RDF_TYPE, node.getNode())

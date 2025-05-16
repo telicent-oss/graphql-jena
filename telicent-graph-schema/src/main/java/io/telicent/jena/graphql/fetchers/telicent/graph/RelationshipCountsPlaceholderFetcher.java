@@ -26,6 +26,14 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
  * </p>
  */
 public class RelationshipCountsPlaceholderFetcher implements DataFetcher<RelationshipCounts> {
+
+    /**
+     * Default constructor
+     */
+    public RelationshipCountsPlaceholderFetcher() {
+        super();
+    }
+
     @Override
     public RelationshipCounts get(DataFetchingEnvironment environment) throws Exception {
         TelicentGraphNode source = environment.getSource();
