@@ -1,10 +1,19 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.1
+
+- Telicent Graph Schema improvements:
+    - Added `limit` and `offset` arguments to top level `nodes` and `states` queries
+    - If requested `limit` exceeds maximum permitted limit then execution fails with an error
+    - Added `predicateFilter` and `typeFilter` arguments to `inRels` and `outRels` field on `Node` type to allow
+      filtering relationships by their predicate and/or type
+    - Added new `relFacets` property to `Node` type to allow summarising basic information about available relationships
+
 # 0.10.0
 
 - Telicent Graph Schema improvements:
     - Added new `relCounts` property to `Node` and `State` types to allow summarising available relationships
-    - Added `limit` and `offset` parameters to various list fields, in combination with the new `relCounts` field this
+    - Added `limit` and `offset` arguments to various list fields, in combination with the new `relCounts` field this
       allows paging through the results
 
 # 0.9.3

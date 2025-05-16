@@ -17,7 +17,6 @@ import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.FacetInfo;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.FacetInfoPlaceholder;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
