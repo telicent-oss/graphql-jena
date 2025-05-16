@@ -24,6 +24,14 @@ import java.util.stream.Stream;
  * A data fetcher that simply counts the literal properties directly attached to a node
  */
 public class LiteralsCountFetcher extends AbstractLiteralsFetcher<Integer> {
+
+    /**
+     * Default constructor
+     */
+    public LiteralsCountFetcher() {
+        super();
+    }
+
     @Override
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         RelationshipCounts counts = environment.getSource();

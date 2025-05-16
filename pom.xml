@@ -67,7 +67,7 @@
         <!-- Code Coverage Configuration -->
         <!--
         Controls the minimum code coverage ratio that modules which have opted into code coverage enforcement are
-        required to meet.  If a sub-module wants to increase/decrease this value they can do so by redefining this
+        required to meet.  If one sub-module wants to increase/decrease this value they can do so by redefining this
         property in their pom.xml
         -->
         <coverage.minimum>0.9</coverage.minimum>
@@ -86,6 +86,7 @@
         <plugin.nexus>1.7.0</plugin.nexus>
         <plugin.shade>3.6.0</plugin.shade>
         <plugin.source>3.3.1</plugin.source>
+        <plugin.surefire>3.5.3</plugin.surefire>
         <plugin.versions>2.18.0</plugin.versions>
 
         <!-- Dependency Versions -->
@@ -97,10 +98,17 @@
         <dependency.jwt-servlet>1.0.1</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.17.0</dependency.mockito>
+        <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
         <dependency.smart-caches>0.29.0</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
         <dependency.wiremock>3.13.0</dependency.wiremock>
+
+        <!-- Vulnerability fixes -->
+        <!-- CVE-2024-57699 -->
+        <dependency.json-smart>2.5.2</dependency.json-smart>
+        <!-- CVE-2024-47554 -->
+        <dependency.commons-io>2.14.0</dependency.commons-io>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,6 +188,12 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>${dependency.mockito}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-inline</artifactId>
+                <version>${dependency.mockito-inline}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -363,6 +377,9 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${plugin.jacoco}</version>
+                <configuration>
+                    <propertyName>jacocoArgLine</propertyName>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -483,6 +500,15 @@
                 <version>${plugin.versions}</version>
                 <configuration>
                     <ignoredVersions>.*[-\.]M.*,.*-alpha.*,.*-beta.*,.*-RC.*,.*rc.*</ignoredVersions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${plugin.surefire}</version>
+                <configuration>
+                    <argLine>@{jacocoArgLine} -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
                 </configuration>
             </plugin>
 

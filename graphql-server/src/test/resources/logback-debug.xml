@@ -22,7 +22,7 @@
         </encoder>
     </appender>
 
-    <root level="OFF">
+    <root level="INFO">
         <appender-ref ref="STDERR" />
     </root>
 </configuration>

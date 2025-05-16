@@ -26,6 +26,14 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractLiteralsFetcher<TOutput>
         extends AbstractLimitOffsetPagingFetcher<TelicentGraphNode, Quad, TOutput> {
+
+    /**
+     * Default constructor
+     */
+    protected AbstractLiteralsFetcher() {
+        super();
+    }
+
     @Override
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, node.getNode(), Node.ANY, Node.ANY).filter(q -> q.getObject().isLiteral());

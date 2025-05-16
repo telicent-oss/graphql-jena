@@ -29,6 +29,14 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractStateRelationshipsFetcher<TOutput>
         extends AbstractLimitOffsetPagingFetcher<State, Quad, TOutput> {
+
+    /**
+     * Default constructor
+     */
+    protected AbstractStateRelationshipsFetcher() {
+        super();
+    }
+
     private static Stream<Quad> outbound(DatasetGraph dsg, State target) {
         return dsg.stream(Node.ANY, target.getStateNode(), Node.ANY, Node.ANY)
                   .filter(q -> q.getObject().isURI() || q.getObject().isBlank())

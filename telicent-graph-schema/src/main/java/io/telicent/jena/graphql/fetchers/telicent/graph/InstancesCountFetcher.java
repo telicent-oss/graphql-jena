@@ -24,6 +24,14 @@ import java.util.stream.Stream;
  * A data fetcher that calculates the total number of instances available
  */
 public class InstancesCountFetcher extends AbstractInstancesFetcher<Integer> {
+
+    /**
+     * Default constructor
+     */
+    public InstancesCountFetcher() {
+        super();
+    }
+
     @Override
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         RelationshipCounts counts = environment.getSource();

@@ -1,6 +1,6 @@
 # Standalone GraphQL Server for Apache Jena
 
-The `graphql-server` module provides a standalone JAX-RS based server that exposes our [schemas](schemas.md) over a RDF
+The `graphql-server` module provides a standalone JAX-RS based server that exposes our [schemas](schemas.md) over an RDF
 `DatasetGraph` as provided by Jena.
 
 ## Running the Server

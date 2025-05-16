@@ -26,6 +26,14 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.StateRelationshipC
  * </p>
  */
 public class StateRelationshipCountsPlaceholderFetcher implements DataFetcher<StateRelationshipCounts> {
+
+    /**
+     * Default constructor
+     */
+    public StateRelationshipCountsPlaceholderFetcher() {
+        super();
+    }
+
     @Override
     public StateRelationshipCounts get(DataFetchingEnvironment environment) throws Exception {
         State source = environment.getSource();

@@ -27,6 +27,13 @@ import java.util.stream.Stream;
  */
 public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Integer> {
 
+//    /**
+//     * Default constructor
+//     */
+//    public RelationshipCountsFetcher() {
+//        super();
+//    }
+
     /**
      * Creates a new relationship counts fetcher
      * @param direction Direction of relationships to count
