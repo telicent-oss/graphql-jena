@@ -31,6 +31,10 @@ import java.util.stream.Stream;
 /**
  * Abstract base class for GraphQL {@link graphql.schema.DataFetcher} implementations that support paging on their
  * results using {@code limit} and {@code offset} arguments
+ *
+ * @param <TInput>  Input type that will be {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}'d
+ * @param <TSource> Source type
+ * @param <TOutput> Output type that will be produced as the end result of the data fetch
  */
 public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements DataFetcher<TOutput> {
 

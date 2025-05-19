@@ -25,6 +25,13 @@ import java.util.List;
  */
 public class FacetsFetcher implements DataFetcher<List<FacetInfo>> {
 
+    /**
+     * Creates a new fetcher
+     */
+    public FacetsFetcher() {
+
+    }
+
     @Override
     public List<FacetInfo> get(DataFetchingEnvironment environment) throws Exception {
         FacetInfoPlaceholder placeholder = environment.getSource();

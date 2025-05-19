@@ -47,6 +47,24 @@ public abstract class AbstractFilter {
     }
 
     /**
+     * Gets the filter mode
+     *
+     * @return Filter mode
+     */
+    public FilterMode mode() {
+        return this.mode;
+    }
+
+    /**
+     * Gets the filter values
+     *
+     * @return Values to filter by
+     */
+    public Set<Node> values() {
+        return this.values;
+    }
+
+    /**
      * Applies the filter
      *
      * @param stream Input stream

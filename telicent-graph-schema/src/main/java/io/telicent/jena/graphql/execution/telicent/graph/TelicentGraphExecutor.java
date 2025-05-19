@@ -94,8 +94,12 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                             // Node type.  Therefore, for the NodeRelFacets type we use a fetcher that simply injects
                             // a placeholder value that includes the fetchers to use at the lower level.
                             .type(TelicentGraphSchema.TYPE_RELATIONSHIP_FACETS,
-                                        t -> t.dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, new FacetPlaceholderFetcher(new RelationshipPredicateFacetsFetcher(EdgeDirection.IN), new RelationshipTypeFacetsFetcher(EdgeDirection.IN)))
-                                              .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, new FacetPlaceholderFetcher(new RelationshipPredicateFacetsFetcher(EdgeDirection.OUT), new RelationshipTypeFacetsFetcher(EdgeDirection.OUT)))
+                                        t -> t.dataFetcher(TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS,
+                                                                  new FacetPlaceholderFetcher(new RelationshipPredicateFacetsFetcher(EdgeDirection.IN),
+                                                                                              new RelationshipTypeFacetsFetcher(EdgeDirection.IN)))
+                                              .dataFetcher(TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS,
+                                                           new FacetPlaceholderFetcher(new RelationshipPredicateFacetsFetcher(EdgeDirection.OUT),
+                                                                                       new RelationshipTypeFacetsFetcher(EdgeDirection.OUT)))
                             )
                             // Then at the RelFacetInfo level we use the general purpose FacetsFetcher, this inspects
                             // the placeholder to find the Node we're computing facets for and selects the appropriate
