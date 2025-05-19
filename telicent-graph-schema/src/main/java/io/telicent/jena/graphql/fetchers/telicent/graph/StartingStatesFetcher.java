@@ -25,6 +25,7 @@ import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A GraphQL {@link DataFetcher} that finds the starting states for a states query
@@ -44,10 +45,14 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
         DatasetGraph dsg = context.getDatasetGraph();
         Node node = StartingNodesFetcher.parseStart(environment.getArgument(TelicentGraphSchema.ARGUMENT_URI));
 
-        return Txn.calculateRead(dsg, () -> findStates(dsg, node));
+        return Txn.calculateRead(dsg, () -> AbstractPagingFetcher.applyLimitAndOffset(environment,
+                                                                                      findStates(dsg, node),
+                                                                                      TelicentGraphSchema.DEFAULT_LIMIT,
+                                                                                      TelicentGraphSchema.MAX_LIMIT)
+                                                                 .collect(Collectors.toList()));
     }
 
-    private static List<State> findStates(DatasetGraph dsg, Node node) {
+    private static Stream<State> findStates(DatasetGraph dsg, Node node) {
         return IesFetchers.STATE_PREDICATES.stream()
                                            .flatMap(p -> dsg.stream(Node.ANY, Node.ANY, p,
                                                                     node)
@@ -61,7 +66,6 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
                                                             .map(Quad::getSubject)
                                                             .distinct()
                                                             .map(n -> new State(n, p,
-                                                                                node)))
-                                           .collect(Collectors.toList());
+                                                                                node)));
     }
 }

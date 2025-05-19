@@ -13,7 +13,7 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.RelationshipCounts;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -34,7 +34,7 @@ public class LiteralsCountFetcher extends AbstractLiteralsFetcher<Integer> {
 
     @Override
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
-        RelationshipCounts counts = environment.getSource();
+        NodePlaceholder counts = environment.getSource();
         return counts.parent();
     }
 

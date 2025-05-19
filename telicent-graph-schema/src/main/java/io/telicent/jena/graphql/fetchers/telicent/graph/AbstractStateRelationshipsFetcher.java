@@ -15,11 +15,13 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 import graphql.com.google.common.collect.Streams;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.State;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.AbstractFilter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.vocabulary.RDF;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -28,7 +30,7 @@ import java.util.stream.Stream;
  * @param <TOutput> Output type
  */
 public abstract class AbstractStateRelationshipsFetcher<TOutput>
-        extends AbstractLimitOffsetPagingFetcher<State, Quad, TOutput> {
+        extends AbstractPagingFetcher<State, Quad, TOutput> {
 
     /**
      * Default constructor
@@ -52,7 +54,8 @@ public abstract class AbstractStateRelationshipsFetcher<TOutput>
     }
 
     @Override
-    protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, State state) {
+    protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, State state, List<AbstractFilter> filters) {
+        // NB - Filters not enabled for state relationships
         return Streams.concat(AbstractStateRelationshipsFetcher.outbound(dsg, state),
                               AbstractStateRelationshipsFetcher.inbound(dsg, state));
     }

@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 
 public class TestTelicentExecutionContext {
 
-    private static final String RANDOM_STRING = RandomStringUtils.random(6);
+    private static final String RANDOM_STRING = RandomStringUtils.insecure().nextAlphanumeric(6);
 
     @Test
     public void test_nullAuthToken() {

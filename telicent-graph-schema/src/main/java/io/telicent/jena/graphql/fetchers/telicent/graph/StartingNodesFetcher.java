@@ -23,9 +23,11 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A GraphQL {@link DataFetcher} that finds the starting nodes for a query
@@ -49,23 +51,30 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
         DatasetGraph dsg = context.getDatasetGraph();
         String rawGraph = environment.getArgument(TelicentGraphSchema.ARGUMENT_GRAPH);
         Node graphFilter = StringUtils.isNotBlank(rawGraph) ? parseStart(rawGraph) : Node.ANY;
-        List<Node> startFilters = parseStarts(multiSelect ? environment.getArgument(TelicentGraphSchema.ARGUMENT_URIS) :
-                                              environment.getArgument(TelicentGraphSchema.ARGUMENT_URI));
+        Set<Node> startFilters = parseStarts(multiSelect ? environment.getArgument(TelicentGraphSchema.ARGUMENT_URIS) :
+                                             environment.getArgument(TelicentGraphSchema.ARGUMENT_URI));
+
 
         return Txn.calculateRead(dsg, () -> {
-            List<TelicentGraphNode> nodes = startFilters.stream()
-                                                        .distinct()
-                                                        .filter(n -> usedAsSubjectOrObject(n, dsg, graphFilter))
-                                                        .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
-                                                        .collect(Collectors.toList());
+            List<TelicentGraphNode> nodes = select(environment, startFilters, dsg, graphFilter).map(
+                    n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
             return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
         });
     }
 
+    private static Stream<Node> select(DataFetchingEnvironment environment, Set<Node> startFilters, DatasetGraph dsg,
+                                       Node graphFilter) {
+        Stream<Node> selection = startFilters.stream().filter(n -> usedAsSubjectOrObject(n, dsg, graphFilter));
+        return AbstractPagingFetcher.applyLimitAndOffset(environment, selection,
+                                                         TelicentGraphSchema.DEFAULT_LIMIT,
+                                                         TelicentGraphSchema.MAX_LIMIT);
+    }
+
     /**
      * Given a node checks whether it is used as either the subject/object of any quads in the dataset
-     * @param n Node
-     * @param dsg Dataset
+     *
+     * @param n           Node
+     * @param dsg         Dataset
      * @param graphFilter Graph node
      * @return True if used as a subject/object, false otherwise
      */
@@ -74,7 +83,7 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
     }
 
     @SuppressWarnings("unchecked")
-    private List<Node> parseStarts(Object rawStart) {
+    private Set<Node> parseStarts(Object rawStart) {
         if (rawStart == null) {
             throw new IllegalArgumentException(
                     "Required argument" + (this.multiSelect ? TelicentGraphSchema.ARGUMENT_URIS :
@@ -82,7 +91,7 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
         }
         if (this.multiSelect) {
             if (rawStart instanceof List<?>) {
-                List<Node> starts = new ArrayList<>();
+                Set<Node> starts = new LinkedHashSet<>();
                 for (String uri : (List<String>) rawStart) {
                     starts.add(parseStart(uri));
                 }
@@ -94,7 +103,7 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
             }
         } else {
             if (rawStart instanceof String) {
-                return List.of(parseStart((String) rawStart));
+                return Set.of(parseStart((String) rawStart));
             } else {
                 throw new IllegalArgumentException(
                         "Argument " + TelicentGraphSchema.ARGUMENT_URI + " received as wrong type, expected String but got " + rawStart.getClass()
@@ -103,7 +112,12 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
         }
     }
 
-    static Node parseStart(String uri) {
+    /**
+     * Parses a {@link Node} from a string
+     * @param uri String URI
+     * @return Node
+     */
+    public static Node parseStart(String uri) {
         if (uri.startsWith(TelicentGraphSchema.BLANK_NODE_PREFIX)) {
             return NodeFactory.createBlankNode(uri.substring(2));
         } else {

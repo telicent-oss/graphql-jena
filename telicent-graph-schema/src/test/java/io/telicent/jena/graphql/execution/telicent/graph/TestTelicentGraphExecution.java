@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.execution.telicent.graph;
 
 import graphql.ExecutionResult;
 import io.telicent.jena.graphql.execution.AbstractExecutionTests;
+import io.telicent.jena.graphql.fetchers.telicent.graph.IesFetchers;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +53,8 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     public static final String SINGLE_NODE_QUERY = loadQuery("single-node.graphql");
 
     public static final String PAGED_NODE_QUERY = loadQuery("single-node-with-paging.graphql");
+
+    public static final String FILTERED_NODE_QUERY = loadQuery("single-node-with-filters.graphql");
 
     public static final String MULTIPLE_NODES_QUERY = loadQuery("multiple-nodes.graphql");
 
@@ -127,20 +130,11 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     public Object[][] pageParameters() {
         return new Object[][] {
                 // Limit 10 with varying offsets
-                { 10, 1 },
-                { 10, 2 },
-                { 10, 3 },
-                { 10, 4 },
-                { 10, 5 },
-                { 10, 100 },
+                { 10, 1 }, { 10, 2 }, { 10, 3 }, { 10, 4 }, { 10, 5 }, { 10, 100 },
                 // Limit 25 paging through
-                { 25, 1 },
-                { 25, 26 },
-                { 25, 51 },
+                { 25, 1 }, { 25, 26 }, { 25, 51 },
                 // Limit 100 with varying offsets
-                { 100, 1 },
-                { 100, 50 },
-                { 100, 100 }
+                { 100, 1 }, { 100, 50 }, { 100, 100 }
         };
     }
 
@@ -149,8 +143,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         Assert.assertNotNull(relCounts);
         List<?> fieldData = (List<?>) data.get(field);
         Assert.assertNotNull(fieldData);
-        verifyPagedResults(fieldData, (Integer) relCounts.get(field),
-                           limit, offset);
+        verifyPagedResults(fieldData, (Integer) relCounts.get(field), limit, offset);
 
         return fieldData.size();
     }
@@ -186,13 +179,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     @DataProvider(name = "pageSizes")
     private static Object[][] pageSizes() {
         return new Object[][] {
-                { 1 },
-                { 5 },
-                { 10 },
-                { 25 },
-                { 50 },
-                { 100 },
-                { (int) TelicentGraphSchema.MAX_LIMIT }
+                { 1 }, { 5 }, { 10 }, { 25 }, { 50 }, { 100 }, { (int) TelicentGraphSchema.MAX_LIMIT }, { 5_000 }
         };
     }
 
@@ -204,6 +191,17 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         int offset = 1;
         int pagesRetrieved = 0;
         int expectedPages = 68 > pageSize ? (68 / pageSize) + (68 % pageSize != 0 ? 1 : 0) + 1 : 2;
+
+        if (pageSize > TelicentGraphSchema.MAX_LIMIT) {
+            GraphQLRequest request = new GraphQLRequest();
+            request.setQuery(PAGED_NODE_QUERY);
+            request.setVariables(Map.of("limit", pageSize, "offset", offset));
+            ExecutionResult failedResult = verifyExecutionErrors(this.starwars, request);
+            Assert.assertTrue(failedResult.getErrors()
+                                          .stream()
+                                          .anyMatch(e -> e.getMessage().contains("exceeds the maximum limit")));
+            return;
+        }
 
         // When
         while (true) {
@@ -277,6 +275,61 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         Assert.assertEquals(actualResults.size(), expected);
     }
 
+    @DataProvider(name = "filters")
+    private Object[][] filters() {
+        Map<String, Object> isStateOfFilter =
+                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
+                       List.of(IesFetchers.IS_STATE_OF.getURI()));
+        Map<String, Object> isStartOfFilter =
+                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
+                       List.of(IesFetchers.IS_START_OF.getURI()));
+        Map<String, Object> birthStateTypeFilter =
+                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
+                       List.of(IesFetchers.iesTerm("BirthState").getURI()));
+        Map<String, Object> birthOrDeathStateTypeFilter =
+                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
+                       List.of(IesFetchers.iesTerm("BirthState").getURI(), IesFetchers.iesTerm("DeathState").getURI()));
+
+        return new Object[][] {
+                {
+                        Map.of("predFilter", isStateOfFilter), 50, 0
+                },
+                // While a BirthState exists, it is not linked via isStateOf predicate
+                {
+                        Map.of("predFilter", isStateOfFilter, "typeFilter", birthStateTypeFilter), 0, 0
+                },
+                // BirthState exists and linked via isStartOfPredicate
+                {
+                        Map.of("predFilter", isStartOfFilter, "typeFilter", birthStateTypeFilter), 1, 0
+                },
+                // Birth and Death State exists
+                {
+                    Map.of("typeFilter", birthOrDeathStateTypeFilter), 2, 0
+                }
+        };
+    }
+
+    @Test(dataProvider = "filters")
+    public void givenStarWarsData_whenQueryingForSingleNodeWithFilters_thenResultsFilteredCorrectly(
+            Map<String, Object> variables, int expectedInRels, int expectedOutRels) {
+        // Given and When
+        ExecutionResult result = verifyExecution(this.starwars, FILTERED_NODE_QUERY, variables);
+
+        // Then
+        Assert.assertTrue(result.isDataPresent());
+        Assert.assertNotNull(result.getData());
+        Map<String, Object> data = result.getData();
+        Assert.assertNotNull(data.get(TelicentGraphSchema.QUERY_SINGLE_NODE));
+        data = (Map<String, Object>) data.get(TelicentGraphSchema.QUERY_SINGLE_NODE);
+        verifyNodeResult(data, OBI_WAN_KENOBI, "starwars:person_Obi-WanKenobi");
+        int outRels = verifyRelCounts(data, TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS,
+                                      (int) TelicentGraphSchema.DEFAULT_LIMIT, 1);
+        Assert.assertEquals(outRels, expectedOutRels);
+        int inRels = verifyRelCounts(data, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS,
+                                     (int) TelicentGraphSchema.DEFAULT_LIMIT, 1);
+        Assert.assertEquals(inRels, expectedInRels);
+    }
+
     private static void verifyNodeResult(Map<String, Object> data, String fullUri, String shortUri) {
         Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_URI), fullUri);
         Assert.assertEquals(data.get(TelicentGraphSchema.FIELD_ID), fullUri);
@@ -341,7 +394,7 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
 
         // Then
         Map<String, Object> data = result.getData();
-        verifyStates(data, TelicentGraphSchema.QUERY_STATES, 71);
+        verifyStates(data, TelicentGraphSchema.QUERY_STATES, 50);
     }
 
     private static List<Map<String, Object>> verifyStates(Map<String, Object> data, String queryStates,

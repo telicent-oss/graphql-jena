@@ -5,9 +5,10 @@ type Node {
     shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
     types(limit: Int = 50, offset: Int = 1): [Node]! # An array of types for the Node - i.e. the classes it is an instance of.
     properties(limit: Int = 50, offset: Int = 1): [Property]! # An array of literal properties of the Node
-    outRels(limit: Int = 50, offset: Int = 1): [Rel]! # An array of Rels where the current Node is in the domain position
-    inRels(limit: Int = 50, offset: Int = 1): [Rel]! # An array of Rels where the current Node is in the range position
+    outRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the domain position
+    inRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the range position
     relCounts: NodeRelCounts! # Relationship counts information
+    relFacets: NodeRelFacets!
     instances(limit: Int = 50, offset: Int = 1): [Node] # If the node is a class, this will return an array of its instances
 }
 
@@ -21,11 +22,27 @@ type Rel { # A subject-predicate-object statement
 }
 
 type NodeRelCounts { # Counts of relationships available for a Node
-    inRels: Int
-    outRels: Int
+    inRels(predicateFilter: UriFilter, typeFilter: UriFilter): Int
+    outRels(predicateFilter: UriFilter, typeFilter: UriFilter): Int
     properties: Int
     types: Int
     instances: Int
+}
+
+type NodeRelFacets {
+    inRels: RelFacetInfo!
+    outRels: RelFacetInfo!
+}
+
+type RelFacetInfo {
+    types: [FacetInfo!]!
+    predicates: [FacetInfo!]!
+}
+
+type FacetInfo {
+    uri: String! # Full URI
+    shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    count: Int
 }
 
 type Property { #A literal property
@@ -34,6 +51,16 @@ type Property { #A literal property
     value: String!
     datatype: String
     language: String
+}
+
+enum FilterMode {
+    INCLUDE
+    EXCLUDE
+}
+
+input UriFilter {
+    values: [String!]!
+    mode: FilterMode = INCLUDE
 }
 
 type State {
@@ -89,7 +116,7 @@ type Query {
         typeFilter: String
     ): SearchResults
     getAllEntities(graph: String): [Node]
-    states(uri: String!): [State]!
+    states(uri: String!, limit: Int = 50, offset: Int = 1): [State]!
     node(graph: String, uri: String!): Node
-    nodes(graph: String, uris: [String!]!): [Node]
+    nodes(graph: String, uris: [String!]!, limit: Int = 50, offset: Int = 1): [Node]
 }
