@@ -24,6 +24,14 @@ import java.util.stream.Stream;
  * A data fetcher that counts the {@code rdf:type}'s declared for a node
  */
 public class NodeTypeCountsFetcher extends AbstractNodeTypesFetcher<Integer> {
+
+    /**
+     * Default constructor
+     */
+    public NodeTypeCountsFetcher() {
+        super();
+    }
+
     @Override
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         RelationshipCounts counts = environment.getSource();

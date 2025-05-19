@@ -106,7 +106,7 @@ GraphQL schemas if they are not aware of those ahead of time.
 
 The GraphQL Endpoints will respond to `OPTIONS` requests appropriately.  This relies upon your Fuseki server instance
 having Cross Origin Resource Sharing (CORS) enabled and configured appropriately.  Assuming this is true then browser
-based applications will be able to make GraphQL queries against your endppint(s).
+based applications will be able to make GraphQL queries against your endpoint(s).
 
 ## Extending this Module
 

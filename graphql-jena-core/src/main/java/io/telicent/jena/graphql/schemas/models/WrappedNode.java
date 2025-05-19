@@ -46,7 +46,7 @@ public class WrappedNode {
             this.kind = NodeKind.BLANK;
         } else if (n.isVariable()) {
             this.kind = NodeKind.VARIABLE;
-        } else if (n.isNodeTriple()) {
+        } else if (n.isTripleTerm()) {
             this.kind = NodeKind.TRIPLE;
         } else if (n.isLiteral()) {
             if (StringUtils.isNotBlank(n.getLiteralLanguage())) {

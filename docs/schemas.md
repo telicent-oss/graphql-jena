@@ -370,7 +370,7 @@ operations defined:
   the dataset
 - `getAllEntities` for retrieving all nodes in the dataset
 - `states` for retrieving states (an IES ontology concept) of other entities in the dataset
-- `node` for retrieving a single ndoe from the dataset
+- `node` for retrieving a single node from the dataset
 - `nodes` for retrieving multiple nodes from the dataset
 
 ```graphql

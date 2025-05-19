@@ -28,6 +28,14 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractNodeTypesFetcher<TOutput>
         extends AbstractLimitOffsetPagingFetcher<TelicentGraphNode, Node, TOutput> {
+
+    /**
+     * Default constructor
+     */
+    protected AbstractNodeTypesFetcher() {
+        super();
+    }
+
     @Override
     protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)

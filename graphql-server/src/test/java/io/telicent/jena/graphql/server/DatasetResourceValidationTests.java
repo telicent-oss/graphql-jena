@@ -23,6 +23,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.apache.jena.vocabulary.RDFS;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
@@ -35,6 +36,13 @@ import java.util.Map;
 import static io.telicent.jena.graphql.server.model.GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON;
 
 public class DatasetResourceValidationTests extends AbstractResourceTests {
+
+    static {
+        // Remove default handlers attached to JUL root logger
+        java.util.logging.LogManager.getLogManager().reset();
+        // Redirect JUL to SLF4J
+        SLF4JBridgeHandler.install();
+    }
 
     private static final String DATASET_VALIDATE_ENDPOINT = "/dataset/validate";
     private static final String TRAVERSAL_VALIDATE_ENDPOINT = "/dataset/traversal/validate";

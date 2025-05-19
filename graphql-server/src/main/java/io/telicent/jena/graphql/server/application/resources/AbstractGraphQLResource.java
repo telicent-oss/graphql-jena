@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class AbstractGraphQLResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatasetResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGraphQLResource.class);
 
     /**
      * Creates an abstract resource for handling GraphQL requests
@@ -69,7 +69,7 @@ public class AbstractGraphQLResource {
      * @param operationName  operation Name
      * @param variables      variables to make available to the query
      * @param extensions     query extensions
-     * @param servletContext for communicating with surrounding container (session management etc..)
+     * @param servletContext for communicating with surrounding container (session management etc...)
      * @param executorType   relevant class to execute the operation
      * @param validate       flag indicating execution (false) or validation (true)
      * @return either a successful response (200) or the error(s) (400).
@@ -98,7 +98,7 @@ public class AbstractGraphQLResource {
      * @param operationName  operation Name
      * @param variables      variables to make available to the query
      * @param extensions     query extensions
-     * @param servletContext for communicating with surrounding container (session management etc..)
+     * @param servletContext for communicating with surrounding container (session management etc...)
      * @param executorType   relevant class to execute the operation
      * @param validate       flag indicating execution (false) or validation (true)
      * @return either a successful response (200) or the error(s) (400).
