@@ -409,3 +409,120 @@ achieved by supplying `limit` and `offset` arguments to the relevant fields, bea
 In order to determine whether to page clients can request the `relCounts` field on the `Node` and `State` types, this
 field provides total counts for all paging enabled fields.  Clients can use these counts, and the knowledge of the
 `limit` and `offset` values they passed in, to determine whether they have retrieved all results.  
+
+### Facets in the Telicent (IES) Schema
+
+As of `0.10.1` the Telicent (IES) Schema offers relationship facet information for the `Node` type, facets can be
+computed for both the `inRels` and `outRels`.  Two kinds of facets are available, `predicates` and `types`.  The
+`predicates` facet lists the unique predicates associated with a `Node`, and the `count` of relationships that use that
+predicate.  The `types` facet lists the unique types associated with the target `Node` of a relationship, i.e. the
+`rdf:type`'s expressed on them, again it lists the unique types and the number of occurrences of each type.  For example
+the following query computes facets for a node:
+
+```graphql
+query Node($uri: String!) {
+  node(uri: $uri) {
+    id
+    uri
+    uriHash
+    relCounts {
+      inRels
+      outRels
+    }    
+    relFacets {
+      inRels {
+        predicates {
+          uri
+          count
+        }
+        types {
+          uri
+          count
+        }
+      }
+      outRels {
+        predicates {
+          uri
+          count
+       }
+       types {
+          uri
+          count
+       }
+      }
+    }
+  }
+}
+```
+
+Callers can use this facet information to add [filters](#filtering-in-the-telicent-ies-schema) to their subsequent
+requests.
+
+### Filtering in the Telicent (IES) Schema
+
+As of `0.10.1` the Telicent (IES) Schema offers predicate and type based filtering on some schema fields.  A filter is
+expressed in terms of a `mode`, either `INCLUDE` or `EXCLUDE`, and the `values` to filter by.  The `values` to filter by 
+are treated as URIs.  For example:
+
+```graphql
+query Node($uri: String!) {
+  node(uri: $uri) {
+    id
+    uri
+    uriHash
+    types {
+      uri
+    }
+    properties {
+      predicate
+      value
+    }
+    inRels(predicateFilter: { mode: INCLUDE, values: [ "http://ies.data.gov.uk/ontology/ies4#inLocation" ]}) {
+      id
+      domain_id
+      range_id
+      predicate
+    }
+    outRels(predicateFilter: { mode: INCLUDE, values: [ "http://ies.data.gov.uk/ontology/ies4#isPartOf" ]}) {
+      id
+      domain_id
+      range_id
+      predicate
+      range {
+        uri
+      }
+    }    
+    relCounts {
+      inRels(predicateFilter: { mode: INCLUDE, values: [ "http://ies.data.gov.uk/ontology/ies4#inLocation" ]})
+      outRels(predicateFilter: { mode: INCLUDE, values: [ "http://ies.data.gov.uk/ontology/ies4#isPartOf" ]})
+    }    
+    relFacets {
+      inRels {
+        predicates {
+          uri
+          count
+        }
+      }
+      outRels {
+        predicates {
+          uri
+          count
+       }
+      }
+    }
+  }
+}
+```
+
+In this example we filter `inRels` - incoming relationships - to only those using the `ies:inLocation` predicate, and
+`outRels` - outgoing relationships - to only those using the `ies:isPartOf` predicate.
+
+**NB:** If you want the corresponding `inRels` and `outRels` fields of the `relCounts` object counts to reflect our
+filtering, then you **MUST** also apply the filter to those fields, otherwise the counts will not reflect your filter.
+
+A few things to be aware of:
+
+- If both `predicateFilter` and `typeFilter` are present then both filter conditions **MUST** be satisfied.
+- For `predicateFilter`'s a `mode: INCLUDE` filter will be more performant than a `mode: EXCLUDE` filter.
+- As noted above `relCounts` **SHOULD** also have filters applied otherwise counts won't reflect the filters.
+- An empty `values` list is an error and will result in a rejected query.
