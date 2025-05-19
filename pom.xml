@@ -108,7 +108,7 @@
         <!-- CVE-2024-57699 -->
         <dependency.json-smart>2.5.2</dependency.json-smart>
         <!-- CVE-2024-47554 -->
-        <dependency.commons-io>2.14.0</dependency.commons-io>
+        <dependency.commons-io>2.19.0</dependency.commons-io>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
