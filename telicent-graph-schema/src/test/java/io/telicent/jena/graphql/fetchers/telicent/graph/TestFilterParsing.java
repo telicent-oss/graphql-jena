@@ -123,4 +123,30 @@ public class TestFilterParsing extends AbstractPagingFetcher<TelicentGraphNode, 
         // When and Then
         this.parseFilter(environment, "foo");
     }
+    
+    @Test
+    public void givenTypeFilterWith_filtersDisabled_returnAll() {
+        // Given
+        // When
+        AbstractFilter result = this.createTypeFilter(null, null);
+        // Then
+        Assert.assertEquals(IncludeAllFilter.INSTANCE, result);
+    }
+
+    private static class TestTypePagingFetcher extends TestFilterParsing {
+        @Override
+        protected boolean enableFilters() {
+            return true;
+        }
+    }
+    
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Fetcher implementation MUST override createTypeFilter\\(\\) method to enable type filtering support")
+    public void givenTypeFilterWith_filtersEnabled__thenIllegalArgument() {
+        // Given
+        TestFilterParsing test = new TestTypePagingFetcher();
+        // When
+        // Then
+        test.createTypeFilter(null, null);
+    }
+
 }
