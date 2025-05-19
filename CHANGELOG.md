@@ -6,7 +6,7 @@
     - Added `limit` and `offset` arguments to top level `nodes` and `states` queries
     - If requested `limit` exceeds maximum permitted limit then execution fails with an error
     - Added `predicateFilter` and `typeFilter` arguments to `inRels` and `outRels` field on `Node` type to allow
-      filtering relationships by their predicate and/or type
+      filtering relationships by their predicate and/or type of the related `Node`
     - Added new `relFacets` property to `Node` type to allow summarising basic information about available relationships
 
 # 0.10.0
