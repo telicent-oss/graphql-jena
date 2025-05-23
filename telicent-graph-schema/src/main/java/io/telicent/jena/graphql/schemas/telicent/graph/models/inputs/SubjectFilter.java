@@ -15,41 +15,37 @@ package io.telicent.jena.graphql.schemas.telicent.graph.models.inputs;
 import org.apache.jena.atlas.lib.tuple.Tuple4;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
- * A filter that keeps only quads with matching predicates
+ * A filter that includes/excludes only quads with specific subjects
  */
-public class PredicateFilter extends QuadFieldFilter implements QuadPatternFilter {
-
+public class SubjectFilter extends QuadFieldFilter implements QuadPatternFilter {
     /**
-     * Creates a new predicate filter
+     * Creates a new subject filter
      *
-     * @param mode   Filter mode
-     * @param values Predicate values
+     * @param mode   Filter Mode
+     * @param values Subjects to filter by
      */
-    public PredicateFilter(FilterMode mode, Collection<Node> values) {
-        super(mode, values, Quad::getPredicate);
+    public SubjectFilter(FilterMode mode, Collection<Node> values) {
+        super(mode, values, Quad::getSubject);
     }
 
     @Override
     public List<Tuple4<Node>> getQuadPatterns(Node graph, Node subject, Node predicate, Node object) {
         if (this.mode == FilterMode.EXCLUDE) return List.of();
 
-        if (predicate != Node.ANY) {
-            throw new IllegalArgumentException("predicate term MUST be ANY");
+        if (subject != Node.ANY) {
+            throw new IllegalArgumentException("subject term MUST be ANY");
         }
 
         List<Tuple4<Node>> patterns = new ArrayList<>();
-        for (Node predicateFilter : this.values) {
-            patterns.add(TupleFactory.create4(graph, subject, predicateFilter, object));
+        for (Node subjectFilter : this.values) {
+            patterns.add(TupleFactory.create4(graph, subjectFilter, predicate, object));
         }
         return patterns;
     }

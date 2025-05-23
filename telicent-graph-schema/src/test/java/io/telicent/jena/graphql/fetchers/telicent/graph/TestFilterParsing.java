@@ -16,14 +16,13 @@ import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.AbstractFilter;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.IncludeAllFilter;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ import java.util.stream.Stream;
 public class TestFilterParsing extends AbstractPagingFetcher<TelicentGraphNode, Quad, List<Quad>> {
     @Override
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
-                                  List<AbstractFilter> filters) {
+                                  List<Filter> filters) {
         return Stream.empty();
     }
 
@@ -52,7 +51,7 @@ public class TestFilterParsing extends AbstractPagingFetcher<TelicentGraphNode, 
         DataFetchingEnvironment environment = prepareEnvironment(Collections.emptyMap());
 
         // When
-        AbstractFilter filter = this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_TYPE_FILTER);
+        Filter filter = this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_TYPE_FILTER);
 
         // Then
         Assert.assertTrue(filter instanceof IncludeAllFilter);
@@ -128,7 +127,7 @@ public class TestFilterParsing extends AbstractPagingFetcher<TelicentGraphNode, 
     public void givenTypeFilterWith_filtersDisabled_returnAll() {
         // Given
         // When
-        AbstractFilter result = this.createTypeFilter(null, null);
+        Filter result = this.createTypeFilter(null, null);
         // Then
         Assert.assertEquals(IncludeAllFilter.INSTANCE, result);
     }

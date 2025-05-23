@@ -15,7 +15,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 import graphql.com.google.common.collect.Streams;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.State;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.AbstractFilter;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -54,7 +54,7 @@ public abstract class AbstractStateRelationshipsFetcher<TOutput>
     }
 
     @Override
-    protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, State state, List<AbstractFilter> filters) {
+    protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, State state, List<Filter> filters) {
         // NB - Filters not enabled for state relationships
         return Streams.concat(AbstractStateRelationshipsFetcher.outbound(dsg, state),
                               AbstractStateRelationshipsFetcher.inbound(dsg, state));

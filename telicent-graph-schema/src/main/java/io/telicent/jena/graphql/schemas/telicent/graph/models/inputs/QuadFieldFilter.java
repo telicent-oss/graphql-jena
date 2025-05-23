@@ -16,39 +16,35 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
- * A no-op filter that includes everything
+ * A filter that filters on a single field of a quad
  */
-public final class IncludeAllFilter implements Filter {
+public class QuadFieldFilter extends AbstractFilter {
+
+    private final Function<Quad, Node> fieldSelector;
 
     /**
-     * Singleton instance of the include all filter
+     * Creates a new quad field filter
+     *
+     * @param mode          Filter Mode
+     * @param values        Values to filter by
+     * @param fieldSelector Function that selects the field of the quad to compare against the filter values
      */
-    public static final Filter INSTANCE = new IncludeAllFilter();
-
-    /**
-     * Creates a new include all filter
-     */
-    private IncludeAllFilter() {
-
-    }
-
-    @Override
-    public FilterMode mode() {
-        return FilterMode.INCLUDE;
-    }
-
-    @Override
-    public Set<Node> values() {
-        return Set.of();
+    protected QuadFieldFilter(FilterMode mode, Collection<Node> values, Function<Quad, Node> fieldSelector) {
+        super(mode, values);
+        this.fieldSelector = Objects.requireNonNull(fieldSelector);
     }
 
     @Override
     public Stream<Quad> filter(Stream<Quad> stream, DatasetGraph dsg) {
-        return stream;
+        return switch (mode) {
+            case INCLUDE -> stream.filter(q -> this.values.contains(fieldSelector.apply(q)));
+            case EXCLUDE -> stream.filter(q -> !this.values.contains(fieldSelector.apply(q)));
+        };
     }
 }
