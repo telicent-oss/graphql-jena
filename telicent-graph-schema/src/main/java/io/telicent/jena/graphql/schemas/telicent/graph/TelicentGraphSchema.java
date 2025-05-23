@@ -159,6 +159,14 @@ public class TelicentGraphSchema {
      */
     public static final String ARGUMENT_TYPE_FILTER = "typeFilter";
     /**
+     * Range filter argument used to specify a range filter
+     */
+    public static final String ARGUMENT_RANGE_FILTER = "rangeFilter";
+    /**
+     * Domain filter argument used to specify a domain filter
+     */
+    public static final String ARGUMENT_DOMAIN_FILTER = "domainFilter";
+    /**
      * Type field
      */
     public static final String FIELD_TYPE = "type";

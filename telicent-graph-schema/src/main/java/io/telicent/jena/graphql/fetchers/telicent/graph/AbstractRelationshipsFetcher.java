@@ -17,10 +17,12 @@ import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.jena.atlas.lib.tuple.Tuple4;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +60,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     }
 
     @Override
-    protected AbstractFilter createTypeFilter(FilterMode mode, Collection<Node> values) {
+    protected Filter createTypeFilter(FilterMode mode, Collection<Node> values) {
         return switch (this.direction) {
             case IN -> new InboundTypeFilter(mode, values);
             case OUT -> new OutboundTypeFilter(mode, values);
@@ -67,11 +69,11 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
 
     @Override
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
-                                  List<AbstractFilter> filters) {
+                                  List<Filter> filters) {
         // If a Predicate INCLUDE filter can do a more targeted initial stream
-        Set<Node> predicates = getPreFilter(filters);
-        Stream<Quad> quads = predicates != null ? streamPreFiltered(dsg, node, predicates) : stream(dsg, node);
-        for (AbstractFilter filter : filters) {
+        List<Tuple4<Node>> quadPatterns = getPreFilter(filters, node);
+        Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, node, quadPatterns) : stream(dsg, node);
+        for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
         return quads;
@@ -97,40 +99,59 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     }
 
     /**
-     * Gets the predicate pre-filter if any
+     * Gets the pre-filter (if any)
      *
      * @param filters Filters that apply
-     * @return Pre-filter predicates values, or {@code null} if no eligible filter
+     * @return Pre-filter quad patterns, or {@code null} if no eligible filters
      */
-    private Set<Node> getPreFilter(List<AbstractFilter> filters) {
+    private List<Tuple4<Node>> getPreFilter(List<Filter> filters, TelicentGraphNode node) {
         if (CollectionUtils.isEmpty(filters)) {
             return null;
         }
-        if (filters.get(0) instanceof PredicateFilter predicateFilter && predicateFilter.mode() == FilterMode.INCLUDE) {
-            filters.remove(0);
-            return predicateFilter.values();
+        List<Filter> copy = new ArrayList<>(filters);
+        List<Tuple4<Node>> quadPatterns = null;
+        for (Filter filter : copy) {
+            if (filter instanceof QuadPatternFilter quadPatternFilter) {
+                List<Tuple4<Node>> patterns = quadPatternFilter.getQuadPatterns(Node.ANY,
+                                                                                this.direction == EdgeDirection.OUT ?
+                                                                                node.getNode() : Node.ANY, Node.ANY,
+                                                                                this.direction == EdgeDirection.IN ?
+                                                                                node.getNode() : Node.ANY);
+                if (CollectionUtils.isNotEmpty(patterns)) {
+                    // Remove from original list of filters as we're applying it as a pre-filter so no need to apply
+                    // again as a post-filter
+                    filters.remove(filter);
+
+                    // Combine with existing pre-filters (if any)
+                    if (quadPatterns == null) {
+                        quadPatterns = patterns;
+                    } else {
+                        quadPatterns = QuadPatternFilter.combinePatterns(quadPatterns, patterns);
+                    }
+                }
+            }
         }
-        return null;
+        return quadPatterns;
     }
 
     /**
-     * Streams all relationships that lead to another node using specific predicates
+     * Streams all relationships that lead to another node using specific quad patterns
+     * <p>
+     * This is called only if one/more {@link QuadPatternFilter}'s are being used in which case it is more efficient to
+     * directly query for those specific quad patterns than it is to query for all quads and then filter afterward. This
+     * is especially true for nodes in the graph that have lots of relationships.
+     * </p>
      *
-     * @param dsg        Dataset Graph
-     * @param node       Starting Node
-     * @param predicates Predicates
+     * @param dsg          Dataset Graph
+     * @param node         Starting Node
+     * @param quadPatterns Quad patterns to use
      * @return Stream of quads representing relationships
      */
-    private Stream<Quad> streamPreFiltered(DatasetGraph dsg, TelicentGraphNode node, Set<Node> predicates) {
-        // If we're only including specific predicates it's more efficient to only select quads involving those
-        // predicates than it is to select all quads and then filter
+    private Stream<Quad> streamPreFiltered(DatasetGraph dsg, TelicentGraphNode node, List<Tuple4<Node>> quadPatterns) {
+        Stream<Quad> stream = quadPatterns.stream().flatMap(p -> dsg.stream(p.get(0), p.get(1), p.get(2), p.get(3)));
         return switch (this.direction) {
-            case OUT -> predicates.stream()
-                                  .flatMap(p -> dsg.stream(Node.ANY, node.getNode(), p, Node.ANY)
-                                                   .filter(q -> q.getObject().isURI() || q.getObject().isBlank()));
-            case IN -> predicates.stream()
-                                 .flatMap(p -> dsg.stream(Node.ANY, Node.ANY, p, node.getNode())
-                                                  .filter(q -> q.getSubject().isURI() || q.getSubject().isBlank()));
+            case OUT -> stream.filter(q -> q.getObject().isURI() || q.getObject().isBlank());
+            case IN -> stream.filter(q -> q.getSubject().isURI() || q.getSubject().isBlank());
         };
     }
 }

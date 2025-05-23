@@ -14,7 +14,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.AbstractFilter;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -37,7 +37,7 @@ public abstract class AbstractLiteralsFetcher<TOutput>
     }
 
     @Override
-    protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node, List<AbstractFilter> filters) {
+    protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
         // NB - Filtering not enabled for literals
         return dsg.stream(Node.ANY, node.getNode(), Node.ANY, Node.ANY).filter(q -> q.getObject().isLiteral());
     }

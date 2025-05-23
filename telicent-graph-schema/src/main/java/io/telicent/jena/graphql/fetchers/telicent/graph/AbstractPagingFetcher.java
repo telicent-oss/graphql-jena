@@ -63,7 +63,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
         TSource source = getSource(environment);
-        List<AbstractFilter> filters = new ArrayList<>();
+        List<Filter> filters = new ArrayList<>();
         if (this.enableFilters()) {
             createFilters(environment, filters);
         }
@@ -87,8 +87,10 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param environment Data Fetching environment
      * @param filters     Filters list to populate
      */
-    protected void createFilters(DataFetchingEnvironment environment, List<AbstractFilter> filters) {
+    protected void createFilters(DataFetchingEnvironment environment, List<Filter> filters) {
         filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER));
+        filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_DOMAIN_FILTER));
+        filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_RANGE_FILTER));
         filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
     }
 
@@ -130,7 +132,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @return Initial data selection
      */
     protected abstract Stream<TInput> select(DataFetchingEnvironment environment, DatasetGraph dsg, TSource source,
-                                             List<AbstractFilter> filters);
+                                             List<Filter> filters);
 
     /**
      * Performs the mapping of the paged input data to output data
@@ -191,7 +193,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param argument    Argument to parse a filter from
      * @return Filter
      */
-    protected final AbstractFilter parseFilter(DataFetchingEnvironment environment, String argument) {
+    protected final Filter parseFilter(DataFetchingEnvironment environment, String argument) {
         Object rawFilter = environment.getArgument(argument);
         if (rawFilter == null) {
             return IncludeAllFilter.INSTANCE;
@@ -238,15 +240,14 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param values   Filter values
      * @return Filter
      */
-    protected AbstractFilter createFilter(String argument, FilterMode mode, List<Node> values) {
-        switch (argument) {
-            case TelicentGraphSchema.ARGUMENT_TYPE_FILTER:
-                return createTypeFilter(mode, values);
-            case TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER:
-                return new PredicateFilter(mode, values);
-            default:
-                throw new IllegalArgumentException("Unknown filter argument: " + argument);
-        }
+    protected Filter createFilter(String argument, FilterMode mode, List<Node> values) {
+        return switch (argument) {
+            case TelicentGraphSchema.ARGUMENT_TYPE_FILTER -> createTypeFilter(mode, values);
+            case TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER -> new PredicateFilter(mode, values);
+            case TelicentGraphSchema.ARGUMENT_DOMAIN_FILTER -> new SubjectFilter(mode, values);
+            case TelicentGraphSchema.ARGUMENT_RANGE_FILTER -> new ObjectFilter(mode, values);
+            default -> throw new IllegalArgumentException("Unknown filter argument: " + argument);
+        };
     }
 
     /**
@@ -256,7 +257,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param values Filter values
      * @return Type filter
      */
-    protected AbstractFilter createTypeFilter(FilterMode mode, Collection<Node> values) {
+    protected Filter createTypeFilter(FilterMode mode, Collection<Node> values) {
         if (this.enableFilters()) {
             throw new IllegalArgumentException(
                     "Fetcher implementation MUST override createTypeFilter() method to enable type filtering support");
