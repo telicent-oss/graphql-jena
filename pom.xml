@@ -97,7 +97,7 @@
         <dependency.jersey>3.1.10</dependency.jersey>
         <dependency.jwt-servlet>1.0.1</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
-        <dependency.mockito>5.17.0</dependency.mockito>
+        <dependency.mockito>5.18.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
         <dependency.smart-caches>0.29.0</dependency.smart-caches>
