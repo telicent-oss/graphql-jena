@@ -4,7 +4,7 @@
 
     <groupId>io.telicent.jena.graphql</groupId>
     <artifactId>parent</artifactId>
-    <version>0.10.2-SNAPSHOT</version>
+    <version>0.10.2</version>
     <packaging>pom</packaging>
     <name>Telicent - GraphQL for Apache Jena - Parent</name>
     <description>Provides GraphQL extensions for use with Apache Jena</description>
@@ -33,7 +33,7 @@
         <connection>scm:git:https://github.com/telicent-oss/graphql-jena</connection>
         <developerConnection>scm:git:ssh://git@github.com/telicent-oss/graphql-jena</developerConnection>
         <url>https://github.com/telicent-oss/graphql-jena</url>
-        <tag>0.9.3</tag>
+        <tag>0.10.2</tag>
     </scm>
 
     <developers>
