@@ -12,20 +12,21 @@
  */
 package io.telicent.jena.graphql.schemas.telicent.graph.models.inputs;
 
-import graphql.org.antlr.v4.runtime.atn.SemanticContext;
 import org.apache.jena.atlas.lib.tuple.Tuple4;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
 
-public class TestPredicateFilter {
+public class TestObjectFilter {
+
+    private static final Node OBJECT_1 = NodeFactory.createURI("objectUri");
+    private static final Node OBJECT_2 = NodeFactory.createLiteralString("objectLiteral");
 
     static {
         JenaSystem.init();
@@ -34,28 +35,28 @@ public class TestPredicateFilter {
     @Test(expectedExceptions = NullPointerException.class, expectedExceptionsMessageRegExp = "mode.*null")
     public void givenNullFilterMode_whenCreatingFilter_thenNPE() {
         // Given, When and Then
-        new PredicateFilter(null, List.of(RDF.type.asNode()));
+        new ObjectFilter(null, List.of(RDF.type.asNode()));
     }
 
     @Test(expectedExceptions = NullPointerException.class, expectedExceptionsMessageRegExp = "Values.*null")
     public void givenNullValues_whenCreatingFilter_thenNPE() {
         // Given, When and Then
-        new PredicateFilter(FilterMode.INCLUDE, null);
+        new ObjectFilter(FilterMode.INCLUDE, null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Values.*empty")
     public void givenNoValues_whenCreatingFilter_thenIllegalArgument() {
         // Given, When and Then
-        new PredicateFilter(FilterMode.INCLUDE, Collections.emptyList());
+        new ObjectFilter(FilterMode.INCLUDE, Collections.emptyList());
     }
 
     @Test
     public void givenValuesForInclusion_whenCreatingFilter_thenCorrect_andCanSupplyQuadPatterns() {
         // Given
-        List<Node> values = List.of(RDF.type.asNode(), RDFS.comment.asNode(), RDFS.label.asNode());
+        List<Node> values = List.of(OBJECT_1, OBJECT_2);
 
         // When
-        PredicateFilter filter = new PredicateFilter(FilterMode.INCLUDE, values);
+        QuadPatternFilter filter = new ObjectFilter(FilterMode.INCLUDE, values);
 
         // Then
         Assert.assertEquals(filter.mode(), FilterMode.INCLUDE);
@@ -64,16 +65,16 @@ public class TestPredicateFilter {
         // And
         List<Tuple4<Node>> quadPatterns = filter.getQuadPatterns(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
         Assert.assertFalse(quadPatterns.isEmpty());
-        Assert.assertEquals(quadPatterns.size(), 3);
+        Assert.assertEquals(quadPatterns.size(), 2);
     }
 
     @Test
     public void givenValuesForExclusion_whenCreatingFilter_thenCorrect_andNoQuadPatterns() {
         // Given
-        List<Node> values = List.of(RDF.type.asNode(), RDFS.comment.asNode(), RDFS.label.asNode());
+        List<Node> values = List.of(OBJECT_1, OBJECT_2);
 
         // When
-        PredicateFilter filter = new PredicateFilter(FilterMode.EXCLUDE, values);
+        QuadPatternFilter filter = new ObjectFilter(FilterMode.EXCLUDE, values);
 
         // Then
         Assert.assertEquals(filter.mode(), FilterMode.EXCLUDE);
@@ -85,12 +86,12 @@ public class TestPredicateFilter {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = ".*MUST be ANY")
-    public void givenFilter_whenCreatingQuadPatternsWithConcretePredicate_thenIllegalArgument() {
+    public void givenFilter_whenCreatingQuadPatternsWithConcreteSubject_thenIllegalArgument() {
         // Given
-        PredicateFilter filter = new PredicateFilter(FilterMode.INCLUDE, List.of(RDF.type.asNode()));
+        QuadPatternFilter filter = new ObjectFilter(FilterMode.INCLUDE, List.of(OBJECT_1));
 
         // When and Then
-        Node predicate = NodeFactory.createURI("predicate");
-        filter.getQuadPatterns(Node.ANY, Node.ANY, predicate, Node.ANY);;
+        Node object = NodeFactory.createURI("object");
+        filter.getQuadPatterns(Node.ANY, Node.ANY, Node.ANY, object);
     }
 }

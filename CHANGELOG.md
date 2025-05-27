@@ -1,5 +1,16 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.2
+
+- Telicent Graph Schema improvements:
+    - Added `domainFilter` argument to `inRels` fields to filter inbound relationships to only those which relate to
+      specific subjects
+    - Added `rangeFilter` argument to `outRels` fields to filter outbound relationships to only those which relate to
+      specific objects
+    - Improved performance of `INCLUDE` filters for `predicateFilter`, `domainFilter` and `rangeFilter` by translating
+      these into direct `dsg.stream()` calls for pre-filtering instead of post-filtering a more general `dsg.stream()`
+      call.
+
 # 0.10.1
 
 - Telicent Graph Schema improvements:

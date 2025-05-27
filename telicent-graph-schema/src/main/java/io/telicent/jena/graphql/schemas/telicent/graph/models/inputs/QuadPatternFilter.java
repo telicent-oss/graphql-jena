@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Interface for filters whose filter condition can be expressed as one/more simple quad patterns
  */
-public interface QuadPatternFilter {
+public interface QuadPatternFilter extends Filter {
 
     /**
      * Gets the quad patterns that this filter represents if applicable
@@ -66,6 +66,8 @@ public interface QuadPatternFilter {
         if (leftNode == Node.ANY) {
             return rightNode;
         } else if (rightNode == Node.ANY) {
+            return leftNode;
+        } else if (leftNode.equals(rightNode)) {
             return leftNode;
         } else {
             throw new IllegalArgumentException(
