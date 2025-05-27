@@ -20,34 +20,29 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * A no-op filter that includes everything
+ * Interface for GraphQL query filters
  */
-public final class IncludeAllFilter implements Filter {
+public interface Filter {
+    /**
+     * Filter mode
+     *
+     * @return Mode
+     */
+    FilterMode mode();
 
     /**
-     * Singleton instance of the include all filter
+     * Values to filter by
+     *
+     * @return Values
      */
-    public static final Filter INSTANCE = new IncludeAllFilter();
+    Set<Node> values();
 
     /**
-     * Creates a new include all filter
+     * Applies the filter to the given stream
+     *
+     * @param stream Input stream
+     * @param dsg    Dataset graph
+     * @return Filtered stream
      */
-    private IncludeAllFilter() {
-
-    }
-
-    @Override
-    public FilterMode mode() {
-        return FilterMode.INCLUDE;
-    }
-
-    @Override
-    public Set<Node> values() {
-        return Set.of();
-    }
-
-    @Override
-    public Stream<Quad> filter(Stream<Quad> stream, DatasetGraph dsg) {
-        return stream;
-    }
+    Stream<Quad> filter(Stream<Quad> stream, DatasetGraph dsg);
 }

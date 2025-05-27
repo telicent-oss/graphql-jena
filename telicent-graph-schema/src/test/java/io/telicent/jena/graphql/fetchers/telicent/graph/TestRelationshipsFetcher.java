@@ -32,6 +32,7 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.apache.jena.graph.NodeFactory.*;
 
@@ -144,19 +145,30 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
     }
 
     private static void createTypedGraph(DatasetGraph dsg, Node subject) {
+        Node rdfType = RDF.type.asNode();
+
+        // Subject is related via predicate 1 to object 1 which has types 1 and 2
         Node object1 = createURI("object1");
         dsg.add(new Quad(GRAPH, subject, createURI("predicate1"), object1));
-        dsg.add(new Quad(GRAPH, object1, RDF.type.asNode(), createURI("type1")));
-        dsg.add(new Quad(GRAPH, object1, RDF.type.asNode(), createURI("type2")));
+        dsg.add(new Quad(GRAPH, object1, createURI("predicate1"), subject));
+        dsg.add(new Quad(GRAPH, object1, rdfType, createURI("type1")));
+        dsg.add(new Quad(GRAPH, object1, rdfType, createURI("type2")));
+
+        // Subject is related via predicate 2 to object 2 which has types 1 and 3
         Node object2 = createURI("object2");
         dsg.add(new Quad(GRAPH, subject, createURI("predicate2"), object2));
-        dsg.add(new Quad(GRAPH, object2, RDF.type.asNode(), createURI("type1")));
-        dsg.add(new Quad(GRAPH, object2, RDF.type.asNode(), createURI("type3")));
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate3"), createURI("object3")));
+        dsg.add(new Quad(GRAPH, object2, createURI("predicate2"), subject));
+        dsg.add(new Quad(GRAPH, object2, rdfType, createURI("type1")));
+        dsg.add(new Quad(GRAPH, object2, rdfType, createURI("type3")));
+
+        // Subject is related via predicate 3 to object 3 which has no types
+        Node object3 = createURI("object3");
+        dsg.add(new Quad(GRAPH, subject, createURI("predicate3"), object3));
+        dsg.add(new Quad(GRAPH, object3, createURI("predicate3"), subject));
     }
 
-    @DataProvider(name = "typeFilters")
-    private Object[][] typeFilters() {
+    @DataProvider(name = "outboundTypeFilters")
+    private Object[][] outboundTypeFilters() {
         return new Object[][] {
                 // Both 1 and 2 have type 1
                 { "INCLUDE", List.of("type1"), List.of("object1", "object2") },
@@ -178,8 +190,34 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                 };
     }
 
-    @DataProvider(name = "typeAndPredicateFilters")
-    private Object[][] typeAndPredicateFilters() {
+    @DataProvider(name = "inboundTypeFilters")
+    private Object[][] inboundTypeFilters() {
+        return new Object[][] {
+                // Only subject has type 0
+                { "INCLUDE", List.of("type1"), List.of("object1", "object2") },
+                // No inbound relationships with
+                { "EXCLUDE", List.of("type1"), List.of("object3") },
+                };
+    }
+
+    @DataProvider(name = "outboundNodeFilters")
+    private Object[][] outboundNodeFilters() {
+        return new Object[][] {
+                { "INCLUDE", List.of("object1"), List.of("object1") },
+                { "EXCLUDE", List.of("object1"), List.of("object2", "object3") },
+                };
+    }
+
+    @DataProvider(name = "inboundNodeFilters")
+    private Object[][] inboundNodeFilters() {
+        return new Object[][] {
+                { "INCLUDE", List.of("object1"), List.of("object1") },
+                { "EXCLUDE", List.of("object1"), List.of("object2", "object3") },
+                };
+    }
+
+    @DataProvider(name = "outboundTypeAndPredicateFilters")
+    private Object[][] outboundTypeAndPredicateFilters() {
         return new Object[][] {
                 // Both 1 and 2 have type 1, but only 1 uses predicate 1
                 { "INCLUDE", List.of("predicate1"), "INCLUDE", List.of("type1"), List.of("object1") },
@@ -198,25 +236,69 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                 { "INCLUDE", List.of("predicate3"), "EXCLUDE", List.of("type3"), List.of("object3") },
                 // noSuchType not in graph
                 { "INCLUDE", List.of("predicate1"), "INCLUDE", List.of("noSuchType"), Collections.emptyList() },
-                { "INCLUDE", List.of("predicate1", "predicate3"), "EXCLUDE", List.of("noSuchType"), List.of("object1", "object3") },
+                {
+                        "INCLUDE",
+                        List.of("predicate1", "predicate3"),
+                        "EXCLUDE",
+                        List.of("noSuchType"),
+                        List.of("object1", "object3")
+                },
                 // Only 1 and 2 have types, but since those triples are not directly from our subject returns nothing
-                { "INCLUDE", List.of(RDF.type.getURI()), "INCLUDE", List.of("type1", "type2", "type3"), Collections.emptyList() },
+                {
+                        "INCLUDE",
+                        List.of(RDF.type.getURI()),
+                        "INCLUDE",
+                        List.of("type1", "type2", "type3"),
+                        Collections.emptyList()
+                },
                 // 3 has no types
-                { "INCLUDE", List.of(RDF.type.getURI()), "EXCLUDE", List.of("type1", "type2", "type3"), Collections.emptyList() },
-            };
+                {
+                        "INCLUDE",
+                        List.of(RDF.type.getURI()),
+                        "EXCLUDE",
+                        List.of("type1", "type2", "type3"),
+                        Collections.emptyList()
+                },
+                };
     }
 
-    @Test(dataProvider = "typeFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithTypeFilter_thenOnlyRelationshipsWithRelevantTypedObjectsFetched(
+    @DataProvider(name = "predicateAndNodeFilters")
+    private Object[][] predicateAndNodeFilters() {
+        return new Object[][] {
+                // Includes only predicate 1 and object 1 so only object 1 returned
+                { "INCLUDE", List.of("predicate1"), "INCLUDE", List.of("object1"), List.of("object1") },
+                // Includes any predicate and objects 1 or 2 so those objects are returned
+                {
+                        "INCLUDE",
+                        List.of("predicate1", "predicate2", "predicate3"),
+                        "INCLUDE",
+                        List.of("object1", "object2"),
+                        List.of("object1", "object2")
+                },
+                // Object 3 is linked via predicate 3 so combining these filters yields nothing
+                { "INCLUDE", List.of("predicate1"), "INCLUDE", List.of("object3"), Collections.emptyList() },
+                };
+    }
+
+    @Test(dataProvider = "outboundTypeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithOutboundTypeFilter_thenOnlyRelationshipsWithRelevantTypedObjectsFetched(
             String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
+        verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.OUT,
+                                   TelicentGraphSchema.ARGUMENT_TYPE_FILTER, r -> r.getRange().getUri());
+    }
+
+    private static void verifyFetchedRelationships(String filterMode, List<String> filterValues,
+                                                   List<String> expectedResults, EdgeDirection edgeDirection,
+                                                   String filterArgument,
+                                                   Function<Relationship, String> fetchedUriExtractor) throws Exception {
         // given
-        RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.OUT);
+        RelationshipsFetcher fetcher = new RelationshipsFetcher(edgeDirection);
         DatasetGraph dsg = DatasetGraphFactory.create();
         Node subject = createURI("subject");
         createTypedGraph(dsg, subject);
 
         DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(subject, null),
-                                                                         Map.of(TelicentGraphSchema.ARGUMENT_TYPE_FILTER,
+                                                                         Map.of(filterArgument,
                                                                                 Map.of(TelicentGraphSchema.ARGUMENT_MODE,
                                                                                        filterMode,
                                                                                        TelicentGraphSchema.ARGUMENT_VALUES,
@@ -229,14 +311,48 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         Assert.assertNotNull(actualList);
         Assert.assertEquals(actualList.size(), expectedResults.size());
         for (String expected : expectedResults) {
-            Assert.assertTrue(actualList.stream().anyMatch(r -> StringUtils.equals(r.getRange().getUri(), expected)));
+            Assert.assertTrue(
+                    actualList.stream().map(fetchedUriExtractor).anyMatch(uri -> StringUtils.equals(uri, expected)));
         }
     }
 
-    @Test(dataProvider = "typeAndPredicateFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithPredicateAndTypeFilter_thenOnlyRelationshipsWithRelevantPredicatesAndTypedObjectsFetched(
+    @Test(dataProvider = "inboundTypeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithInboundTypeFilter_thenOnlyRelationshipsWithRelevantTypedObjectsFetched(
+            String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
+        verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.IN,
+                                   TelicentGraphSchema.ARGUMENT_TYPE_FILTER, r -> r.getDomain().getUri());
+    }
+
+    @Test(dataProvider = "outboundNodeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithOutboundNodeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
+            String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
+        // given
+        verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.OUT,
+                                   TelicentGraphSchema.ARGUMENT_NODE_FILTER, r -> r.getRange().getUri());
+    }
+
+    @Test(dataProvider = "inboundNodeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithInboundNodeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
+            String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
+        // given
+        verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.IN,
+                                   TelicentGraphSchema.ARGUMENT_NODE_FILTER, r -> r.getDomain().getUri());
+    }
+
+    @Test(dataProvider = "outboundTypeAndPredicateFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithOutboundPredicateAndTypeFilter_thenOnlyRelationshipsWithRelevantPredicatesAndTypedObjectsFetched(
             String predicateFilterMode, List<String> predicateFilters, String typeFilterMode, List<String> typeFilters,
             List<String> expectedResults) throws Exception {
+        verifyDualFilterFetchedRelationships(predicateFilterMode, predicateFilters,
+                                             TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER, typeFilterMode, typeFilters,
+                                             TelicentGraphSchema.ARGUMENT_TYPE_FILTER, expectedResults
+        );
+    }
+
+    private static void verifyDualFilterFetchedRelationships(String filter1Mode, List<String> filter1Values,
+                                                             String filter1Argument, String filter2Mode,
+                                                             List<String> filter2Values, String filter2Argument,
+                                                             List<String> expectedResults) throws Exception {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.OUT);
         DatasetGraph dsg = DatasetGraphFactory.create();
@@ -244,16 +360,16 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         createTypedGraph(dsg, subject);
 
         DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(subject, null),
-                                                                         Map.of(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER,
+                                                                         Map.of(filter1Argument,
                                                                                 Map.of(TelicentGraphSchema.ARGUMENT_MODE,
-                                                                                       predicateFilterMode,
+                                                                                       filter1Mode,
                                                                                        TelicentGraphSchema.ARGUMENT_VALUES,
-                                                                                       predicateFilters),
-                                                                                TelicentGraphSchema.ARGUMENT_TYPE_FILTER,
+                                                                                       filter1Values),
+                                                                                filter2Argument,
                                                                                 Map.of(TelicentGraphSchema.ARGUMENT_MODE,
-                                                                                       typeFilterMode,
+                                                                                       filter2Mode,
                                                                                        TelicentGraphSchema.ARGUMENT_VALUES,
-                                                                                       typeFilters)));
+                                                                                       filter2Values)));
 
         // When
         List<Relationship> actualList = fetcher.get(environment);
@@ -264,6 +380,16 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         for (String expected : expectedResults) {
             Assert.assertTrue(actualList.stream().anyMatch(r -> StringUtils.equals(r.getRange().getUri(), expected)));
         }
+    }
+
+    @Test(dataProvider = "predicateAndNodeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithPredicateAndNodeFilters_thenOnlyRelationshipsWithRelevantPredicatesAndObjectsFetched(
+            String predicateFilterMode, List<String> predicateFilters, String rangeFilterMode, List<String> rangeFilters,
+            List<String> expectedResults) throws Exception {
+        verifyDualFilterFetchedRelationships(predicateFilterMode, predicateFilters,
+                                             TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER, rangeFilterMode, rangeFilters,
+                                             TelicentGraphSchema.ARGUMENT_NODE_FILTER, expectedResults
+        );
     }
 
     @Test

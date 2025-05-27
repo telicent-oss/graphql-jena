@@ -66,7 +66,7 @@ public class GraphQLEntrypoint extends AbstractAppEntrypoint {
         return ServerBuilder.create()
                             .application(GraphQLApplication.class)
                             .displayName("Standalone GraphQL Jena Server")
-                            .localhost()
+                            .allInterfaces()
                             .port(this.port)
                             .withCors(CorsConfigurationBuilder::withDefaults)
                             .withListener(DatasetInitializer.class);

@@ -20,6 +20,7 @@ import io.telicent.jena.graphql.execution.GraphQLExecutor;
 import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.smart.cache.server.jaxrs.model.Problem;
 import jakarta.servlet.ServletContext;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.riot.web.HttpNames;
@@ -47,24 +48,27 @@ public class AbstractGraphQLResource {
     /**
      * Creates a 400 Bad Request response to a request
      *
+     * @param headers   HTTP Headers for the request
      * @param e         JSON processing error
      * @param title     Error title
      * @param parameter Bad request parameter
      * @return 400 Bad Request response
      */
-    protected static Response badRequest(JsonProcessingException e, String title, String parameter) {
+    protected static Response badRequest(HttpHeaders headers, JsonProcessingException e, String title,
+                                         String parameter) {
         //@formatter:off
         return new Problem("BadRequest",
                            title,
                            HttpSC.BAD_REQUEST_400,
                            "Failed to parse GraphQL " + parameter + " as a valid JSON string: " + e.getMessage(),
-                           null).toResponse();
+                           null).toResponse(headers);
         //@formatter:on
     }
 
     /**
      * Validate or execute the given Graph QL query (and associate variables/extensions).
      *
+     * @param headers        HTTP Headers for the request
      * @param query          query to validate
      * @param operationName  operation Name
      * @param variables      variables to make available to the query
@@ -74,19 +78,23 @@ public class AbstractGraphQLResource {
      * @param validate       flag indicating execution (false) or validation (true)
      * @return either a successful response (200) or the error(s) (400).
      */
-    protected final Response executeOrValidateGraphQL(String query, String operationName, String variables, String extensions,
-                                            ServletContext servletContext, Class<?> executorType, boolean validate) {
+    protected final Response executeOrValidateGraphQL(HttpHeaders headers, String query, String operationName,
+                                                      String variables, String extensions,
+                                                      ServletContext servletContext, Class<?> executorType,
+                                                      boolean validate) {
         boolean variable = true;
         try {
             Map<String, Object> parsedVariables = parseJSONStringIntoMap(variables);
             variable = false;
             Map<String, Object> parsedExtensions = parseJSONStringIntoMap(extensions);
-            return executeOrValidateGraphQL(query, operationName, parsedVariables, parsedExtensions, servletContext, executorType, validate);
+            return executeOrValidateGraphQL(headers, query, operationName, parsedVariables, parsedExtensions,
+                                            servletContext, executorType, validate);
         } catch (JsonProcessingException exception) {
             if (variable) {
-                return badRequest(exception, "Invalid GraphQL Variables", GraphQLOverHttp.PARAMETER_VARIABLES);
+                return badRequest(headers, exception, "Invalid GraphQL Variables", GraphQLOverHttp.PARAMETER_VARIABLES);
             } else {
-                return badRequest(exception, "Invalid GraphQL Extensions", GraphQLOverHttp.PARAMETER_EXTENSIONS);
+                return badRequest(headers, exception, "Invalid GraphQL Extensions",
+                                  GraphQLOverHttp.PARAMETER_EXTENSIONS);
             }
         }
     }
@@ -94,6 +102,7 @@ public class AbstractGraphQLResource {
     /**
      * Validate or execute the given Graph QL query (and associate variables/extensions).
      *
+     * @param headers        HTTP Headers for the request
      * @param query          query to validate
      * @param operationName  operation Name
      * @param variables      variables to make available to the query
@@ -103,9 +112,10 @@ public class AbstractGraphQLResource {
      * @param validate       flag indicating execution (false) or validation (true)
      * @return either a successful response (200) or the error(s) (400).
      */
-    protected final Response executeOrValidateGraphQL(String query, String operationName, Map<String, Object> variables,
-                                               Map<String, Object> extensions, ServletContext servletContext,
-                                               Class<?> executorType, boolean validate) {
+    protected final Response executeOrValidateGraphQL(HttpHeaders headers, String query, String operationName,
+                                                      Map<String, Object> variables, Map<String, Object> extensions,
+                                                      ServletContext servletContext, Class<?> executorType,
+                                                      boolean validate) {
         if (variables == null) {
             variables = Collections.emptyMap();
         }
@@ -120,7 +130,7 @@ public class AbstractGraphQLResource {
                                "No " + executorType.getSimpleName() + " Configured",
                                HttpSC.INTERNAL_SERVER_ERROR_500,
                                "No GraphQL Executor configured for this API",
-                               null).toResponse();
+                               null).toResponse(headers);
             //@formatter:on
         }
 
@@ -136,8 +146,8 @@ public class AbstractGraphQLResource {
             ExecutionResult result = executor.execute(query, operationName, variables, extensions);
             Map<String, Object> specResponse = result.toSpecification();
             int status = GraphQLOverHttp.selectHttpStatus(result);
-            LOGGER.info("Finished GraphQL Query with executor {}, returning status {}", executor.getClass().getSimpleName(),
-                        status);
+            LOGGER.info("Finished GraphQL Query with executor {}, returning status {}",
+                        executor.getClass().getSimpleName(), status);
             return Response.status(status)
                            .entity(specResponse)
                            .header(HttpNames.hContentType, GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON)

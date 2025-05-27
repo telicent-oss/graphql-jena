@@ -22,31 +22,30 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A filter that keeps only quads with matching predicates
+ * A filter that includes/excludes only quads with specific objects
  */
-public class PredicateFilter extends QuadFieldFilter implements QuadPatternFilter {
-
+public class ObjectFilter extends QuadFieldFilter implements QuadPatternFilter {
     /**
-     * Creates a new predicate filter
+     * Creates a new object filter
      *
-     * @param mode   Filter mode
-     * @param values Predicate values
+     * @param mode   Filter Mode
+     * @param values Objects to filter by
      */
-    public PredicateFilter(FilterMode mode, Collection<Node> values) {
-        super(mode, values, Quad::getPredicate);
+    public ObjectFilter(FilterMode mode, Collection<Node> values) {
+        super(mode, values, Quad::getObject);
     }
 
     @Override
     public List<Tuple4<Node>> getQuadPatterns(Node graph, Node subject, Node predicate, Node object) {
         if (this.mode == FilterMode.EXCLUDE) return List.of();
 
-        if (predicate != Node.ANY) {
-            throw new IllegalArgumentException("predicate term MUST be ANY");
+        if (object != Node.ANY) {
+            throw new IllegalArgumentException("object term MUST be ANY");
         }
 
         List<Tuple4<Node>> patterns = new ArrayList<>();
-        for (Node predicateFilter : this.values) {
-            patterns.add(TupleFactory.create4(graph, subject, predicateFilter, object));
+        for (Node objectFilter : this.values) {
+            patterns.add(TupleFactory.create4(graph, subject, predicate, objectFilter));
         }
         return patterns;
     }

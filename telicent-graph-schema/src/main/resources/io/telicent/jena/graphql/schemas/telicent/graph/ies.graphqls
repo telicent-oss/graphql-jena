@@ -5,8 +5,8 @@ type Node {
     shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
     types(limit: Int = 50, offset: Int = 1): [Node]! # An array of types for the Node - i.e. the classes it is an instance of.
     properties(limit: Int = 50, offset: Int = 1): [Property]! # An array of literal properties of the Node
-    outRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the domain position
-    inRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the range position
+    outRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the domain position
+    inRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the range position
     relCounts: NodeRelCounts! # Relationship counts information
     relFacets: NodeRelFacets!
     instances(limit: Int = 50, offset: Int = 1): [Node] # If the node is a class, this will return an array of its instances
@@ -22,8 +22,8 @@ type Rel { # A subject-predicate-object statement
 }
 
 type NodeRelCounts { # Counts of relationships available for a Node
-    inRels(predicateFilter: UriFilter, typeFilter: UriFilter): Int
-    outRels(predicateFilter: UriFilter, typeFilter: UriFilter): Int
+    inRels(predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): Int
+    outRels(predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): Int
     properties: Int
     types: Int
     instances: Int

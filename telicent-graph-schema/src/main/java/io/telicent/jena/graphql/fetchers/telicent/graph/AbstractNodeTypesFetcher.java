@@ -14,7 +14,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.AbstractFilter;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -40,7 +40,7 @@ public abstract class AbstractNodeTypesFetcher<TOutput>
 
     @Override
     protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
-                                  List<AbstractFilter> filters) {
+                                  List<Filter> filters) {
         // NB - Filters not enabled for node types
         return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
                   .map(Quad::getObject)

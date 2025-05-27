@@ -348,7 +348,7 @@ public class DatasetResourceValidationTests extends AbstractResourceTests {
         when(mockContext.getAttribute(anyString())).thenReturn(null);
         class TestResource extends AbstractGraphQLResource {
             public Response testMethod() {
-                return this.executeOrValidateGraphQL(null, null, Collections.emptyMap(), Collections.emptyMap(), mockContext, String.class, false);
+                return this.executeOrValidateGraphQL(null, null, null, Collections.emptyMap(), Collections.emptyMap(), mockContext, String.class, false);
             }
         }
         TestResource abstractGraphQLResource = new TestResource();

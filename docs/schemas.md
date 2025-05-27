@@ -293,33 +293,50 @@ The schema is defined as follows:
 
 ```graphql
 type Node {
-    id: ID! #Used if you want client-side caching, but will return the same string as uri
-    uri: String! #The uri of the resource
-    uriHash: String! @deprecated #A SHA1 hash of the uri
-    shortUri: String! #If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
-    types(limit: Int = 50, offset: Int = 1): [Node]! #An array of types for the Node - i.e. the classes it is an instance of.
-    properties(limit: Int = 50, offset: Int = 1): [Property]! #An array of literal properties of the Node
-    outRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the domain position
-    inRels(limit: Int = 50, offset: Int = 1): [Rel]! #An array of Rels where the current Node is in the range position
-    relCounts: RelCounts!
-    instances(limit: Int = 50, offset: Int = 1): [Node] #If the node is a class, this will return an array of its instances
+    id: ID! # Used if you want client-side caching, but will return the same string as uri
+    uri: String! # The uri of the resource
+    uriHash: String! @deprecated # A SHA1 hash of the uri
+    shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    types(limit: Int = 50, offset: Int = 1): [Node]! # An array of types for the Node - i.e. the classes it is an instance of.
+    properties(limit: Int = 50, offset: Int = 1): [Property]! # An array of literal properties of the Node
+    outRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the domain position
+    inRels(limit: Int = 50, offset: Int = 1, predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): [Rel]! # An array of Rels where the current Node is in the range position
+    relCounts: NodeRelCounts! # Relationship counts information
+    relFacets: NodeRelFacets!
+    instances(limit: Int = 50, offset: Int = 1): [Node] # If the node is a class, this will return an array of its instances
 }
 
-type Rel { #A subject-predicate-object statement
-    id: ID! #A (sorta) unique ID made from hashing (SHA1) the "<subject> <predicate> <object>" string
-    domain: Node! #AKA subject
+type Rel { # A subject-predicate-object statement
+    id: ID! # A (sorta) unique ID made from hashing (SHA1) the "<subject> <predicate> <object>" string
+    domain: Node! # AKA subject
     domain_id: String!
-    predicate: String! #AKA property
+    predicate: String! # AKA property
     range_id: String!
-    range: Node! #AKA object
+    range: Node! # AKA object
 }
 
-type RelCounts {
-    inRels: Int
-    outRels: Int
+type NodeRelCounts { # Counts of relationships available for a Node
+    inRels(predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): Int
+    outRels(predicateFilter: UriFilter, typeFilter: UriFilter, nodeFilter: UriFilter): Int
     properties: Int
     types: Int
     instances: Int
+}
+
+type NodeRelFacets {
+    inRels: RelFacetInfo!
+    outRels: RelFacetInfo!
+}
+
+type RelFacetInfo {
+    types: [FacetInfo!]!
+    predicates: [FacetInfo!]!
+}
+
+type FacetInfo {
+    uri: String! # Full URI
+    shortUri: String! # If a shortened (namespace prefixed) form of the uri is available, otherwise returns full uri
+    count: Int
 }
 
 type Property { #A literal property
@@ -330,6 +347,16 @@ type Property { #A literal property
     language: String
 }
 
+enum FilterMode {
+    INCLUDE
+    EXCLUDE
+}
+
+input UriFilter {
+    values: [String!]!
+    mode: FilterMode = INCLUDE
+}
+
 type State {
     uri: String!
     type: String!
@@ -337,6 +364,11 @@ type State {
     end: String
     period: String
     relations(limit: Int = 50, offset: Int = 1): [NonDirectionalRel]!
+    relCounts: StateRelCounts!
+}
+
+type StateRelCounts {
+    relations: Int
 }
 
 type NonDirectionalRel {
@@ -392,16 +424,17 @@ type Query {
         typeFilter: String
     ): SearchResults
     getAllEntities(graph: String): [Node]
-    states(uri: String!): [State]!
+    states(uri: String!, limit: Int = 50, offset: Int = 1): [State]!
     node(graph: String, uri: String!): Node
-    nodes(graph: String, uris: [String!]!): [Node]
+    nodes(graph: String, uris: [String!]!, limit: Int = 50, offset: Int = 1): [Node]
 }
 ```
 
 ### Paging in the Telicent (IES) Schema
 
-As of `0.10.0` the Telicent (IES) Schema offers paging capabilities on schema fields that return arrays.  Paging is
-achieved by supplying `limit` and `offset` arguments to the relevant fields, bear in mind the following:
+As of `0.10.0` the Telicent (IES) Schema offers paging capabilities on schema fields and top level queries that return
+arrays.  Paging is achieved by supplying `limit` and `offset` arguments to the relevant fields, bear in mind the
+following:
 
 - A maximum limit of `250` is enforced in the implementation even if a higher `limit` value is supplied.
 - Offsets are 1 based i.e. `offset: 1` means start from the 1st result
@@ -520,9 +553,13 @@ In this example we filter `inRels` - incoming relationships - to only those usin
 **NB:** If you want the corresponding `inRels` and `outRels` fields of the `relCounts` object counts to reflect our
 filtering, then you **MUST** also apply the filter to those fields, otherwise the counts will not reflect your filter.
 
-A few things to be aware of:
+From `0.10.2` we also support `nodeFilter` for both `inRels` and `outRels`, this allows the caller to limit the
+returned relationships to those coming from/going to specific nodes in the graph.
 
-- If both `predicateFilter` and `typeFilter` are present then both filter conditions **MUST** be satisfied.
-- For `predicateFilter`'s a `mode: INCLUDE` filter will be more performant than a `mode: EXCLUDE` filter.
+A few things to be aware of when using filters:
+
+- If multiples filters are present then **ALL** filter conditions **MUST** be satisfied.
+- For some filters a `mode: INCLUDE` filter will be more performant than a `mode: EXCLUDE` filter, potentially
+  substantially so depending on the dataset you are querying.
 - As noted above `relCounts` **SHOULD** also have filters applied otherwise counts won't reflect the filters.
 - An empty `values` list is an error and will result in a rejected query.

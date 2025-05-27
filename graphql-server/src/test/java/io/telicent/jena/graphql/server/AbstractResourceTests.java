@@ -55,6 +55,7 @@ public class AbstractResourceTests {
         response.close();
     }
 
+    @SuppressWarnings("unchecked")
     protected void verifyFailureWithErrorAndMessage(Response response, Response.Status expectedStatus, String expectedErrorType, String expectedMessage) {
         Assert.assertEquals(response.getStatus(), expectedStatus.getStatusCode());
         List<Map<String,String>> errors = response.readEntity(List.class);

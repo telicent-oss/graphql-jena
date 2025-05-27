@@ -13,19 +13,16 @@
 package io.telicent.jena.graphql.schemas.telicent.graph.models.inputs;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
- * Abstract class for filters
+ * Abstract implementation of a query filter
  */
-public abstract class AbstractFilter {
+public abstract class AbstractFilter implements Filter {
     /**
      * The filter mode
      */
@@ -42,34 +39,20 @@ public abstract class AbstractFilter {
      * @param values Values to filter by
      */
     public AbstractFilter(FilterMode mode, Collection<Node> values) {
-        this.mode = mode;
-        this.values.addAll(Objects.requireNonNull(values));
+        this.mode = Objects.requireNonNull(mode, "mode cannot be null");
+        this.values.addAll(Objects.requireNonNull(values, "Values to filter by cannot be null"));
+        if (this.values.isEmpty()) {
+            throw new IllegalArgumentException("Values to filter by cannot be empty");
+        }
     }
 
-    /**
-     * Gets the filter mode
-     *
-     * @return Filter mode
-     */
+    @Override
     public FilterMode mode() {
         return this.mode;
     }
 
-    /**
-     * Gets the filter values
-     *
-     * @return Values to filter by
-     */
+    @Override
     public Set<Node> values() {
         return this.values;
     }
-
-    /**
-     * Applies the filter
-     *
-     * @param stream Input stream
-     * @param dsg    Dataset graph
-     * @return Filtered stream
-     */
-    public abstract Stream<Quad> filter(Stream<Quad> stream, DatasetGraph dsg);
 }
