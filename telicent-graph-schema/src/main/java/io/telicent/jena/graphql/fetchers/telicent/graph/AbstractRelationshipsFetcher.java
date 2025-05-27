@@ -72,15 +72,9 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     }
 
     @Override
-    protected Filter createRangeFilter(FilterMode mode, List<Node> values) {
-        return this.direction == EdgeDirection.OUT ? super.createRangeFilter(mode, values) :
+    protected Filter createNodeFilter(FilterMode mode, List<Node> values) {
+        return this.direction == EdgeDirection.OUT ? super.createNodeFilter(mode, values) :
                new SubjectFilter(mode, values);
-    }
-
-    @Override
-    protected Filter createDomainFilter(FilterMode mode, List<Node> values) {
-        return this.direction == EdgeDirection.OUT ? super.createDomainFilter(mode, values) :
-               new ObjectFilter(mode, values);
     }
 
     @Override

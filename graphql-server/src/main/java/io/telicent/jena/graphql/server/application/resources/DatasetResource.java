@@ -21,6 +21,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -45,6 +46,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * @param operationName  GraphQL Operation name
      * @param variables      GraphQL variables
      * @param extensions     GraphQL extensions
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -55,14 +57,16 @@ public class DatasetResource extends AbstractGraphQLResource {
                           @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
                           @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
                           @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
-                          @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(query, operationName, variables, extensions, servletContext, DatasetExecutor.class, false);
+                          @Context HttpHeaders headers, @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, query, operationName, variables, extensions, servletContext,
+                                        DatasetExecutor.class, false);
     }
 
     /**
      * POST requests using the {@link io.telicent.jena.graphql.schemas.DatasetSchema}
      *
      * @param request        GraphQL Request
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -70,9 +74,10 @@ public class DatasetResource extends AbstractGraphQLResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
-    public Response postQuads(GraphQLRequest request, @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(request.getQuery(), request.getOperationName(), request.getVariables(),
-                              request.getExtensions(), servletContext, DatasetExecutor.class, false);
+    public Response postQuads(GraphQLRequest request, @Context HttpHeaders headers,
+                              @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, request.getQuery(), request.getOperationName(), request.getVariables(),
+                                        request.getExtensions(), servletContext, DatasetExecutor.class, false);
     }
 
     /**
@@ -82,6 +87,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * @param operationName  GraphQL Operation name
      * @param variables      GraphQL variables
      * @param extensions     GraphQL extensions
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -92,14 +98,16 @@ public class DatasetResource extends AbstractGraphQLResource {
                              @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
                              @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
                              @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
-                             @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(query, operationName, variables, extensions, servletContext, TraversalExecutor.class, false);
+                             @Context HttpHeaders headers, @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, query, operationName, variables, extensions, servletContext,
+                                        TraversalExecutor.class, false);
     }
 
     /**
      * POST requests using the {@link io.telicent.jena.graphql.schemas.TraversalSchema}
      *
      * @param request        GraphQL Request
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -107,9 +115,10 @@ public class DatasetResource extends AbstractGraphQLResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
-    public Response postTraversal(GraphQLRequest request, @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(request.getQuery(), request.getOperationName(), request.getVariables(),
-                              request.getExtensions(), servletContext, TraversalExecutor.class, false);
+    public Response postTraversal(GraphQLRequest request, @Context HttpHeaders headers,
+                                  @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, request.getQuery(), request.getOperationName(), request.getVariables(),
+                                        request.getExtensions(), servletContext, TraversalExecutor.class, false);
     }
 
 
@@ -120,6 +129,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * @param operationName  GraphQL Operation name
      * @param variables      GraphQL variables
      * @param extensions     GraphQL extensions
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -127,17 +137,19 @@ public class DatasetResource extends AbstractGraphQLResource {
     @GET
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
     public Response telicent(@QueryParam(GraphQLOverHttp.PARAMETER_QUERY) @NotNull String query,
-                          @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
-                          @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
-                          @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
-                          @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(query, operationName, variables, extensions, servletContext, TelicentGraphExecutor.class, false);
+                             @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
+                             @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
+                             @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
+                             @Context HttpHeaders headers, @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, query, operationName, variables, extensions, servletContext,
+                                        TelicentGraphExecutor.class, false);
     }
 
     /**
      * POST requests using the {@link io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema}
      *
      * @param request        GraphQL Request
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -145,9 +157,10 @@ public class DatasetResource extends AbstractGraphQLResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
-    public Response postTelicent(GraphQLRequest request, @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(request.getQuery(), request.getOperationName(), request.getVariables(),
-                              request.getExtensions(), servletContext, TelicentGraphExecutor.class,false);
+    public Response postTelicent(GraphQLRequest request, @Context HttpHeaders headers,
+                                 @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, request.getQuery(), request.getOperationName(), request.getVariables(),
+                                        request.getExtensions(), servletContext, TelicentGraphExecutor.class, false);
     }
 
     /**
@@ -157,6 +170,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * @param operationName  GraphQL Operation name
      * @param variables      GraphQL variables
      * @param extensions     GraphQL extensions
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -165,11 +179,12 @@ public class DatasetResource extends AbstractGraphQLResource {
     @GET
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
     public Response getValidate(@QueryParam(GraphQLOverHttp.PARAMETER_QUERY) @NotNull String query,
-                             @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
-                             @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
-                             @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
-                             @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(query, operationName, variables, extensions, servletContext, DatasetExecutor.class, true);
+                                @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
+                                @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
+                                @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
+                                @Context HttpHeaders headers, @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, query, operationName, variables, extensions, servletContext,
+                                        DatasetExecutor.class, true);
     }
 
 
@@ -177,6 +192,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * POST requests using the {@link io.telicent.jena.graphql.schemas.DatasetSchema}
      *
      * @param request        GraphQL Request
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -184,9 +200,10 @@ public class DatasetResource extends AbstractGraphQLResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
-    public Response postValidate(GraphQLRequest request, @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(request.getQuery(), request.getOperationName(), request.getVariables(),
-                              request.getExtensions(), servletContext, DatasetExecutor.class, true);
+    public Response postValidate(GraphQLRequest request, @Context HttpHeaders headers,
+                                 @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, request.getQuery(), request.getOperationName(), request.getVariables(),
+                                        request.getExtensions(), servletContext, DatasetExecutor.class, true);
     }
 
 
@@ -197,6 +214,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * @param operationName  GraphQL Operation name
      * @param variables      GraphQL variables
      * @param extensions     GraphQL extensions
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -204,17 +222,19 @@ public class DatasetResource extends AbstractGraphQLResource {
     @GET
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
     public Response validateGetTraversal(@QueryParam(GraphQLOverHttp.PARAMETER_QUERY) @NotNull String query,
-                                      @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
-                                      @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
-                                      @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
-                                      @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(query, operationName, variables, extensions, servletContext, TraversalExecutor.class, true);
+                                         @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
+                                         @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
+                                         @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
+                                         @Context HttpHeaders headers, @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, query, operationName, variables, extensions, servletContext,
+                                        TraversalExecutor.class, true);
     }
 
     /**
      * POST requests using the {@link io.telicent.jena.graphql.schemas.TraversalSchema}
      *
      * @param request        GraphQL Request
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -222,8 +242,9 @@ public class DatasetResource extends AbstractGraphQLResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
-    public Response validatePostTraversal(GraphQLRequest request, @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(request.getQuery(), request.getOperationName(), request.getVariables(),
+    public Response validatePostTraversal(GraphQLRequest request, @Context HttpHeaders headers,
+                                          @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, request.getQuery(), request.getOperationName(), request.getVariables(),
                                         request.getExtensions(), servletContext, TraversalExecutor.class, true);
     }
 
@@ -234,6 +255,7 @@ public class DatasetResource extends AbstractGraphQLResource {
      * @param operationName  GraphQL Operation name
      * @param variables      GraphQL variables
      * @param extensions     GraphQL extensions
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -242,17 +264,19 @@ public class DatasetResource extends AbstractGraphQLResource {
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
     public Response getValidateTelicent(@QueryParam(GraphQLOverHttp.PARAMETER_QUERY) String query,
-                             @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
-                             @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
-                             @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
-                             @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(query, operationName, variables, extensions, servletContext, TelicentGraphExecutor.class, true);
+                                        @QueryParam(GraphQLOverHttp.PARAMETER_OPERATION_NAME) String operationName,
+                                        @QueryParam(GraphQLOverHttp.PARAMETER_VARIABLES) String variables,
+                                        @QueryParam(GraphQLOverHttp.PARAMETER_EXTENSIONS) String extensions,
+                                        @Context HttpHeaders headers, @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, query, operationName, variables, extensions, servletContext,
+                                        TelicentGraphExecutor.class, true);
     }
 
     /**
      * POST requests using the {@link io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema}
      *
      * @param request        GraphQL Request
+     * @param headers        HTTP Headers for the request
      * @param servletContext Servlet context
      * @return Response
      */
@@ -260,9 +284,10 @@ public class DatasetResource extends AbstractGraphQLResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON, "application/problem+json" })
-    public Response postValidateTelicent(GraphQLRequest request, @Context ServletContext servletContext) {
-        return executeOrValidateGraphQL(request.getQuery(), request.getOperationName(), request.getVariables(),
-                                        request.getExtensions(), servletContext, TelicentGraphExecutor.class,true);
+    public Response postValidateTelicent(GraphQLRequest request, @Context HttpHeaders headers,
+                                         @Context ServletContext servletContext) {
+        return executeOrValidateGraphQL(headers, request.getQuery(), request.getOperationName(), request.getVariables(),
+                                        request.getExtensions(), servletContext, TelicentGraphExecutor.class, true);
     }
 
 }

@@ -289,6 +289,10 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         Map<String, Object> birthOrDeathStateTypeFilter =
                 Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
                        List.of(IesFetchers.iesTerm("BirthState").getURI(), IesFetchers.iesTerm("DeathState").getURI()));
+        Map<String, Object> birthOrDeathNodeFilter =
+                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
+                       List.of("https://starwars.com#person_Obi-WanKenobi_BIRTH",
+                               "https://starwars.com#person_Obi-WanKenobi_DEATH"));
 
         return new Object[][] {
                 {
@@ -304,7 +308,11 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
                 },
                 // Birth and Death State exists
                 {
-                    Map.of("typeFilter", birthOrDeathStateTypeFilter), 2, 0
+                        Map.of("typeFilter", birthOrDeathStateTypeFilter), 2, 0
+                },
+                // Only relationships involving the Birth or Death State nodes
+                {
+                        Map.of("nodeFilter", birthOrDeathNodeFilter), 2, 0
                 }
         };
     }

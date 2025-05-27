@@ -110,10 +110,25 @@ public class TestQuadPatternFilter {
                 };
     }
 
-    @Test(dataProvider = "singlePattern", expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = ".*concrete values.*")
-    public void givenSinglePattern_whenCombiningWithItself_thenIllegalArgumentDueToConflict(
+    @Test(dataProvider = "singlePattern")
+    public void givenSinglePattern_whenCombiningWithItself_thenOk(
             List<Tuple4<Node>> pattern) {
-        // Given, When and Then
-        QuadPatternFilter.combinePatterns(pattern, pattern);
+        // Given and When
+        List<Tuple4<Node>> combined = QuadPatternFilter.combinePatterns(pattern, pattern);
+
+        // Then
+        Assert.assertEquals(combined.size(), pattern.size());
+    }
+
+    @Test(dataProvider = "singlePattern", expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = ".*conflicting concrete values.*")
+    public void givenSinglePattern_whenCombiningWithConcretePattern_thenConflict(
+            List<Tuple4<Node>> pattern) {
+        // Given
+        List<Tuple4<Node>> conflicting =
+                List.of(TupleFactory.create4(NodeFactory.createURI("g"), NodeFactory.createURI("s"),
+                                             NodeFactory.createURI("p"), NodeFactory.createURI("o")));
+
+        // When and Then
+        QuadPatternFilter.combinePatterns(pattern, conflicting);
     }
 }

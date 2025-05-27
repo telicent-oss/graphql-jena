@@ -103,7 +103,7 @@ public class WrappedNode {
                 WrappedNode s = new WrappedNode((Map<String, Object>) map.get(CoreSchema.SUBJECT_FIELD));
                 WrappedNode p = new WrappedNode((Map<String, Object>) map.get(CoreSchema.PREDICATE_FIELD));
                 WrappedNode o = new WrappedNode((Map<String, Object>) map.get(CoreSchema.OBJECT_FIELD));
-                yield NodeFactory.createTripleNode(s.node, p.node, o.node);
+                yield NodeFactory.createTripleTerm(s.node, p.node, o.node);
             }
         };
     }

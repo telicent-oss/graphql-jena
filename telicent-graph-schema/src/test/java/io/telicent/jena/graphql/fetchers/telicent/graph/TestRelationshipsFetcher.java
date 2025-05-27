@@ -200,28 +200,19 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                 };
     }
 
-    @DataProvider(name = "outboundRangeFilters")
-    private Object[][] outboundRangeFilters() {
+    @DataProvider(name = "outboundNodeFilters")
+    private Object[][] outboundNodeFilters() {
         return new Object[][] {
                 { "INCLUDE", List.of("object1"), List.of("object1") },
                 { "EXCLUDE", List.of("object1"), List.of("object2", "object3") },
                 };
     }
 
-    @DataProvider(name = "inboundRangeFilters")
-    private Object[][] inboundRangeFilters() {
+    @DataProvider(name = "inboundNodeFilters")
+    private Object[][] inboundNodeFilters() {
         return new Object[][] {
                 { "INCLUDE", List.of("object1"), List.of("object1") },
                 { "EXCLUDE", List.of("object1"), List.of("object2", "object3") },
-                };
-    }
-
-    @DataProvider(name = "domainFilters")
-    private Object[][] domainFilters() {
-        return new Object[][] {
-                { "INCLUDE", List.of("object1", "object3"), List.of("object1", "object3") },
-                { "INCLUDE", List.of("object4"), Collections.emptyList() },
-                { "EXCLUDE", List.of("object3"), List.of("object1", "object2") },
                 };
     }
 
@@ -271,8 +262,8 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                 };
     }
 
-    @DataProvider(name = "predicateAndRangeFilters")
-    private Object[][] predicateAndRangeFilters() {
+    @DataProvider(name = "predicateAndNodeFilters")
+    private Object[][] predicateAndNodeFilters() {
         return new Object[][] {
                 // Includes only predicate 1 and object 1 so only object 1 returned
                 { "INCLUDE", List.of("predicate1"), "INCLUDE", List.of("object1"), List.of("object1") },
@@ -332,28 +323,20 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                                    TelicentGraphSchema.ARGUMENT_TYPE_FILTER, r -> r.getDomain().getUri());
     }
 
-    @Test(dataProvider = "outboundRangeFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithOutboundRangeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
+    @Test(dataProvider = "outboundNodeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithOutboundNodeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
             String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
         // given
         verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.OUT,
-                                   TelicentGraphSchema.ARGUMENT_RANGE_FILTER, r -> r.getRange().getUri());
+                                   TelicentGraphSchema.ARGUMENT_NODE_FILTER, r -> r.getRange().getUri());
     }
 
-    @Test(dataProvider = "inboundRangeFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithInboundRangeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
+    @Test(dataProvider = "inboundNodeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithInboundNodeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
             String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
         // given
         verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.IN,
-                                   TelicentGraphSchema.ARGUMENT_RANGE_FILTER, r -> r.getDomain().getUri());
-    }
-
-    @Test(dataProvider = "domainFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithDomainFilter_thenOnlyRelationshipsWithRelevantSubjectsFetched(
-            String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
-        // given
-        verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.IN,
-                                   TelicentGraphSchema.ARGUMENT_DOMAIN_FILTER, r -> r.getDomain().getUri());
+                                   TelicentGraphSchema.ARGUMENT_NODE_FILTER, r -> r.getDomain().getUri());
     }
 
     @Test(dataProvider = "outboundTypeAndPredicateFilters")
@@ -399,13 +382,13 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         }
     }
 
-    @Test(dataProvider = "predicateAndRangeFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithPredicateAndRangeFilter_thenOnlyRelationshipsWithRelevantPredicatesAndObjectsFetched(
+    @Test(dataProvider = "predicateAndNodeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithPredicateAndNodeFilters_thenOnlyRelationshipsWithRelevantPredicatesAndObjectsFetched(
             String predicateFilterMode, List<String> predicateFilters, String rangeFilterMode, List<String> rangeFilters,
             List<String> expectedResults) throws Exception {
         verifyDualFilterFetchedRelationships(predicateFilterMode, predicateFilters,
                                              TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER, rangeFilterMode, rangeFilters,
-                                             TelicentGraphSchema.ARGUMENT_RANGE_FILTER, expectedResults
+                                             TelicentGraphSchema.ARGUMENT_NODE_FILTER, expectedResults
         );
     }
 

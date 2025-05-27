@@ -1,10 +1,10 @@
-query($predFilter: UriFilter, $typeFilter: UriFilter) {
+query($predFilter: UriFilter, $typeFilter: UriFilter, $nodeFilter: UriFilter) {
     node(uri: "https://starwars.com#person_Obi-WanKenobi") {
         id
         uri
         shortUri
         # We can filter relationships by both predicate and/or type
-        inRels(predicateFilter: $predFilter, typeFilter: $typeFilter) {
+        inRels(predicateFilter: $predFilter, typeFilter: $typeFilter, nodeFilter: $nodeFilter) {
             id
             domain {
                 uri
@@ -12,7 +12,7 @@ query($predFilter: UriFilter, $typeFilter: UriFilter) {
             domain_id
             predicate
         }
-        outRels(predicateFilter: $predFilter, typeFilter: $typeFilter) {
+        outRels(predicateFilter: $predFilter, typeFilter: $typeFilter, nodeFilter: $nodeFilter) {
             id
             predicate
             range {
@@ -23,8 +23,8 @@ query($predFilter: UriFilter, $typeFilter: UriFilter) {
         relCounts {
             # NB - If we also supply our filters to the relCounts sub-fields then those counts will reflect our filter
             #      conditions, if we don't do this then they still reflect total counts
-            inRels(predicateFilter: $predFilter, typeFilter: $typeFilter)
-            outRels(predicateFilter: $predFilter, typeFilter: $typeFilter)
+            inRels(predicateFilter: $predFilter, typeFilter: $typeFilter, nodeFilter: $nodeFilter)
+            outRels(predicateFilter: $predFilter, typeFilter: $typeFilter, nodeFilter: $nodeFilter)
         }
         relFacets {
             inRels {

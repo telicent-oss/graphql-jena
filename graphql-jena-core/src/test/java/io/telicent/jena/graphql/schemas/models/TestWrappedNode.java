@@ -100,7 +100,7 @@ public class TestWrappedNode {
     public void test_WrapperNode_mapNullTriple() {
         // given
         Triple triple = SSE.parseTriple("(:s :p :o)");
-        Node n = NodeFactory.createTripleNode(triple);
+        Node n = createTripleTerm(triple);
         // when
         WrappedNode wrappedNode = new WrappedNode(n);
         // then
@@ -155,7 +155,7 @@ public class TestWrappedNode {
                 { createLiteralString(RANDOM_ID), RANDOM_ID },
                 { createURI(RANDOM_ID), RANDOM_ID },
                 { createVariable(RANDOM_ID), RANDOM_ID },
-                { createTripleNode(Triple.create(createBlankNode(), createBlankNode(), createBlankNode())), null },
+                { createTripleTerm(Triple.create(createBlankNode(), createBlankNode(), createBlankNode())), null },
                 };
     }
 

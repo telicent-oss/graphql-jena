@@ -90,8 +90,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      */
     protected void createFilters(DataFetchingEnvironment environment, List<Filter> filters) {
         filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER));
-        filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_DOMAIN_FILTER));
-        filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_RANGE_FILTER));
+        filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_NODE_FILTER));
         filters.add(this.parseFilter(environment, TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
     }
 
@@ -244,14 +243,13 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
         return switch (argument) {
             case TelicentGraphSchema.ARGUMENT_TYPE_FILTER -> createTypeFilter(mode, values);
             case TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER -> new PredicateFilter(mode, values);
-            case TelicentGraphSchema.ARGUMENT_DOMAIN_FILTER -> createDomainFilter(mode, values);
-            case TelicentGraphSchema.ARGUMENT_RANGE_FILTER -> createRangeFilter(mode, values);
+            case TelicentGraphSchema.ARGUMENT_NODE_FILTER -> createNodeFilter(mode, values);
             default -> throw new IllegalArgumentException("Unknown filter argument: " + argument);
         };
     }
 
     /**
-     * Creates a range filter
+     * Creates a node filter
      * <p>
      * By default, this is an {@link ObjectFilter} <strong>but</strong> if an implementation traverses the graph in a
      * different direction it may wish to override this default.
@@ -261,23 +259,8 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param values Filter values
      * @return Filter
      */
-    protected Filter createRangeFilter(FilterMode mode, List<Node> values) {
+    protected Filter createNodeFilter(FilterMode mode, List<Node> values) {
         return new ObjectFilter(mode, values);
-    }
-
-    /**
-     * Creates a domain filter
-     * <p>
-     * By default, this is an {@link SubjectFilter} <strong>but</strong> if an implementation traverses the graph in a
-     * different direction it may wish to override this default.
-     * </p>
-     *
-     * @param mode   Filter Mode
-     * @param values Filter values
-     * @return Filter
-     */
-    protected Filter createDomainFilter(FilterMode mode, List<Node> values) {
-        return new SubjectFilter(mode, values);
     }
 
     /**
