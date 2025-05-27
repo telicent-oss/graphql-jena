@@ -16,7 +16,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
 

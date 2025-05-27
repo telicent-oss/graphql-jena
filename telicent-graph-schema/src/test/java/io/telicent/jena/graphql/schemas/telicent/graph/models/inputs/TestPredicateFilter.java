@@ -12,7 +12,6 @@
  */
 package io.telicent.jena.graphql.schemas.telicent.graph.models.inputs;
 
-import graphql.org.antlr.v4.runtime.atn.SemanticContext;
 import org.apache.jena.atlas.lib.tuple.Tuple4;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;

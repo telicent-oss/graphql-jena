@@ -15,14 +15,11 @@ package io.telicent.jena.graphql.schemas.telicent.graph.models.inputs;
 import org.apache.jena.atlas.lib.tuple.Tuple4;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * A filter that keeps only quads with matching predicates

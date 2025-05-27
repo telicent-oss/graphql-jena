@@ -13,14 +13,11 @@
 package io.telicent.jena.graphql.schemas.telicent.graph.models.inputs;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Abstract implementation of a query filter

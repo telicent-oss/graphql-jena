@@ -1,11 +1,11 @@
 /**
  * Copyright (C) Telicent Ltd
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
@@ -200,8 +200,16 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                 };
     }
 
-    @DataProvider(name = "rangeFilters")
-    private Object[][] rangeFilters() {
+    @DataProvider(name = "outboundRangeFilters")
+    private Object[][] outboundRangeFilters() {
+        return new Object[][] {
+                { "INCLUDE", List.of("object1"), List.of("object1") },
+                { "EXCLUDE", List.of("object1"), List.of("object2", "object3") },
+                };
+    }
+
+    @DataProvider(name = "inboundRangeFilters")
+    private Object[][] inboundRangeFilters() {
         return new Object[][] {
                 { "INCLUDE", List.of("object1"), List.of("object1") },
                 { "EXCLUDE", List.of("object1"), List.of("object2", "object3") },
@@ -324,12 +332,20 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                                    TelicentGraphSchema.ARGUMENT_TYPE_FILTER, r -> r.getDomain().getUri());
     }
 
-    @Test(dataProvider = "rangeFilters")
-    public void givenGraphWithTypes_whenFetchingRelationshipsWithRangeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
+    @Test(dataProvider = "outboundRangeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithOutboundRangeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
             String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
         // given
         verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.OUT,
                                    TelicentGraphSchema.ARGUMENT_RANGE_FILTER, r -> r.getRange().getUri());
+    }
+
+    @Test(dataProvider = "inboundRangeFilters")
+    public void givenGraphWithTypes_whenFetchingRelationshipsWithInboundRangeFilter_thenOnlyRelationshipsWithRelevantObjectsFetched(
+            String filterMode, List<String> filterValues, List<String> expectedResults) throws Exception {
+        // given
+        verifyFetchedRelationships(filterMode, filterValues, expectedResults, EdgeDirection.IN,
+                                   TelicentGraphSchema.ARGUMENT_RANGE_FILTER, r -> r.getDomain().getUri());
     }
 
     @Test(dataProvider = "domainFilters")
