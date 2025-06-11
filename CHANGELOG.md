@@ -1,5 +1,19 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.3
+
+- Telicent Graph Schema improvements:
+    - Added several new arguments to the fields of the `RelFacetInfo` type:
+          - Added `typeFilter` argument to the `types` field
+          - Added `predicateFilter` argument to the `predicates` field
+          - Added `nodeFilter` argument to both fields
+    - This allows restricting computed facets in line with how `inRels`/`outRels`, and they `relCounts` may already be
+      restricted.
+- Build Improvements:
+    - Upgraded Apache Commons BeanUtils to 1.11.0
+    - Upgraded GraphQL Java to 24.1
+    - Upgraded Smart Caches Core to 0.29.1
+
 # 0.10.2
 
 - Telicent Graph Schema improvements:

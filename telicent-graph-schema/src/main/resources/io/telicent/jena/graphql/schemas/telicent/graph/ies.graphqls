@@ -35,8 +35,8 @@ type NodeRelFacets {
 }
 
 type RelFacetInfo {
-    types: [FacetInfo!]!
-    predicates: [FacetInfo!]!
+    types(typeFilter: UriFilter, nodeFilter: UriFilter): [FacetInfo!]!
+    predicates(predicateFilter: UriFilter, nodeFilter: UriFilter): [FacetInfo!]!
 }
 
 type FacetInfo {

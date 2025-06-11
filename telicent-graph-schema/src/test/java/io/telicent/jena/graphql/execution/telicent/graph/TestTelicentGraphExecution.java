@@ -16,6 +16,7 @@ import graphql.ExecutionResult;
 import io.telicent.jena.graphql.execution.AbstractExecutionTests;
 import io.telicent.jena.graphql.fetchers.telicent.graph.IesFetchers;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.FilterMode;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.riot.Lang;
@@ -23,6 +24,7 @@ import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.vocabulary.RDF;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -278,21 +280,24 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     @DataProvider(name = "filters")
     private Object[][] filters() {
         Map<String, Object> isStateOfFilter =
-                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
-                       List.of(IesFetchers.IS_STATE_OF.getURI()));
+                createFilter("INCLUDE", List.of(IesFetchers.IS_STATE_OF.getURI()));
         Map<String, Object> isStartOfFilter =
-                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
-                       List.of(IesFetchers.IS_START_OF.getURI()));
+                createFilter("INCLUDE", List.of(IesFetchers.IS_START_OF.getURI()));
         Map<String, Object> birthStateTypeFilter =
-                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
-                       List.of(IesFetchers.iesTerm("BirthState").getURI()));
+                createFilter("INCLUDE", List.of(IesFetchers.iesTerm("BirthState").getURI()));
         Map<String, Object> birthOrDeathStateTypeFilter =
-                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
-                       List.of(IesFetchers.iesTerm("BirthState").getURI(), IesFetchers.iesTerm("DeathState").getURI()));
+                createFilter("INCLUDE", List.of(IesFetchers.iesTerm("BirthState").getURI(), IesFetchers.iesTerm("DeathState").getURI()));
         Map<String, Object> birthOrDeathNodeFilter =
-                Map.of(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE", TelicentGraphSchema.ARGUMENT_VALUES,
-                       List.of("https://starwars.com#person_Obi-WanKenobi_BIRTH",
-                               "https://starwars.com#person_Obi-WanKenobi_DEATH"));
+                createFilter("INCLUDE", List.of("https://starwars.com#person_Obi-WanKenobi_BIRTH",
+                                                "https://starwars.com#person_Obi-WanKenobi_DEATH"));
+        Map<String, Object> rdfTypeFilter =
+                createFilter("EXCLUDE", List.of(RDF.type.getURI()));
+        Map<String, Object> noStatesFilter =
+                createFilter("EXCLUDE",
+                             List.of(IesFetchers.iesTerm("PersonState").getURI(), IesFetchers.iesTerm("BirthState").getURI(),
+                                     IesFetchers.iesTerm("DeathState").getURI()));
+        Map<String, Object> specificNodeFilter =
+                createFilter("INCLUDE", List.of("https://starwars.com#efdb389a-3587-4a9f-a5cd-d131aacc4971"));
 
         return new Object[][] {
                 {
@@ -313,12 +318,29 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
                 // Only relationships involving the Birth or Death State nodes
                 {
                         Map.of("nodeFilter", birthOrDeathNodeFilter), 2, 0
+                },
+                // Ignore rdf:type predicates
+                {
+                        Map.of("typeFilter", rdfTypeFilter), 50, 4
+                },
+                // Only include relationships to things that are NOT states
+                {
+                        Map.of("typeFilter", noStatesFilter), 0, 4
+                },
+                // Only include relationships to/from a specific node
+                {
+                    Map.of("nodeFilter", specificNodeFilter), 1, 0
                 }
         };
     }
 
+    private static Map<String, Object> createFilter(String mode, List<String> values) {
+        return Map.of(TelicentGraphSchema.ARGUMENT_MODE, mode, TelicentGraphSchema.ARGUMENT_VALUES,
+                      values);
+    }
+
     @Test(dataProvider = "filters")
-    public void givenStarWarsData_whenQueryingForSingleNodeWithFilters_thenResultsFilteredCorrectly(
+    public void givenStarWarsData_whenQueryingForSingleNodeWithFilters_thenResultsFilteredCorrectly_andFacetsAreFiltered(
             Map<String, Object> variables, int expectedInRels, int expectedOutRels) {
         // Given and When
         ExecutionResult result = verifyExecution(this.starwars, FILTERED_NODE_QUERY, variables);
@@ -336,6 +358,44 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
         int inRels = verifyRelCounts(data, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS,
                                      (int) TelicentGraphSchema.DEFAULT_LIMIT, 1);
         Assert.assertEquals(inRels, expectedInRels);
+
+        // And
+        verifyRelFacets(data, TelicentGraphSchema.FIELD_INBOUND_RELATIONSHIPS, variables);
+        verifyRelFacets(data, TelicentGraphSchema.FIELD_OUTBOUND_RELATIONSHIPS, variables);
+    }
+
+    private void verifyRelFacets(Map<String, Object> data, String fieldName, Map<String, Object> variables) {
+        Map<String, Object> relFacets = (Map<String, Object>) data.get(TelicentGraphSchema.FIELD_RELATIONSHIP_FACETS);
+        Assert.assertNotNull(relFacets);
+        Map<String, Object> facets = (Map<String, Object>) relFacets.get(fieldName);
+        Assert.assertNotNull(facets);
+
+        if (variables.containsKey(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER)) {
+            verifyFilterApplied(variables, (List<Map<String, Object>>) facets.get(TelicentGraphSchema.FIELD_PREDICATES),
+                                TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER);
+        }
+        if (variables.containsKey(TelicentGraphSchema.ARGUMENT_TYPE_FILTER)) {
+            verifyFilterApplied(variables, (List<Map<String, Object>>) facets.get(TelicentGraphSchema.FIELD_TYPES),
+                                TelicentGraphSchema.ARGUMENT_TYPE_FILTER);
+        }
+    }
+
+    private static void verifyFilterApplied(Map<String, Object> variables, List<Map<String, Object>> facetInfo,
+                                            String filterArg) {
+        Map<String, Object> filter = (Map<String, Object>) variables.get(filterArg);
+        Assert.assertNotNull(filter);
+        List<String> values = (List<String>) filter.get(TelicentGraphSchema.ARGUMENT_VALUES);
+        Assert.assertNotNull(values);
+        switch (FilterMode.valueOf((String) filter.getOrDefault(TelicentGraphSchema.ARGUMENT_MODE, "INCLUDE"))) {
+            case INCLUDE:
+                facetInfo.forEach(
+                        facet -> Assert.assertTrue(values.contains((String) facet.get(TelicentGraphSchema.FIELD_URI))));
+                break;
+            case EXCLUDE:
+                facetInfo.forEach(facet -> Assert.assertFalse(
+                        values.contains((String) facet.get(TelicentGraphSchema.FIELD_URI))));
+                break;
+        }
     }
 
     private static void verifyNodeResult(Map<String, Object> data, String fullUri, String shortUri) {
