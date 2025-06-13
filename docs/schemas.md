@@ -329,8 +329,8 @@ type NodeRelFacets {
 }
 
 type RelFacetInfo {
-    types: [FacetInfo!]!
-    predicates: [FacetInfo!]!
+    types(typeFilter: UriFilter, nodeFilter: UriFilter): [FacetInfo!]!
+    predicates(predicateFilter: UriFilter, nodeFilter: UriFilter): [FacetInfo!]!
 }
 
 type FacetInfo {
@@ -531,13 +531,13 @@ query Node($uri: String!) {
     }    
     relFacets {
       inRels {
-        predicates {
+        predicates(predicateFilter: { mode: INCLUDE, values: [ "http://ies.data.gov.uk/ontology/ies4#inLocation" ]}) {
           uri
           count
         }
       }
       outRels {
-        predicates {
+        predicates(predicateFilter: { mode: INCLUDE, values: [ "http://ies.data.gov.uk/ontology/ies4#isPartOf" ]}) {
           uri
           count
        }
@@ -548,18 +548,21 @@ query Node($uri: String!) {
 ```
 
 In this example we filter `inRels` - incoming relationships - to only those using the `ies:inLocation` predicate, and
-`outRels` - outgoing relationships - to only those using the `ies:isPartOf` predicate.
-
-**NB:** If you want the corresponding `inRels` and `outRels` fields of the `relCounts` object counts to reflect our
-filtering, then you **MUST** also apply the filter to those fields, otherwise the counts will not reflect your filter.
+`outRels` - outgoing relationships - to only those using the `ies:isPartOf` predicate.  If you want the corresponding
+`inRels` and `outRels` count fields of the `relCounts` object to reflect your filtering, then you **MUST** also apply
+the filters to those fields, otherwise the counts will not reflect your filter.
 
 From `0.10.2` we also support `nodeFilter` for both `inRels` and `outRels`, this allows the caller to limit the
 returned relationships to those coming from/going to specific nodes in the graph.
+
+From `0.10.3` if you want the `types` and `predicates` fields of the `RelFacetInfo` objects to reflect your filtering
+then you **MUST** also apply the relevant filters to those fields.
 
 A few things to be aware of when using filters:
 
 - If multiples filters are present then **ALL** filter conditions **MUST** be satisfied.
 - For some filters a `mode: INCLUDE` filter will be more performant than a `mode: EXCLUDE` filter, potentially
   substantially so depending on the dataset you are querying.
-- As noted above `relCounts` **SHOULD** also have filters applied otherwise counts won't reflect the filters.
+- As noted above `relCounts`/`relFacets` **SHOULD** also have filters applied otherwise counts/facets won't reflect
+  the filters.
 - An empty `values` list is an error and will result in a rejected query.

@@ -27,22 +27,23 @@ query($predFilter: UriFilter, $typeFilter: UriFilter, $nodeFilter: UriFilter) {
             outRels(predicateFilter: $predFilter, typeFilter: $typeFilter, nodeFilter: $nodeFilter)
         }
         relFacets {
+            # NB - We can also apply predicateFilter and typeFilter to the relevant facets
             inRels {
-                predicates {
+                predicates(predicateFilter: $predFilter, nodeFilter: $nodeFilter) {
                     uri
                     count
                 }
-                types {
+                types(typeFilter: $typeFilter, nodeFilter: $nodeFilter) {
                     uri
                     count
                 }
             }
             outRels {
-                predicates {
+                predicates(predicateFilter: $predFilter) {
                     uri
                     count
                 }
-                types {
+                types(typeFilter: $typeFilter) {
                     uri
                     count
                 }
