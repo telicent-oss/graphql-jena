@@ -93,7 +93,7 @@
         <dependency.airline>3.0.0</dependency.airline>
         <dependency.graphql>24.1</dependency.graphql>
         <dependency.jena>5.4.0</dependency.jena>
-        <dependency.jackson>2.19.0</dependency.jackson>
+        <dependency.jackson>2.19.1</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
         <dependency.jwt-servlet>1.0.1</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
@@ -102,7 +102,7 @@
         <dependency.slf4j>2.0.17</dependency.slf4j>
         <dependency.smart-caches>0.29.1</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
-        <dependency.wiremock>3.13.0</dependency.wiremock>
+        <dependency.wiremock>3.13.1</dependency.wiremock>
 
         <!-- Vulnerability fixes -->
         <!-- CVE-2024-57699 -->
