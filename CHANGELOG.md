@@ -1,5 +1,13 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.4
+
+- Build Improvements:
+    - Apache Commons FileUpload upgraded to 2.0.0-M4
+    - Airline upgraded to 3.1.0
+    - Jackson upgraded to 2.19.1
+    - Test dependencies upgraded to latest available
+
 # 0.10.3
 
 - Telicent Graph Schema improvements:
