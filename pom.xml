@@ -19,15 +19,10 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>sonatype-oss</id>
-            <name>Sonatype OSS Snapshots</name>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <id>central</id>
+            <name>Maven Central Snapshots</name>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-        <repository>
-            <id>sonatype-oss</id>
-            <name>Sonatype OSS</name>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
     <scm>
         <connection>scm:git:https://github.com/telicent-oss/graphql-jena</connection>
@@ -74,6 +69,7 @@
         <coverage.skip>false</coverage.skip>
 
         <!-- Plugin Versions -->
+        <plugin.central>0.8.0</plugin.central>
         <plugin.compiler>3.14.0</plugin.compiler>
         <plugin.cyclonedx>2.9.1</plugin.cyclonedx>
         <plugin.dependency>3.8.1</plugin.dependency>
@@ -83,7 +79,6 @@
         <plugin.jar>3.4.2</plugin.jar>
         <plugin.javadoc>3.11.2</plugin.javadoc>
         <plugin.license>5.0.0</plugin.license>
-        <plugin.nexus>1.7.0</plugin.nexus>
         <plugin.shade>3.6.0</plugin.shade>
         <plugin.source>3.3.1</plugin.source>
         <plugin.surefire>3.5.3</plugin.surefire>
@@ -466,6 +461,7 @@
                 </executions>
                 <configuration>
                     <outputName>${project.artifactId}-${project.version}-bom</outputName>
+                    <skipNotDeployed>false</skipNotDeployed> <!-- Forces SBOM generation -->
                 </configuration>
             </plugin>
 
@@ -484,16 +480,14 @@
             </plugin>
 
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${plugin.nexus}</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${plugin.central}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>sonatype-oss</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
-                    <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
 
