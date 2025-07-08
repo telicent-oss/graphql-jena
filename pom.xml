@@ -74,7 +74,7 @@
         <plugin.cyclonedx>2.9.1</plugin.cyclonedx>
         <plugin.dependency>3.8.1</plugin.dependency>
         <plugin.editorconfig>0.1.3</plugin.editorconfig>
-        <plugin.gpg>3.2.7</plugin.gpg>
+        <plugin.gpg>3.2.8</plugin.gpg>
         <plugin.jacoco>0.8.13</plugin.jacoco>
         <plugin.jar>3.4.2</plugin.jar>
         <plugin.javadoc>3.11.2</plugin.javadoc>
@@ -90,7 +90,7 @@
         <dependency.jena>5.4.0</dependency.jena>
         <dependency.jackson>2.19.1</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
-        <dependency.jwt-servlet>1.0.1</dependency.jwt-servlet>
+        <dependency.jwt-servlet>1.0.2</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.18.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
