@@ -90,7 +90,7 @@
         <dependency.jena>5.4.0</dependency.jena>
         <dependency.jackson>2.19.1</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
-        <dependency.jwt-servlet>1.0.2</dependency.jwt-servlet>
+        <dependency.jwt-servlet>1.0.3</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.18.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
