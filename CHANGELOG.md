@@ -1,5 +1,13 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.5
+
+- Build Improvements:
+    - Switch to new Maven Central publishing process
+    - Upgraded Apache Jena to 5.5.0
+    - Upgraded Jackson to 2.19.2
+    - Upgraded JWT Servlet Auth to 1.0.3
+
 # 0.10.4
 
 - Build Improvements:
