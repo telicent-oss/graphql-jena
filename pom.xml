@@ -86,24 +86,24 @@
 
         <!-- Dependency Versions -->
         <dependency.airline>3.1.0</dependency.airline>
-        <dependency.graphql>24.1</dependency.graphql>
+        <dependency.graphql>24.2</dependency.graphql>
         <dependency.jena>5.5.0</dependency.jena>
         <dependency.jackson>2.19.2</dependency.jackson>
         <dependency.jersey>3.1.10</dependency.jersey>
-        <dependency.jwt-servlet>1.0.3</dependency.jwt-servlet>
+        <dependency.jwt-servlet>1.0.4</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.18.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
-        <dependency.smart-caches>0.29.1</dependency.smart-caches>
+        <dependency.smart-caches>0.29.3</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
         <dependency.wiremock>3.13.1</dependency.wiremock>
 
         <!-- Vulnerability fixes -->
         <!-- CVE-2024-57699 -->
-        <dependency.json-smart>2.5.2</dependency.json-smart>
+        <dependency.json-smart>2.6.0</dependency.json-smart>
         <!-- CVE-2024-47554 -->
-        <dependency.commons-io>2.19.0</dependency.commons-io>
+        <dependency.commons-io>2.20.0</dependency.commons-io>
         <!-- CVE-2025-48734 -->
         <dependency.commons-beanutils>1.11.0</dependency.commons-beanutils>
         <!-- CVE-2025-48976 -->
