@@ -89,7 +89,7 @@
         <dependency.graphql>24.2</dependency.graphql>
         <dependency.jena>5.5.0</dependency.jena>
         <dependency.jackson>2.19.2</dependency.jackson>
-        <dependency.jersey>3.1.10</dependency.jersey>
+        <dependency.jersey>3.1.11</dependency.jersey>
         <dependency.jwt-servlet>1.0.4</dependency.jwt-servlet>
         <dependency.logback>1.5.18</dependency.logback>
         <dependency.mockito>5.18.0</dependency.mockito>
