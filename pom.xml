@@ -82,7 +82,7 @@
         <plugin.shade>3.6.0</plugin.shade>
         <plugin.source>3.3.1</plugin.source>
         <plugin.surefire>3.5.3</plugin.surefire>
-        <plugin.versions>2.18.0</plugin.versions>
+        <plugin.versions>2.19.0</plugin.versions>
 
         <!-- Dependency Versions -->
         <dependency.airline>3.1.0</dependency.airline>
