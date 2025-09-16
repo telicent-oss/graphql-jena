@@ -1,5 +1,17 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.6
+
+- Build Improvements:
+    - Apache Commons IO upgraded to 2.20.0
+    - GraphQL Java upgraded to 24.2
+    - Jackson upgraded to 2.20.0
+    - Jersey upgraded to 3.1.11
+    - JSON Smart upgraded to 2.6.0
+    - JWT Servlet Auth upgraded to 2.0.0
+    - Smart Caches Core upgraded to 0.29.5
+    - Various build and test dependencies upgraded to latest available
+
 # 0.10.5
 
 - Build Improvements:
