@@ -1,5 +1,14 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.7
+
+- Build Improvements:
+    - GraphQL Java upgraded to 24.3
+    - JWT Servlet Auth upgraded to 2.0.1
+    - Logback upgraded to 1.5.19
+    - Smart Caches Core upgraded to 0.30.1
+    - Various build and test dependencies upgraded to latest available
+
 # 0.10.6
 
 - Build Improvements:
