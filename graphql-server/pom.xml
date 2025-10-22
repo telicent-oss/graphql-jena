@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.telicent.jena.graphql</groupId>
         <artifactId>parent</artifactId>
-        <version>0.10.8-SNAPSHOT</version>
+        <version>0.10.9-SNAPSHOT</version>
     </parent>
     <artifactId>graphql-server</artifactId>
     <name>Telicent - GraphQL for Apache Jena - Standalone Server</name>

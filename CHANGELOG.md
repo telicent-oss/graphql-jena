@@ -1,5 +1,12 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.10.8
+
+- Build Improvements:
+    - Airline upgraded to 3.2.0
+    - Apache Jena upgraded to 5.6.0
+    - Logback upgraded to 1.5.20
+
 # 0.10.7
 
 - Build Improvements:
