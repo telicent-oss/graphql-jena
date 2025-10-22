@@ -12,6 +12,12 @@ on:
 jobs:
   maven-build:
     uses: telicent-oss/shared-workflows/.github/workflows/maven.yml@main
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write
+      pull-requests: write
     with:
       # No Docker based tests in this repository currently
       USES_DOCKERHUB_IMAGES: false
