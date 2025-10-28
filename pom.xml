@@ -95,7 +95,7 @@
         <dependency.mockito>5.20.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
-        <dependency.smart-caches>0.30.1</dependency.smart-caches>
+        <dependency.smart-caches>0.31.0</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
         <dependency.wiremock>3.13.1</dependency.wiremock>
 
