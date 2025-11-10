@@ -91,7 +91,7 @@
         <dependency.jackson>2.20.1</dependency.jackson>
         <dependency.jersey>3.1.11</dependency.jersey>
         <dependency.jwt-servlet>2.0.1</dependency.jwt-servlet>
-        <dependency.logback>1.5.20</dependency.logback>
+        <dependency.logback>1.5.21</dependency.logback>
         <dependency.mockito>5.20.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
@@ -103,7 +103,7 @@
         <!-- CVE-2024-57699 -->
         <dependency.json-smart>2.6.0</dependency.json-smart>
         <!-- CVE-2024-47554 -->
-        <dependency.commons-io>2.20.0</dependency.commons-io>
+        <dependency.commons-io>2.21.0</dependency.commons-io>
         <!-- CVE-2025-48734 -->
         <dependency.commons-beanutils>1.11.0</dependency.commons-beanutils>
         <!-- CVE-2025-48976 -->
