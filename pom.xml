@@ -82,7 +82,7 @@
         <plugin.shade>3.6.1</plugin.shade>
         <plugin.source>3.3.1</plugin.source>
         <plugin.surefire>3.5.4</plugin.surefire>
-        <plugin.versions>2.19.1</plugin.versions>
+        <plugin.versions>2.20.1</plugin.versions>
 
         <!-- Dependency Versions -->
         <dependency.airline>3.2.0</dependency.airline>
@@ -90,12 +90,12 @@
         <dependency.jena>5.6.0</dependency.jena>
         <dependency.jackson>2.20.1</dependency.jackson>
         <dependency.jersey>3.1.11</dependency.jersey>
-        <dependency.jwt-servlet>2.0.1</dependency.jwt-servlet>
+        <dependency.jwt-servlet>2.0.2</dependency.jwt-servlet>
         <dependency.logback>1.5.21</dependency.logback>
         <dependency.mockito>5.20.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
-        <dependency.smart-caches>0.31.1</dependency.smart-caches>
+        <dependency.smart-caches>0.32.1</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
         <dependency.wiremock>3.13.2</dependency.wiremock>
 
