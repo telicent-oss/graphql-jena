@@ -73,7 +73,7 @@
         <plugin.compiler>3.14.1</plugin.compiler>
         <plugin.cyclonedx>2.9.1</plugin.cyclonedx>
         <plugin.dependency>3.9.0</plugin.dependency>
-        <plugin.editorconfig>0.1.17</plugin.editorconfig>
+        <plugin.editorconfig>0.2.0</plugin.editorconfig>
         <plugin.gpg>3.2.8</plugin.gpg>
         <plugin.jacoco>0.8.14</plugin.jacoco>
         <plugin.jar>3.5.0</plugin.jar>
@@ -95,7 +95,7 @@
         <dependency.mockito>5.20.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.17</dependency.slf4j>
-        <dependency.smart-caches>0.32.1</dependency.smart-caches>
+        <dependency.smart-caches>0.32.4</dependency.smart-caches>
         <dependency.testng>7.11.0</dependency.testng>
         <dependency.wiremock>3.13.2</dependency.wiremock>
 
