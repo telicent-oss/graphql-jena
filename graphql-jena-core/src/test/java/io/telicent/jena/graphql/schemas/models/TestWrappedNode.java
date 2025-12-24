@@ -19,6 +19,7 @@ import static org.apache.jena.graph.NodeFactory.*;
 import java.util.Map;
 
 import org.apache.jena.graph.*;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;

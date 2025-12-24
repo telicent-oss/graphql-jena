@@ -28,6 +28,7 @@ import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.server.DataAccessPoint;
@@ -208,7 +209,7 @@ public class TestFusekiGraphQL {
                 try {
                     byte[] rawResult = makeGraphQLRequest(server, "ds", e.getName(), request, 400);
                     String error = new String(rawResult, StandardCharsets.UTF_8);
-                    Assert.assertTrue(StringUtils.contains(error, "No processor"),
+                    Assert.assertTrue(Strings.CS.contains(error, "No processor"),
                                       "Error message not as expected: " + error);
                 } catch (Throwable ex) {
                     throw new RuntimeException(ex);

@@ -20,6 +20,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.Relationship;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -312,7 +313,7 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         Assert.assertEquals(actualList.size(), expectedResults.size());
         for (String expected : expectedResults) {
             Assert.assertTrue(
-                    actualList.stream().map(fetchedUriExtractor).anyMatch(uri -> StringUtils.equals(uri, expected)));
+                    actualList.stream().map(fetchedUriExtractor).anyMatch(uri -> Strings.CS.equals(uri, expected)));
         }
     }
 
@@ -378,7 +379,7 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         Assert.assertNotNull(actualList);
         Assert.assertEquals(actualList.size(), expectedResults.size());
         for (String expected : expectedResults) {
-            Assert.assertTrue(actualList.stream().anyMatch(r -> StringUtils.equals(r.getRange().getUri(), expected)));
+            Assert.assertTrue(actualList.stream().anyMatch(r -> Strings.CS.equals(r.getRange().getUri(), expected)));
         }
     }
 

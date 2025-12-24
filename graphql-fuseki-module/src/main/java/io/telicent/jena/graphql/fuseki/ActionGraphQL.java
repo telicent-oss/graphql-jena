@@ -23,6 +23,7 @@ import io.telicent.jena.graphql.execution.GraphQLOverDatasetExecutor;
 import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -92,7 +93,7 @@ public class ActionGraphQL extends ActionService {
     public final void validate(HttpAction httpAction) {
         String method = httpAction.getRequestMethod().toUpperCase(Locale.ROOT);
 
-        if (StringUtils.equals(method, "GET")) {
+        if (Strings.CS.equals(method, "GET")) {
             if (StringUtils.isBlank(httpAction.getRequestParameter(GraphQLOverHttp.PARAMETER_QUERY))) {
                 ServletOps.errorBadRequest(
                         "GET requests to GraphQL endpoints MUST have a non-empty query parameter");
@@ -101,7 +102,7 @@ public class ActionGraphQL extends ActionService {
             // Allow only Content-Type: application/json if Content-Type is present, if missing we assume JSON body
             // and will fail parsing in the execute() implementation if it isn't valid JSON
             if (StringUtils.isNotBlank(httpAction.getRequestContentType())
-                    && !StringUtils.startsWith(httpAction.getRequestContentType(),
+                    && !Strings.CS.startsWith(httpAction.getRequestContentType(),
                                                WebContent.contentTypeJSON)) {
                 ServletOps.errorBadRequest(
                         "POST requests to GraphQL endpoints MUST use Content-Type: application/json");
