@@ -83,7 +83,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
             map.put(CoreSchema.OBJECT_FIELD, q.getObject());
         }
         if (includesGraph) {
-            map.put(CoreSchema.GRAPH_FIELD, q.getObject());
+            map.put(CoreSchema.GRAPH_FIELD, q.getGraph());
         }
         return map;
     }

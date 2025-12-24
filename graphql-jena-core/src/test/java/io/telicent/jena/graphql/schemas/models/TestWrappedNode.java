@@ -19,11 +19,7 @@ import static org.apache.jena.graph.NodeFactory.*;
 import java.util.Map;
 
 import org.apache.jena.graph.*;
-import org.apache.jena.shared.AddDeniedException;
-import org.apache.jena.shared.DeleteDeniedException;
-import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.util.iterator.ExtendedIterator;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -163,100 +159,7 @@ public class TestWrappedNode {
     private static Object[] invalidNodeTypes() {
         return new Object[] {
                 createExt("ext"),
-                createGraphNode(new TestGraph())
+                createGraphNode(GraphFactory.createDefaultGraph())
         };
-    }
-
-    private static class TestGraph implements Graph {
-
-        @Override
-        public boolean dependsOn(Graph graph) {
-            return false;
-        }
-
-        @Override
-        public TransactionHandler getTransactionHandler() {
-            return null;
-        }
-
-        @Override
-        public Capabilities getCapabilities() {
-            return null;
-        }
-
-        @Override
-        public GraphEventManager getEventManager() {
-            return null;
-        }
-
-        @Override
-        public PrefixMapping getPrefixMapping() {
-            return null;
-        }
-
-        @Override
-        public void add(Triple triple) throws AddDeniedException {
-
-        }
-
-        @Override
-        public void delete(Triple triple) throws DeleteDeniedException {
-
-        }
-
-        @Override
-        public ExtendedIterator<Triple> find(Triple triple) {
-            return null;
-        }
-
-        @Override
-        public ExtendedIterator<Triple> find(Node node, Node node1, Node node2) {
-            return null;
-        }
-
-        @Override
-        public boolean isIsomorphicWith(Graph graph) {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Node node, Node node1, Node node2) {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Triple triple) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public void remove(Node node, Node node1, Node node2) {
-
-        }
-
-        @Override
-        public void close() {
-
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isClosed() {
-            return false;
-        }
     }
 }
