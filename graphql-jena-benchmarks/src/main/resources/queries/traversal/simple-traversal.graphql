@@ -1,0 +1,20 @@
+query {
+    nodes(starts: [ { kind: URI, value: "https://example.org/Adam"} ]) {
+        node {
+            kind
+            value
+        }
+        outgoing {
+            edge {
+                kind
+                value
+            }
+            target {
+                node {
+                    kind
+                    value
+                }
+            }
+        }
+    }
+}

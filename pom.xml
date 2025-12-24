@@ -15,6 +15,7 @@
         <module>graphql-server</module>
         <module>telicent-graph-schema</module>
         <module>graphql-fuseki-module</module>
+        <module>graphql-jena-benchmarks</module>
     </modules>
 
     <distributionManagement>
