@@ -19,6 +19,7 @@ import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -90,9 +91,9 @@ public class TestAbstractSearchFetcher {
 
         // Then
         Assert.assertEquals(searchUrl.getPath(), "/api/search/documents");
-        Assert.assertTrue(StringUtils.contains(searchUrl.getQuery(), "query=test"));
+        Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(), "query=test"));
         for (Map.Entry<String, String> entry : expectedQuerystringParameters.entrySet()) {
-            Assert.assertTrue(StringUtils.contains(searchUrl.getQuery(),
+            Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(),
                                                    String.format("&%s=%s", entry.getKey(), entry.getValue())),
                               "Expected querystring parameter " + entry.getKey() + " was not present in generated URL");
         }

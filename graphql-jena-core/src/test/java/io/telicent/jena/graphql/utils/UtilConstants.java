@@ -16,6 +16,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class UtilConstants {
 
-    public static final String RANDOM_ID = RandomStringUtils.random(6);
+    public static final String RANDOM_ID = RandomStringUtils.insecure().nextAlphabetic(6);
 
 }

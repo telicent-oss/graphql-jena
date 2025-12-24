@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import graphql.ExecutionResult;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.riot.web.HttpNames;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -127,7 +127,7 @@ public class GraphQLOverHttp {
                                                   Function<T, InputStream> getRequestBody) {
         method = method.toUpperCase(Locale.ROOT);
 
-        if (StringUtils.equals(method, HttpNames.METHOD_POST)) {
+        if (Strings.CS.equals(method, "POST")) {
             // Read the whole body as a GraphQL Request
             try {
                 return GraphQLOverHttp.parseRequest(getRequestBody.apply(httpRequest));

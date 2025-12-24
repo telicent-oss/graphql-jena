@@ -57,6 +57,8 @@ public class TestDatasetExecution extends AbstractExecutionTests {
 
     public static final String FRAGMENT_QUADS_QUERY = loadQuery("fragment-quads.graphql");
 
+    public static final String DETAILED_QUADS_QUERY = loadQuery("detailed-quads.graphql");
+
     /**
      * Verifies that the query results include the expected number of quads in the given field
      *
@@ -191,6 +193,22 @@ public class TestDatasetExecution extends AbstractExecutionTests {
             verifyNode(q, CoreSchema.PREDICATE_FIELD, NodeKind.URI, RDFS.comment.getURI(), null, null);
             verifyNode(q, CoreSchema.OBJECT_FIELD, NodeKind.LANGUAGE_LITERAL, "foo", null, RDF.langString.getURI());
         });
+    }
+
+    @Test
+    public void dataset_06_graph_field() throws IOException {
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = NodeFactory.createURI("https://example.org/graph");
+        Node subject = NodeFactory.createURI("https://example.org/subject");
+        dsg.add(graph, subject, RDFS.comment.asNode(), NodeFactory.createLiteralLang("bar", "en-gb"));
+        DatasetExecutor execution = new DatasetExecutor(dsg);
+
+        ExecutionResult result = verifyExecution(execution, DETAILED_QUADS_QUERY);
+
+        List<Object> quads = verifyQuads(result, 1, DatasetSchema.QUADS_FIELD);
+        Map<String, Object> quad = (Map<String, Object>) quads.get(0);
+        verifyNode(quad, CoreSchema.GRAPH_FIELD, NodeKind.URI, graph.getURI(), null, null);
+        verifyNode(quad, CoreSchema.SUBJECT_FIELD, NodeKind.URI, subject.getURI(), null, null);
     }
 
     @Test

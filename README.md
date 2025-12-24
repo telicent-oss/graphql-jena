@@ -25,7 +25,7 @@ RDFParserBuilder.create()
                 .build()
                 .parse(dsg);
 
-DatasetExecution executor = new DatasetExecution(dsg);
+DatasetExecutor executor = new DatasetExecutor(dsg);
 
 // Define our query
 String query = """

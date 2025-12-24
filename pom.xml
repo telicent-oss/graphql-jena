@@ -15,6 +15,7 @@
         <module>graphql-server</module>
         <module>telicent-graph-schema</module>
         <module>graphql-fuseki-module</module>
+        <module>graphql-jena-benchmarks</module>
     </modules>
 
     <distributionManagement>
@@ -322,6 +323,8 @@
                         <exclude>temp.token</exclude>
                         <exclude>.trivy/**</exclude>
                         <exclude>*-trivy-*</exclude>
+                        <exclude>**/*.jfr</exclude>
+                        <exclude>**/*.json</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -354,6 +357,8 @@
                                 <exclude>**/graphql-jena-server</exclude>
                                 <exclude>.trivy/**</exclude>
                                 <exclude>*-trivy-*</exclude>
+                                <exclude>**/*.jfr</exclude>
+                                <exclude>**/*.json</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>

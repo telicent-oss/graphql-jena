@@ -28,6 +28,7 @@ import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.server.DataAccessPoint;
@@ -35,8 +36,6 @@ import org.apache.jena.fuseki.servlets.CrossOriginFilter;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpMethod;
-import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -71,7 +70,7 @@ public class TestFusekiGraphQL {
         //@formatter:off
         HttpRequest httpRequest =
                 HttpRequest.newBuilder(URI.create(server.datasetURL(datasetName) + "/" + graphQLEndpoint))
-                           .header(HttpNames.hContentType, WebContent.contentTypeJSON)
+                           .header("Content-Type", WebContent.contentTypeJSON)
                            .POST(HttpRequest.BodyPublishers.ofByteArray(requestBytes))
                            .build();
         //@formatter:on
@@ -210,7 +209,7 @@ public class TestFusekiGraphQL {
                 try {
                     byte[] rawResult = makeGraphQLRequest(server, "ds", e.getName(), request, 400);
                     String error = new String(rawResult, StandardCharsets.UTF_8);
-                    Assert.assertTrue(StringUtils.contains(error, "No processor"),
+                    Assert.assertTrue(Strings.CS.contains(error, "No processor"),
                                       "Error message not as expected: " + error);
                 } catch (Throwable ex) {
                     throw new RuntimeException(ex);
@@ -245,9 +244,9 @@ public class TestFusekiGraphQL {
             //@formatter:off
             HttpRequest httpRequest =
                     HttpRequest.newBuilder(URI.create(server.datasetURL("ds") + "/graphql"))
-                               .header(HttpNames.hContentType, WebContent.contentTypeJSON)
-                               .header(HttpNames.hAccept, WebContent.contentTypeJSON)
-                               .method(HttpMethod.METHOD_OPTIONS.method(), HttpRequest.BodyPublishers.noBody())
+                               .header("Content-Type", WebContent.contentTypeJSON)
+                               .header("Accept", WebContent.contentTypeJSON)
+                               .method("OPTIONS", HttpRequest.BodyPublishers.noBody())
                                .header("Origin", "https://example.org")
                                .build();
             //@formatter:on

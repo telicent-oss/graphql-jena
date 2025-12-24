@@ -16,6 +16,9 @@ import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import graphql.schema.DataFetchingFieldSelectionSet;
 import graphql.schema.SelectedField;
+import io.telicent.jena.graphql.schemas.CoreSchema;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -104,6 +107,33 @@ public class TestQuadsFetcher {
         // then
         Assert.assertNotNull(result);
         Assert.assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void test_graphFieldUsesGraphNode() {
+        TestDataFetchingFieldSelectionSet selectionSet =
+                new TestDataFetchingFieldSelectionSet(Map.of("graph/**", ""));
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral();
+        Node graph = NodeFactory.createURI("https://example.org/graph");
+        Node subject = NodeFactory.createURI("https://example.org/subject");
+        Node predicate = NodeFactory.createURI("https://example.org/predicate");
+        Node object = NodeFactory.createURI("https://example.org/object");
+        dsg.add(new Quad(graph, subject, predicate, object));
+
+        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
+                .newDataFetchingEnvironment()
+                .selectionSet(selectionSet)
+                .localContext(dsg)
+                .build();
+        QuadsFetcher quadsFetcher = new QuadsFetcher();
+
+        List<Object> result = quadsFetcher.get(environment);
+
+        Assert.assertEquals(result.size(), 1);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> quadMap = (Map<String, Object>) result.get(0);
+        Assert.assertEquals(quadMap.get(CoreSchema.GRAPH_FIELD), graph);
+        Assert.assertNotEquals(quadMap.get(CoreSchema.GRAPH_FIELD), object);
     }
 
     private static class TestDataFetchingFieldSelectionSet

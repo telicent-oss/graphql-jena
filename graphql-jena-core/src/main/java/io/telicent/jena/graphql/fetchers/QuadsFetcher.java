@@ -72,7 +72,20 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
 
     private Object map(Quad q, boolean includesSubject, boolean includesPredicate, boolean includesObject,
                        boolean includesGraph) {
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        int expectedFields = 0;
+        if (includesSubject) {
+            expectedFields++;
+        }
+        if (includesPredicate) {
+            expectedFields++;
+        }
+        if (includesObject) {
+            expectedFields++;
+        }
+        if (includesGraph) {
+            expectedFields++;
+        }
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>(Math.max(1, expectedFields * 2));
         if (includesSubject) {
             map.put(CoreSchema.SUBJECT_FIELD, q.getSubject());
         }
@@ -83,7 +96,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
             map.put(CoreSchema.OBJECT_FIELD, q.getObject());
         }
         if (includesGraph) {
-            map.put(CoreSchema.GRAPH_FIELD, q.getObject());
+            map.put(CoreSchema.GRAPH_FIELD, q.getGraph());
         }
         return map;
     }

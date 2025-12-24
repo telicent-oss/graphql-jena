@@ -19,6 +19,7 @@ import graphql.ExecutionResult;
 import io.telicent.jena.graphql.execution.AbstractExecutionTests;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -105,6 +106,6 @@ public class TestTelicentGraphSearchExecution extends AbstractExecutionTests {
         Assert.assertFalse(result.isDataPresent());
         Assert.assertFalse(result.getErrors().isEmpty());
         Assert.assertTrue(
-                result.getErrors().stream().allMatch(e -> StringUtils.contains(e.getMessage(), "not a valid 'Int'")));
+                result.getErrors().stream().allMatch(e -> Strings.CS.contains(e.getMessage(), "not a valid 'Int'")));
     }
 }

@@ -1,0 +1,21 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex: <https://example.org/> .
+
+ex:Adam a foaf:Person ;
+        foaf:name "Adam" ;
+        foaf:knows ex:Benjamin, ex:Charlie, ex:Daniel, ex:Eve .
+
+ex:Benjamin a foaf:Person ;
+            foaf:name "Benjamin" ;
+            foaf:knows ex:Adam, ex:Eve .
+
+ex:Charlie a foaf:Person ;
+           foaf:name "Charlie" ;
+           foaf:knows ex:Adam, ex:Daniel .
+
+ex:Daniel a foaf:Person ;
+          foaf:name "Daniel" ;
+          foaf:knows ex:Adam, ex:Charlie, ex:Eve .
+
+ex:Eve a foaf:Person ;
+       foaf:name "Eve" .

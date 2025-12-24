@@ -1,0 +1,37 @@
+name: Weekly Benchmarks
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+jobs:
+  run-benchmarks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Build benchmark jar
+        run: mvn -pl graphql-jena-benchmarks -am -DskipTests package
+      - name: Run benchmarks
+        run: java -jar graphql-jena-benchmarks/target/benchmarks.jar -rf json -rff graphql-jena-benchmarks/target/benchmakr_results.json
+      - name: Store benchmark results
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: StoreBenchmark
+          tool: 'jmh'
+          output-file-path: graphql-jena-benchmarks/target/benchmakr_results.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+          fail-on-alert: true
+          alert-comment-cc-users: '@TelicentPaul'

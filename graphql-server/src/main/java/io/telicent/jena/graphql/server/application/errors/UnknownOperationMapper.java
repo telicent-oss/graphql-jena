@@ -24,6 +24,7 @@ import org.apache.jena.web.HttpSC;
  * href="https://www.rfc-editor.org/rfc/rfc7807.html">RFC 7807</a> problem response.
  */
 @Provider
+@SuppressWarnings("deprecation")
 public class UnknownOperationMapper implements ExceptionMapper<UnknownOperationException> {
 
     /**

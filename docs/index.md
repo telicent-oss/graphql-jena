@@ -26,3 +26,7 @@ The `graphql-server` module provides a standalone HTTP server that offers GraphQ
 
 The `graphql-fuseki-module` module provides a [Fuseki Module](fuseki-module.md) that can be added to a Fuseki server
 deployment to allow adding GraphQL endpoints to a Fuseki dataset using Fuseki's configuration syntax.
+
+## Benchmarks
+
+The [Benchmarks](benchmarks.md) documentation covers how to run the JMH benchmarks and interpret profiler outputs.

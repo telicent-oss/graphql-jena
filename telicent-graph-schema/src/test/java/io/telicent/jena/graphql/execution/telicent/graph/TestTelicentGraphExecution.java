@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class TestTelicentGraphExecution extends AbstractExecutionTests {
 
     static {

@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.fuseki;
 
 import io.telicent.jena.graphql.execution.GraphQLOverDatasetExecutor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
@@ -69,7 +70,7 @@ public class FMod_GraphQL implements FusekiAutoModule {
             if (SysGraphQL.OP_GRAPHQL.equals(op)) {
                 // Issue a warning if GraphQL operation configured on an endpoint that does not end with /graphql
                 String endpointPath = endpointName(dap, e);
-                if (!StringUtils.endsWith(endpointPath, "/graphql")) {
+                if (!Strings.CS.endsWith(endpointPath, "/graphql")) {
                     // NB - There's a limitation of how Fuseki routes requests in that it only supports one path segment
                     // after the dataset i.e. you can have /ds/graphql but can't have /ds/foo/graphql
                     // This means that if you want to have multiple GraphQL endpoints (to support different schemas)
