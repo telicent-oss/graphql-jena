@@ -323,6 +323,8 @@
                         <exclude>temp.token</exclude>
                         <exclude>.trivy/**</exclude>
                         <exclude>*-trivy-*</exclude>
+                        <exclude>**/*.jfr</exclude>
+                        <exclude>**/*.json</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -355,6 +357,8 @@
                                 <exclude>**/graphql-jena-server</exclude>
                                 <exclude>.trivy/**</exclude>
                                 <exclude>*-trivy-*</exclude>
+                                <exclude>**/*.jfr</exclude>
+                                <exclude>**/*.json</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
