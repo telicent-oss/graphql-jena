@@ -1,0 +1,17 @@
+query OntologyClasses {
+  ontology {
+    classes(limit: 50) {
+      uri
+      labels {
+        value
+        language
+      }
+      style {
+        shape
+        line_color
+        fa_icon_class
+        description
+      }
+    }
+  }
+}
