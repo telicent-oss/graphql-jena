@@ -1,0 +1,14 @@
+query OntologyClasses {
+  ontology {
+    classes(limit: 50) {
+      uri
+      labels {
+        value
+      }
+      style {
+        shape
+        line_color
+      }
+    }
+  }
+}

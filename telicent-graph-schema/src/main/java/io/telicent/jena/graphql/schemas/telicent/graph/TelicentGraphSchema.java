@@ -91,6 +91,38 @@ public class TelicentGraphSchema {
      */
     public static final String TYPE_NON_DIRECTIONAL_RELATIONSHIP = "NonDirectionalRel";
     /**
+     * Ontology type
+     */
+    public static final String TYPE_ONTOLOGY = "Ontology";
+    /**
+     * RDFS class type
+     */
+    public static final String TYPE_RDFS_CLASS = "RdfsClass";
+    /**
+     * RDF literal type
+     */
+    public static final String TYPE_RDF_LITERAL = "RdfLiteral";
+    /**
+     * Style type
+     */
+    public static final String TYPE_STYLE = "Style";
+    /**
+     * Shape enum type
+     */
+    public static final String TYPE_SHAPE = "shape";
+    /**
+     * XML Schema datatype type
+     */
+    public static final String TYPE_XML_SCHEMA_DATATYPE = "XmlSchemaDatatype";
+    /**
+     * Object property definition type
+     */
+    public static final String TYPE_OBJECT_PROPERTY_DEFINITION = "ObjectPropertyDefinition";
+    /**
+     * Datatype property definition type
+     */
+    public static final String TYPE_DATATYPE_PROPERTY_DEFINITION = "DatatypePropertyDefinition";
+    /**
      * Search query
      */
     public static final String QUERY_SEARCH = "search";
@@ -114,6 +146,10 @@ public class TelicentGraphSchema {
      * Get all entities query
      */
     public static final String QUERY_GET_ALL_ENTITIES = "getAllEntities";
+    /**
+     * Ontology query
+     */
+    public static final String QUERY_ONTOLOGY = "ontology";
     /**
      * URI argument used to specify the node of interest
      */
@@ -158,6 +194,14 @@ public class TelicentGraphSchema {
      * Type filter argument used to specify a type filter
      */
     public static final String ARGUMENT_TYPE_FILTER = "typeFilter";
+    /**
+     * URI filter argument used to filter by resource URI
+     */
+    public static final String ARGUMENT_URI_FILTER = "uriFilter";
+    /**
+     * Label filter argument used to filter by labels
+     */
+    public static final String ARGUMENT_LABEL_FILTER = "labelFilter";
     /**
      * Node filter argument used to specify a node filter on relationships
      */
@@ -234,6 +278,102 @@ public class TelicentGraphSchema {
      * Relations field
      */
     public static final String FIELD_RELATIONS = "relations";
+    /**
+     * Classes field
+     */
+    public static final String FIELD_CLASSES = "classes";
+    /**
+     * Class count field
+     */
+    public static final String FIELD_CLASS_COUNT = "classCount";
+    /**
+     * Class field
+     */
+    public static final String FIELD_CLASS = "class";
+    /**
+     * Datatype property definitions field
+     */
+    public static final String FIELD_DATATYPE_PROPERTY_DEFINITIONS = "DatatypePropertyDefinitions";
+    /**
+     * Datatype property definition count field
+     */
+    public static final String FIELD_DATATYPE_PROPERTY_DEFINITION_COUNT = "DatatypePropertyDefinitionCount";
+    /**
+     * Datatype property definition field
+     */
+    public static final String FIELD_DATATYPE_PROPERTY_DEFINITION = "DatatypePropertyDefinition";
+    /**
+     * Object property definitions field
+     */
+    public static final String FIELD_OBJECT_PROPERTY_DEFINITIONS = "ObjectPropertyDefinitions";
+    /**
+     * Object property definition count field
+     */
+    public static final String FIELD_OBJECT_PROPERTY_DEFINITION_COUNT = "ObjectPropertyDefinitionCount";
+    /**
+     * Object property definition field
+     */
+    public static final String FIELD_OBJECT_PROPERTY_DEFINITION = "ObjectPropertyDefinition";
+    /**
+     * Is OWL class field
+     */
+    public static final String FIELD_IS_OWL_CLASS = "isOwlClass";
+    /**
+     * Domain object properties field
+     */
+    public static final String FIELD_DOMAIN_OBJECT_PROPERTIES = "domain_object_properties";
+    /**
+     * Domain datatype properties field
+     */
+    public static final String FIELD_DOMAIN_DATATYPE_PROPERTIES = "domain_datatype_properties";
+    /**
+     * Range properties field
+     */
+    public static final String FIELD_RANGE_PROPERTIES = "range_properties";
+    /**
+     * Subclasses field
+     */
+    public static final String FIELD_SUBCLASSES = "subClasses";
+    /**
+     * Superclasses field
+     */
+    public static final String FIELD_SUPERCLASSES = "superClasses";
+    /**
+     * Labels field
+     */
+    public static final String FIELD_LABELS = "labels";
+    /**
+     * Comments field
+     */
+    public static final String FIELD_COMMENTS = "comments";
+    /**
+     * SKOS preferred labels field
+     */
+    public static final String FIELD_SKOS_PREF_LABELS = "skosPrefLabels";
+    /**
+     * SKOS alternate labels field
+     */
+    public static final String FIELD_SKOS_ALT_LABELS = "skosAltLabels";
+    /**
+     * Style field
+     */
+    public static final String FIELD_STYLE = "style";
+    /**
+     * Domain field
+     */
+    public static final String FIELD_DOMAIN = "domain";
+    /**
+     * Range field
+     */
+    public static final String FIELD_RANGE = "range";
+    /**
+     * Sub properties field
+     */
+    public static final String FIELD_SUB_PROPERTIES = "subProperties";
+    /**
+     * Super properties field
+     */
+    public static final String FIELD_SUPER_PROPERTIES = "superProperties";
     /**
      * Value field
      */

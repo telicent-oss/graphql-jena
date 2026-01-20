@@ -9,6 +9,7 @@ schemas in more detail.
 - [Traversal](#traversal) - A traversal schema extending Core with the ability to traverse the graph from a set of
   starting nodes.
 - [Telicent (IES)](#telicent-ies) - An IES compliant schema used in telicent deployments.
+- [Telicent Ontology Extensions](#telicent-ontology-extensions) - Ontology-focused fields added to the Telicent schema.
 
 ## Core
 
@@ -543,8 +544,329 @@ query Node($uri: String!) {
        }
       }
     }
+    }
+}
+```
+
+## Telicent Ontology Extensions
+
+The Telicent schema now exposes ontology information via a dedicated `ontology` root field on the same endpoint. This
+adds a lightweight, UI-friendly way to retrieve classes, property definitions, labels, and styling metadata alongside
+the existing node and relationship data. It is intended for front-end use cases like styling, type browsing, and schema
+inspection without forcing clients to handcraft RDF queries.
+
+At a high level:
+
+- `ontology` is a single entry point for ontology data.
+- `classes` returns class definitions (RDFS/OWL) with labels, hierarchy, instances, and style.
+- `ObjectPropertyDefinitions` and `DatatypePropertyDefinitions` expose property definitions with domain/range and labels.
+- `Style` is included as a structured block for icon/shape/color metadata.
+
+### Detailed Schema Breakdown
+
+The ontology fields are additive and live in `ies.graphqls` within the `telicent-graph-schema` module. These are the
+key types and how they map to RDF:
+
+#### Query Root
+
+```graphql
+type Query {
+  ontology(graph: String): Ontology
+}
+```
+
+#### Ontology Type
+
+```graphql
+type Ontology {
+  classes(limit: Int = 50, offset: Int = 1, uriFilter: UriFilter, labelFilter: String, typeFilter: UriFilter): [RdfsClass]!
+  classCount(uriFilter: UriFilter, labelFilter: String, typeFilter: UriFilter): Int!
+  class(uri: String!): RdfsClass
+  DatatypePropertyDefinitions(limit: Int = 50, offset: Int = 1, uriFilter: UriFilter, labelFilter: String): [DatatypePropertyDefinition]!
+  DatatypePropertyDefinitionCount(uriFilter: UriFilter, labelFilter: String): Int!
+  DatatypePropertyDefinition(uri: String!): DatatypePropertyDefinition
+  ObjectPropertyDefinitions(limit: Int = 50, offset: Int = 1, uriFilter: UriFilter, labelFilter: String): [ObjectPropertyDefinition]!
+  ObjectPropertyDefinitionCount(uriFilter: UriFilter, labelFilter: String): Int!
+  ObjectPropertyDefinition(uri: String!): ObjectPropertyDefinition
+}
+```
+
+Notes:
+- `uriFilter` uses the existing `UriFilter` input (include/exclude semantics).
+- `labelFilter` is a case-insensitive substring match over `rdfs:label`, `skos:prefLabel`, and `skos:altLabel`.
+- `typeFilter` applies to class `rdf:type` values.
+- Counts apply the same filters as their list equivalents.
+- `graph` scopes ontology resolution to a named graph when provided.
+
+#### RdfsClass
+
+```graphql
+type RdfsClass {
+  id: ID!
+  isOwlClass: Boolean!
+  uri: String!
+  domain_object_properties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+  domain_datatype_properties(limit: Int = 50, offset: Int = 1): [DatatypePropertyDefinition]!
+  range_properties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+  subClasses(limit: Int = 50, offset: Int = 1): [RdfsClass]!
+  superClasses(limit: Int = 50, offset: Int = 1): [RdfsClass]!
+  instances(limit: Int = 50, offset: Int = 1): [Node]!
+  types(limit: Int = 50, offset: Int = 1): [Node]!
+  style: Style
+  labels: [RdfLiteral]!
+  comments: [RdfLiteral]!
+  skosPrefLabels: [RdfLiteral]!
+  skosAltLabels: [RdfLiteral]!
+}
+```
+
+Mapping details:
+- Classes are discovered from `rdf:type rdfs:Class` and `rdf:type owl:Class`.
+- `subClasses`/`superClasses` use `rdfs:subClassOf`.
+- `instances` are `rdf:type` occurrences for that class.
+- `style` reads literal predicates on the class whose local name matches the style field names (see below).
+
+#### Property Definitions
+
+```graphql
+type ObjectPropertyDefinition {
+  domain: RdfsClass
+  range: RdfsClass
+  subProperties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+  superProperties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+  labels: [RdfLiteral]!
+  comments: [RdfLiteral]!
+  skosPrefLabels: [RdfLiteral]!
+  skosAltLabels: [RdfLiteral]!
+}
+
+type DatatypePropertyDefinition {
+  domain: RdfsClass
+  range: XmlSchemaDatatype
+  subProperties(limit: Int = 50, offset: Int = 1): [DatatypePropertyDefinition]!
+  superProperties(limit: Int = 50, offset: Int = 1): [DatatypePropertyDefinition]!
+  labels: [RdfLiteral]!
+  comments: [RdfLiteral]!
+  skosPrefLabels: [RdfLiteral]!
+  skosAltLabels: [RdfLiteral]!
+}
+```
+
+Mapping details:
+- Object properties are discovered from `rdf:type owl:ObjectProperty`.
+- Datatype properties are discovered from `rdf:type owl:DatatypeProperty`.
+- `domain`/`range` use `rdfs:domain` and `rdfs:range`.
+- `subProperties`/`superProperties` use `rdfs:subPropertyOf`.
+
+#### Supporting Types
+
+```graphql
+type RdfLiteral {
+  value: String!
+  language: String
+  datatype: String
+}
+
+type XmlSchemaDatatype {
+  id: ID!
+  uri: String!
+}
+
+enum shape {
+  CIRCLE
+  ELLIPSE
+  DIAMOND
+  RECTANGLE
+  ROUNDED_RECTANGLE
+}
+
+type Style {
+  shape: shape
+  fa_icon_class: String
+  fa_icon_unicode: String
+  fa_icon_class_free: String
+  fa_icon_unicode_free: String
+  line_color: String
+  fill_color: String
+  icon_color: String
+  dark_mode_line_color: String
+  dark_mode_fill_color: String
+  dark_mode_icon_color: String
+  description: String
+}
+```
+
+Style mapping: the implementation looks for literal predicates whose local name matches the fields above (e.g.
+`line_color`, `fa_icon_class`). Shapes are parsed case-insensitively.
+
+### Example Queries
+
+Classes with labels and styles:
+
+```graphql
+query OntologyClasses {
+  ontology {
+    classes(limit: 50) {
+      uri
+      labels { value language }
+      style { shape line_color }
+    }
   }
 }
+```
+
+What this does:
+- Returns up to 50 class definitions.
+- For each class, returns its URI, any `rdfs:label` literals, and style metadata (shape + line color).
+
+Expected response (with the sample fixture loaded):
+
+```json
+{
+  "data": {
+    "ontology": {
+      "classes": [
+        {
+          "uri": "http://example.com/Person",
+          "labels": [{ "value": "Person", "language": "en" }],
+          "style": { "shape": "CIRCLE", "line_color": "#123456" }
+        },
+        {
+          "uri": "http://example.com/Agent",
+          "labels": [],
+          "style": null
+        },
+        {
+          "uri": "http://example.com/Place",
+          "labels": [],
+          "style": null
+        }
+      ]
+    }
+  }
+}
+```
+
+Note: `labels` is empty for `Agent` and `Place` because the fixture only assigns `skos:prefLabel`/`skos:altLabel`.
+
+Property definitions with domains/ranges:
+
+```graphql
+query OntologyProperties {
+  ontology {
+    ObjectPropertyDefinitions(limit: 50) {
+      labels { value }
+      domain { uri }
+      range { uri }
+    }
+    DatatypePropertyDefinitions(limit: 50) {
+      labels { value }
+      domain { uri }
+      range { uri }
+    }
+  }
+}
+```
+
+What this does:
+- Returns object and datatype property definitions.
+- For each property, returns labels, domain, and range, plus one level of sub/super properties.
+
+Expected response (with the sample fixture loaded):
+
+```json
+{
+  "data": {
+    "ontology": {
+      "ObjectPropertyDefinitions": [
+        {
+          "labels": [{ "value": "Located in" }],
+          "domain": { "uri": "http://example.com/Person" },
+          "range": { "uri": "http://example.com/Place" },
+          "subProperties": [{ "labels": [{ "value": "locatedNear" }] }]
+        },
+        {
+          "labels": [],
+          "domain": null,
+          "range": null,
+          "subProperties": []
+        }
+      ],
+      "DatatypePropertyDefinitions": [
+        {
+          "labels": [{ "value": "Name" }],
+          "domain": { "uri": "http://example.com/Person" },
+          "range": { "uri": "http://www.w3.org/2001/XMLSchema#string" },
+          "superProperties": []
+        },
+        {
+          "labels": [{ "value": "Full Name" }],
+          "domain": null,
+          "range": null,
+          "superProperties": [{ "labels": [{ "value": "Name" }] }]
+        }
+      ]
+    }
+  }
+}
+```
+
+### Example Test Data
+
+A small RDF fixture is included to illustrate the ontology schema and can be reused in local testing:
+
+- `telicent-graph-schema/src/test/resources/data/ontology-example.ttl`
+- `telicent-graph-schema/src/test/resources/data/ontology-example.trig`
+- `telicent-graph-schema/src/test/resources/queries/ontology-classes.graphql`
+- `telicent-graph-schema/src/test/resources/queries/ontology-properties.graphql`
+
+It contains:
+
+- `ex:Person`, `ex:Agent`, `ex:Place` as classes
+- Object and datatype properties with domain/range
+- Style literals on `ex:Person`
+- A sample instance `ex:Alice`
+
+#### Quick Local Harness
+
+The snippet below shows how to load the TRIG fixture and execute the example GraphQL queries using the Telicent schema:
+
+```java
+import io.telicent.jena.graphql.execution.telicent.graph.TelicentGraphExecutor;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class OntologyQueryHarness {
+    public static void main(String[] args) throws Exception {
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        RDFDataMgr.read(dsg, "telicent-graph-schema/src/test/resources/data/ontology-example.trig");
+
+        String classesQuery = Files.readString(
+                Path.of("telicent-graph-schema/src/test/resources/queries/ontology-classes.graphql"));
+        String propertiesQuery = Files.readString(
+                Path.of("telicent-graph-schema/src/test/resources/queries/ontology-properties.graphql"));
+
+        TelicentGraphExecutor executor = new TelicentGraphExecutor(dsg);
+        System.out.println(executor.execute(classesQuery).toSpecification());
+        System.out.println(executor.execute(propertiesQuery).toSpecification());
+    }
+}
+```
+
+If you prefer hitting a running GraphQL endpoint instead, you can post the same queries directly. Assuming the Telicent
+schema is available at `/dataset/telicent/graphql`:
+
+```bash
+curl -s http://localhost:11666/dataset/telicent/graphql \\
+  -H 'Content-Type: application/json' \\
+  --data-binary "{\"query\": \"$(tr '\\n' ' ' < telicent-graph-schema/src/test/resources/queries/ontology-classes.graphql)\"}"
+
+curl -s http://localhost:11666/dataset/telicent/graphql \\
+  -H 'Content-Type: application/json' \\
+  --data-binary "{\"query\": \"$(tr '\\n' ' ' < telicent-graph-schema/src/test/resources/queries/ontology-properties.graphql)\"}"
 ```
 
 In this example we filter `inRels` - incoming relationships - to only those using the `ies:inLocation` predicate, and
