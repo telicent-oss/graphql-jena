@@ -1,0 +1,16 @@
+query OntologyProperties {
+  ontology {
+    ObjectPropertyDefinitions(limit: 50) {
+      labels { value }
+      domain { uri }
+      range { uri }
+      subProperties { labels { value } }
+    }
+    DatatypePropertyDefinitions(limit: 50) {
+      labels { value }
+      domain { uri }
+      range { uri }
+      superProperties { labels { value } }
+    }
+  }
+}
