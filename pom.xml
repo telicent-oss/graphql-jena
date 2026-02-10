@@ -88,7 +88,7 @@
         <!-- Dependency Versions -->
         <dependency.airline>3.2.0</dependency.airline>
         <dependency.graphql>25.0</dependency.graphql>
-        <dependency.jena>5.6.0</dependency.jena>
+        <dependency.jena>6.0.0</dependency.jena>
         <dependency.jackson>2.21.0</dependency.jackson>
         <dependency.jersey>3.1.11</dependency.jersey>
         <dependency.jwt-servlet>3.0.0</dependency.jwt-servlet>
