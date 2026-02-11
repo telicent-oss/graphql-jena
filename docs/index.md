@@ -17,6 +17,9 @@ modules here.
 The `telicent-graph-schema` module provides a Telicent specific schema and associated execution logic for use by our
 Telicent Graph application.
 
+This schema now includes ontology-focused fields (under the `ontology` root) for classes, property definitions, labels,
+and styling metadata. See [Schemas](schemas.md) for a high-level overview and a detailed breakdown.
+
 ## GraphQL Server
 
 The `graphql-server` module provides a standalone HTTP server that offers GraphQL access to RDF data.  See the

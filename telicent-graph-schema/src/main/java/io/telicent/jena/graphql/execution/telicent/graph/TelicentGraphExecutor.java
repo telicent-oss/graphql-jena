@@ -21,6 +21,7 @@ import io.telicent.jena.graphql.fetchers.telicent.graph.*;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.Shape;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
         final StatePeriodFetcher periodFetcher = new StatePeriodFetcher();
         final NodePlaceholderFetcher nodePlaceholderFetcher = new NodePlaceholderFetcher();
         NaturalEnumValuesProvider<SearchType> nodeKinds = new NaturalEnumValuesProvider<>(SearchType.class);
+        NaturalEnumValuesProvider<Shape> shapeValues = new NaturalEnumValuesProvider<>(Shape.class);
         //@formatter:off
         return RuntimeWiring.newRuntimeWiring()
                             .type("Query",
@@ -65,6 +67,7 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                                         .dataFetcher(TelicentGraphSchema.QUERY_SEARCH_WITH_METADATA, new StartingSearchWithMetadataFetcher()).enumValues(nodeKinds)
                                         .dataFetcher(TelicentGraphSchema.QUERY_STATES, new StartingStatesFetcher())
                                         .dataFetcher(TelicentGraphSchema.QUERY_GET_ALL_ENTITIES, new AllEntitiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.QUERY_ONTOLOGY, new OntologyFetcher())
                             )
                             .type(TelicentGraphSchema.TYPE_NODE,
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_TYPES, new NodeTypesFetcher())
@@ -118,7 +121,53 @@ public class TelicentGraphExecutor extends AbstractDatasetExecutor {
                             )
                             .type(TelicentGraphSchema.TYPE_STATE_RELATIONSHIP_COUNTS,
                                   t -> t.dataFetcher(TelicentGraphSchema.FIELD_RELATIONS, new StateRelationshipCountsFetcher())
-                            );
+                            )
+                            .type(TelicentGraphSchema.TYPE_ONTOLOGY,
+                                  t -> t.dataFetcher(TelicentGraphSchema.FIELD_CLASSES, new OntologyClassesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_CLASS_COUNT, new OntologyClassCountFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_CLASS, new OntologyClassFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_DATATYPE_PROPERTY_DEFINITIONS, new OntologyDatatypePropertyDefinitionsFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_DATATYPE_PROPERTY_DEFINITION_COUNT, new OntologyDatatypePropertyDefinitionCountFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_DATATYPE_PROPERTY_DEFINITION, new OntologyDatatypePropertyDefinitionFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_OBJECT_PROPERTY_DEFINITIONS, new OntologyObjectPropertyDefinitionsFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_OBJECT_PROPERTY_DEFINITION_COUNT, new OntologyObjectPropertyDefinitionCountFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_OBJECT_PROPERTY_DEFINITION, new OntologyObjectPropertyDefinitionFetcher())
+                            )
+                            .type(TelicentGraphSchema.TYPE_RDFS_CLASS,
+                                  t -> t.dataFetcher(TelicentGraphSchema.FIELD_DOMAIN_OBJECT_PROPERTIES, new RdfsClassDomainObjectPropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_DOMAIN_DATATYPE_PROPERTIES, new RdfsClassDomainDatatypePropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RANGE_PROPERTIES, new RdfsClassRangePropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SUBCLASSES, new RdfsClassSubClassesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SUPERCLASSES, new RdfsClassSuperClassesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_INSTANCES, new RdfsClassInstancesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_TYPES, new RdfsClassTypesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_STYLE, new RdfsClassStyleFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_LABELS, new RdfsClassLiteralsFetcher(org.apache.jena.vocabulary.RDFS.label.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_COMMENTS, new RdfsClassLiteralsFetcher(org.apache.jena.vocabulary.RDFS.comment.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SKOS_PREF_LABELS, new RdfsClassLiteralsFetcher(org.apache.jena.vocabulary.SKOS.prefLabel.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SKOS_ALT_LABELS, new RdfsClassLiteralsFetcher(org.apache.jena.vocabulary.SKOS.altLabel.asNode()))
+                            )
+                            .type(TelicentGraphSchema.TYPE_OBJECT_PROPERTY_DEFINITION,
+                                  t -> t.dataFetcher(TelicentGraphSchema.FIELD_DOMAIN, new ObjectPropertyDomainFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RANGE, new ObjectPropertyRangeFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SUB_PROPERTIES, new ObjectPropertySubPropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SUPER_PROPERTIES, new ObjectPropertySuperPropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_LABELS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.RDFS.label.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_COMMENTS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.RDFS.comment.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SKOS_PREF_LABELS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.SKOS.prefLabel.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SKOS_ALT_LABELS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.SKOS.altLabel.asNode()))
+                            )
+                            .type(TelicentGraphSchema.TYPE_DATATYPE_PROPERTY_DEFINITION,
+                                  t -> t.dataFetcher(TelicentGraphSchema.FIELD_DOMAIN, new DatatypePropertyDomainFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_RANGE, new DatatypePropertyRangeFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SUB_PROPERTIES, new DatatypePropertySubPropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SUPER_PROPERTIES, new DatatypePropertySuperPropertiesFetcher())
+                                        .dataFetcher(TelicentGraphSchema.FIELD_LABELS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.RDFS.label.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_COMMENTS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.RDFS.comment.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SKOS_PREF_LABELS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.SKOS.prefLabel.asNode()))
+                                        .dataFetcher(TelicentGraphSchema.FIELD_SKOS_ALT_LABELS, new PropertyDefinitionLiteralsFetcher(org.apache.jena.vocabulary.SKOS.altLabel.asNode()))
+                            )
+                            .type(TelicentGraphSchema.TYPE_SHAPE, t -> t.enumValues(shapeValues));
         //@formatter:on
     }
 

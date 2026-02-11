@@ -1,0 +1,42 @@
+@prefix ex:   <http://example.com/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:graph:ontology> {
+  ex:Agent a rdfs:Class ;
+    skos:altLabel "Agent"@en .
+
+  ex:Person a rdfs:Class, owl:Class ;
+    rdfs:label "Person"@en ;
+    rdfs:comment "A person"@en ;
+    skos:prefLabel "Person"@en ;
+    <http://example.com/style#shape> "CIRCLE" ;
+    <http://example.com/style#line_color> "#123456" ;
+    <http://example.com/style#fa_icon_class> "fa-user" ;
+    <http://example.com/style#description> "Person style" .
+
+  ex:Place a rdfs:Class ;
+    skos:prefLabel "Place"@en .
+
+  ex:locatedIn a owl:ObjectProperty ;
+    rdfs:domain ex:Person ;
+    rdfs:range ex:Place ;
+    rdfs:label "Located in"@en .
+
+  ex:locatedNear a owl:ObjectProperty ;
+    rdfs:subPropertyOf ex:locatedIn .
+
+  ex:name a owl:DatatypeProperty ;
+    rdfs:domain ex:Person ;
+    rdfs:range xsd:string ;
+    rdfs:label "Name"@en ;
+    rdfs:comment "Name of person"@en .
+
+  ex:fullName a owl:DatatypeProperty ;
+    rdfs:subPropertyOf ex:name ;
+    rdfs:label "Full Name"@en .
+
+  ex:Alice a ex:Person .
+}

@@ -119,4 +119,91 @@ type Query {
     states(uri: String!, limit: Int = 50, offset: Int = 1): [State]!
     node(graph: String, uri: String!): Node
     nodes(graph: String, uris: [String!]!, limit: Int = 50, offset: Int = 1): [Node]
+    ontology(graph: String): Ontology
+}
+
+type Ontology {
+    classes(limit: Int = 50, offset: Int = 1, uriFilter: UriFilter, labelFilter: String, typeFilter: UriFilter): [RdfsClass]!
+    classCount(uriFilter: UriFilter, labelFilter: String, typeFilter: UriFilter): Int!
+    class(uri: String!): RdfsClass
+    DatatypePropertyDefinitions(limit: Int = 50, offset: Int = 1, uriFilter: UriFilter, labelFilter: String): [DatatypePropertyDefinition]!
+    DatatypePropertyDefinitionCount(uriFilter: UriFilter, labelFilter: String): Int!
+    DatatypePropertyDefinition(uri: String!): DatatypePropertyDefinition
+    ObjectPropertyDefinitions(limit: Int = 50, offset: Int = 1, uriFilter: UriFilter, labelFilter: String): [ObjectPropertyDefinition]!
+    ObjectPropertyDefinitionCount(uriFilter: UriFilter, labelFilter: String): Int!
+    ObjectPropertyDefinition(uri: String!): ObjectPropertyDefinition
+}
+
+type RdfsClass {
+    id: ID!
+    isOwlClass: Boolean!
+    uri: String!
+    domain_object_properties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+    domain_datatype_properties(limit: Int = 50, offset: Int = 1): [DatatypePropertyDefinition]!
+    range_properties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+    subClasses(limit: Int = 50, offset: Int = 1): [RdfsClass]!
+    superClasses(limit: Int = 50, offset: Int = 1): [RdfsClass]!
+    instances(limit: Int = 50, offset: Int = 1): [Node]!
+    types(limit: Int = 50, offset: Int = 1): [Node]!
+    style: Style
+    labels: [RdfLiteral]!
+    comments: [RdfLiteral]!
+    skosPrefLabels: [RdfLiteral]!
+    skosAltLabels: [RdfLiteral]!
+}
+
+type RdfLiteral {
+    value: String!
+    language: String
+    datatype: String
+}
+
+enum shape {
+    CIRCLE
+    ELLIPSE
+    DIAMOND
+    RECTANGLE
+    ROUNDED_RECTANGLE
+}
+
+type Style {
+    shape: shape
+    fa_icon_class: String
+    fa_icon_unicode: String
+    fa_icon_class_free: String
+    fa_icon_unicode_free: String
+    line_color: String
+    fill_color: String
+    icon_color: String
+    dark_mode_line_color: String
+    dark_mode_fill_color: String
+    dark_mode_icon_color: String
+    description: String
+}
+
+type XmlSchemaDatatype {
+    id: ID!
+    uri: String!
+}
+
+type ObjectPropertyDefinition {
+    domain: RdfsClass
+    range: RdfsClass
+    subProperties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+    superProperties(limit: Int = 50, offset: Int = 1): [ObjectPropertyDefinition]!
+    labels: [RdfLiteral]!
+    comments: [RdfLiteral]!
+    skosPrefLabels: [RdfLiteral]!
+    skosAltLabels: [RdfLiteral]!
+}
+
+type DatatypePropertyDefinition {
+    domain: RdfsClass
+    range: XmlSchemaDatatype
+    subProperties(limit: Int = 50, offset: Int = 1): [DatatypePropertyDefinition]!
+    superProperties(limit: Int = 50, offset: Int = 1): [DatatypePropertyDefinition]!
+    labels: [RdfLiteral]!
+    comments: [RdfLiteral]!
+    skosPrefLabels: [RdfLiteral]!
+    skosAltLabels: [RdfLiteral]!
 }

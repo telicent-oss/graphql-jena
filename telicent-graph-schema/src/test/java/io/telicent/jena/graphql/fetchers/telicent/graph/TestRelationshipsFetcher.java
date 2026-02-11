@@ -145,6 +145,31 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         }
     }
 
+    @Test
+    public void givenInboundGraph_whenFetchingRelationshipsWithPredicateIncludeFilter_thenOnlyRelevantRelationshipsFetched()
+            throws Exception {
+        RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node object = createURI("object");
+        Node predicate1 = createURI("predicate1");
+        Node predicate2 = createURI("predicate2");
+        dsg.add(new Quad(GRAPH, createURI("subject1"), predicate1, object));
+        dsg.add(new Quad(GRAPH, createURI("subject2"), predicate2, object));
+
+        DataFetchingEnvironment environment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(object, null),
+                                                                         Map.of(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER,
+                                                                                Map.of(TelicentGraphSchema.ARGUMENT_MODE,
+                                                                                       "INCLUDE",
+                                                                                       TelicentGraphSchema.ARGUMENT_VALUES,
+                                                                                       List.of(predicate1.getURI()))));
+
+        List<Relationship> actualList = fetcher.get(environment);
+
+        Assert.assertEquals(actualList.size(), 1);
+        Relationship relationship = actualList.get(0);
+        Assert.assertEquals(relationship.getPredicate(), predicate1.getURI());
+    }
+
     private static void createTypedGraph(DatasetGraph dsg, Node subject) {
         Node rdfType = RDF.type.asNode();
 
