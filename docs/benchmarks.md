@@ -85,3 +85,9 @@ Typical output artifacts:
 - `graphql-jena-benchmarks/target/profile-*.json` for profiler runs.
 
 
+## Weekly Benchmarking  
+
+To assess the impact of changes to the repository and ensure no performance regressions are introduced, we run the benchmarks above on a weekly basis.
+
+The resulting charts are published here:
+https://telicent-oss.github.io/graphql-jena/dev/bench/
