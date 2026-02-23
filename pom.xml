@@ -82,14 +82,14 @@
         <plugin.license>5.0.0</plugin.license>
         <plugin.shade>3.6.1</plugin.shade>
         <plugin.source>3.4.0</plugin.source>
-        <plugin.surefire>3.5.4</plugin.surefire>
+        <plugin.surefire>3.5.5</plugin.surefire>
         <plugin.versions>2.21.0</plugin.versions>
 
         <!-- Dependency Versions -->
         <dependency.airline>3.2.0</dependency.airline>
         <dependency.graphql>25.0</dependency.graphql>
         <dependency.jena>5.6.0</dependency.jena>
-        <dependency.jackson>2.21.0</dependency.jackson>
+        <dependency.jackson>2.21.1</dependency.jackson>
         <dependency.jersey>3.1.11</dependency.jersey>
         <dependency.jwt-servlet>3.0.0</dependency.jwt-servlet>
         <dependency.logback>1.5.32</dependency.logback>
