@@ -108,7 +108,7 @@
         <!-- CVE-2025-48734 -->
         <dependency.commons-beanutils>1.11.0</dependency.commons-beanutils>
         <!-- CVE-2025-48976 -->
-        <dependency.commons-fileupload>2.0.0-M4</dependency.commons-fileupload>
+        <dependency.commons-fileupload>2.0.0-M5</dependency.commons-fileupload>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
