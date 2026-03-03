@@ -1,5 +1,19 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.11.0
+
+- Build improvements:
+    - **BREAKING** Minimum Java version is now 21
+    - Apache Commons IO upgraded to 2.21.0
+    - Apache Commons FileUpload upgraded to 2.0.0-M5
+    - Apache Jena upgraded to 6.0.0
+    - GraphQL upgraded to 25.0
+    - Jackson upgraded to 2.21.1
+    - JWT Servlet Auth upgraded to 4.0.0
+    - Logback upgraded to 1.5.32
+    - Smart Caches Core upgraded to 0.36.1
+    - Various build and test dependencies upgraded to latest available
+
 # 0.10.8
 
 - Build Improvements:
