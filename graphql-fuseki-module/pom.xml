@@ -73,16 +73,6 @@
             <artifactId>jetty-security</artifactId>
             <version>${dependency.jetty}</version>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${dependency.jetty}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-xml</artifactId>
-            <version>${dependency.jetty}</version>
-        </dependency>
         <!-- CVE-2026-1605 patch block end-->
 
         <dependency>
