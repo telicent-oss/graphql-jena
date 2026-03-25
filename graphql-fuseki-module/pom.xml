@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.telicent.jena.graphql</groupId>
         <artifactId>parent</artifactId>
-        <version>0.11.1-SNAPSHOT</version>
+        <version>0.11.2-SNAPSHOT</version>
     </parent>
     <artifactId>graphql-fuseki-module</artifactId>
     <name>Telicent - GraphQL for Apache Jena - Fuseki Module</name>
@@ -71,16 +71,6 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>
-            <version>${dependency.jetty}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${dependency.jetty}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-xml</artifactId>
             <version>${dependency.jetty}</version>
         </dependency>
         <!-- CVE-2026-1605 patch block end-->

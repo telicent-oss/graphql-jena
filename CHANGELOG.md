@@ -1,5 +1,15 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.11.1
+
+- Build improvements:
+    - Jackson upgraded to 2.21.2
+    - Jetty upgraded to 12.1.6
+    - JWT Servlet Auth upgraded to 4.0.1
+    - Mockito upgraded to 5.23.0
+    - Smart Caches Core upgraded to 0.36.2
+    - Various build and test dependencies upgraded to latest available
+
 # 0.11.0
 
 - Build improvements:
