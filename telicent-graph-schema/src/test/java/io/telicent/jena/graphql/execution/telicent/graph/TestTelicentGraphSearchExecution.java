@@ -18,7 +18,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import graphql.ExecutionResult;
 import io.telicent.jena.graphql.execution.AbstractExecutionTests;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
