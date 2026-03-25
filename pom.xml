@@ -109,6 +109,8 @@
         <dependency.commons-beanutils>1.11.0</dependency.commons-beanutils>
         <!-- CVE-2025-48976 -->
         <dependency.commons-fileupload>2.0.0-M5</dependency.commons-fileupload>
+        <!-- CVE-2026-1605 -->
+        <dependency.jetty>12.1.6</dependency.jetty>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -155,6 +157,7 @@
                 <artifactId>jersey-client</artifactId>
                 <version>${dependency.jersey}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

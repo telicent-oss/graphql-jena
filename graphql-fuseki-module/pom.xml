@@ -37,8 +37,53 @@
                     <groupId>org.apache.commons</groupId>
                     <artifactId>commons-fileupload2-core</artifactId>
                 </exclusion>
+                <!-- CVE-2026-1605 -->
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee11</groupId>
+                    <artifactId>jetty-ee11-servlet</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee11</groupId>
+                    <artifactId>jetty-ee11-servlets</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee11</groupId>
+                    <artifactId>jetty-security</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- CVE-2026-1605 patch block start-->
+        <!--
+        Note that for this repository this is not put in the top level POM otherwise it interferes with the version of
+        Jetty used by WireMock server in some tests which causes them to fail with ClassDefNotFound errors
+        -->
+        <dependency>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-servlet</artifactId>
+            <version>${dependency.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-servlets</artifactId>
+            <version>${dependency.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-security</artifactId>
+            <version>${dependency.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${dependency.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-xml</artifactId>
+            <version>${dependency.jetty}</version>
+        </dependency>
+        <!-- CVE-2026-1605 patch block end-->
 
         <dependency>
             <groupId>org.mockito</groupId>
