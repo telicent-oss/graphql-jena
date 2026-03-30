@@ -84,7 +84,7 @@ public class TestStartingSearchFetcher {
     @Test(expectedExceptions = RuntimeException.class)
     public void givenBadSearchResponse_whenUsingSearchFetcher_thenErrorIsThrown() {
         // given
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test")).willReturn(notFound()));
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test")).willReturn(notFound()));
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
@@ -108,7 +108,7 @@ public class TestStartingSearchFetcher {
     public void givenEmptySearchResponse_whenUsingSearchFetcher_thenSuccess() {
         // given
         System.setProperty("SEARCH_API_URL", "http://localhost:8181/");
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test")).willReturn(ok().withBody("{}")));
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test")).willReturn(ok().withBody("{}")));
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
@@ -128,7 +128,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(actualList);
         Assert.assertTrue(actualList.isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test")));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class TestStartingSearchFetcher {
                                                                                         emptyMap(), Map.of("document",
                                                                                                            Map.of("something",
                                                                                                                   "else"))));
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(returnedData))));
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
@@ -157,7 +157,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test")));
     }
 
     private static List<Map<?, ?>> createPagedResultDocuments() {
@@ -192,7 +192,7 @@ public class TestStartingSearchFetcher {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
         Map<String, Object> pagedData = createSearchResults(resultItems, 1, 1);
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&limit=1")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
@@ -209,7 +209,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test&limit=1")));
         // and
         Assert.assertTrue(actualList.stream().anyMatch(n -> n.getUri().equals("subject")));
     }
@@ -220,7 +220,7 @@ public class TestStartingSearchFetcher {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
         Map<String, Object> pagedData = createSearchResults(resultItems, 1, 1);
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&limit=1")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
         StartingSearchWithMetadataFetcher fetcher = new StartingSearchWithMetadataFetcher();
@@ -237,7 +237,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(results);
         Assert.assertFalse(results.getNodes().isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test&limit=1")));
         // and
         Assert.assertEquals(results.getLimit(), 1);
         Assert.assertEquals(results.getOffset(), 1);
@@ -251,7 +251,7 @@ public class TestStartingSearchFetcher {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
         Map<String, Object> pagedData = createSearchResults(resultItems, 2, resultItems.size());
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&offset=2")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&offset=2")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
@@ -268,7 +268,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(actualList);
         Assert.assertFalse(actualList.isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&offset=2")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test&offset=2")));
         // and
         Assert.assertTrue(actualList.stream().anyMatch(n -> n.getUri().equals("subject2")));
     }
@@ -279,7 +279,7 @@ public class TestStartingSearchFetcher {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
         Map<String, Object> pagedData = createSearchResults(resultItems, 2, resultItems.size());
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&offset=2")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&offset=2")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
         StartingSearchWithMetadataFetcher fetcher = new StartingSearchWithMetadataFetcher();
@@ -296,7 +296,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(results);
         Assert.assertFalse(results.getNodes().isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&offset=2")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test&offset=2")));
         // and
         Assert.assertEquals(results.getLimit(), 3);
         Assert.assertEquals(results.getOffset(), 2);
@@ -309,7 +309,7 @@ public class TestStartingSearchFetcher {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
         Map<String, Object> pagedData = createSearchResults(resultItems, 4, 1);
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1&offset=4")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&limit=1&offset=4")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
@@ -327,7 +327,7 @@ public class TestStartingSearchFetcher {
         // then
         Assert.assertNotNull(actualList);
         Assert.assertTrue(actualList.isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1&offset=4")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test&limit=1&offset=4")));
     }
 
     @Test
@@ -336,7 +336,7 @@ public class TestStartingSearchFetcher {
         // given
         List<Map<?, ?>> resultItems = createPagedResultDocuments();
         Map<String, Object> pagedData = createSearchResults(resultItems, 4, 1);
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents?query=test&limit=1&offset=4")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&limit=1&offset=4")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
 
         StartingSearchWithMetadataFetcher fetcher = new StartingSearchWithMetadataFetcher();
@@ -357,7 +357,7 @@ public class TestStartingSearchFetcher {
         Assert.assertEquals(results.getOffset(), 4);
         Assert.assertFalse(results.isMaybeMore());
         Assert.assertTrue(results.getNodes().isEmpty());
-        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents?query=test&limit=1&offset=4")));
+        WIRE_MOCK_SERVER.verify(getRequestedFor(urlEqualTo("/documents/graph-search?query=test&limit=1&offset=4")));
     }
 
     @Test(expectedExceptions = RuntimeException.class)
