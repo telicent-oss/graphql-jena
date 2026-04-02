@@ -28,6 +28,18 @@ time in milliseconds per operation:
 java -jar graphql-jena-benchmarks/target/benchmarks.jar -wi 2 -i 3 -f 1 -bm avgt -tu ms
 ```
 
+To focus on the Telicent graph relationship-cache benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*RelationshipFetcherReuseBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms
+```
+
+To compare allocation pressure and memory churn for the same benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*RelationshipFetcherReuseBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms -prof gc
+```
+
 ## Benchmark Tests Included
 
 Benchmarks are intentionally small and focus on core query execution paths:
@@ -44,6 +56,16 @@ Benchmarks are intentionally small and focus on core query execution paths:
   - `executeFriends`: runs `friends.graphql` over the same dataset.
   - These tests exercise `TraversalExecutor`, `TraversalEdgesFetcher`, and traversal wiring.
   - Expect roughly constant time for this fixed dataset unless traversal logic changes.
+
+- Telicent graph relationship fetch reuse (RelationshipFetcherReuseBenchmark)
+  - `outRelsCountsAndPredicateFacets_uncached`: simulates the old behavior where rels, counts, and predicate facets each
+    traverse the same filtered relationship set independently.
+  - `outRelsCountsAndPredicateFacets_cached`: measures the same work with one shared request context so the filtered
+    relationship selection is reused.
+  - `outRelsCountsAndAllFacets_uncached`: extends the above to include type facets as well.
+  - `outRelsCountsAndAllFacets_cached`: measures the same heavier path with request-scoped reuse enabled.
+  - These tests exercise the Telicent graph relationship fetchers directly and are the best benchmark for the new
+    request-scoped relationship cache.
 
 Resources used by the benchmarks are stored under:
 
