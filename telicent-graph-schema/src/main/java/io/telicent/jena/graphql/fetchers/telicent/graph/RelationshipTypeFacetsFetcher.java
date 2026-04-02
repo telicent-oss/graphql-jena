@@ -23,8 +23,9 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.vocabulary.RDF;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -50,13 +51,40 @@ public class RelationshipTypeFacetsFetcher extends AbstractRelationshipsFetcher<
     @Override
     protected List<FacetInfo> map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   Stream<Quad> input) {
-        return input.flatMap(q -> dsg.stream(Node.ANY, this.direction == EdgeDirection.IN ? q.getSubject() : q.getObject(), RDF.type.asNode(),
-                                             Node.ANY))
-                    .collect(Collectors.groupingBy(Quad::getObject, Collectors.counting()))
-                    .entrySet()
-                    .stream()
-                    .map(e -> new FacetInfo(e.getKey(), dsg.prefixes(), e.getValue().intValue()))
-                    .toList();
+        Map<Node, Integer> relatedNodeCounts = new HashMap<>();
+        input.forEach(q -> relatedNodeCounts.merge(getRelatedNode(q), 1, Integer::sum));
+
+        Map<Node, Integer> typeFacetCounts = new HashMap<>();
+        for (Map.Entry<Node, Integer> entry : relatedNodeCounts.entrySet()) {
+            streamTypes(dsg, entry.getKey()).forEach(q -> typeFacetCounts.merge(q.getObject(), entry.getValue(),
+                                                                                Integer::sum));
+        }
+
+        return typeFacetCounts.entrySet()
+                              .stream()
+                              .map(e -> new FacetInfo(e.getKey(), dsg.prefixes(), e.getValue()))
+                              .toList();
+    }
+
+    /**
+     * Gets the related node for a relationship quad.
+     *
+     * @param relationship Relationship quad
+     * @return Related node
+     */
+    protected Node getRelatedNode(Quad relationship) {
+        return this.direction == EdgeDirection.IN ? relationship.getSubject() : relationship.getObject();
+    }
+
+    /**
+     * Streams the type quads for a related node.
+     *
+     * @param dsg         Dataset graph
+     * @param relatedNode Related node
+     * @return Stream of type quads
+     */
+    protected Stream<Quad> streamTypes(DatasetGraph dsg, Node relatedNode) {
+        return dsg.stream(Node.ANY, relatedNode, RDF.type.asNode(), Node.ANY);
     }
 
     @Override

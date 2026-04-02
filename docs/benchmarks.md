@@ -28,6 +28,18 @@ time in milliseconds per operation:
 java -jar graphql-jena-benchmarks/target/benchmarks.jar -wi 2 -i 3 -f 1 -bm avgt -tu ms
 ```
 
+To focus on the relationship type facets benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*RelationshipTypeFacetBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms
+```
+
+To compare allocation pressure and memory churn for the same benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*RelationshipTypeFacetBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms -prof gc
+```
+
 ## Benchmark Tests Included
 
 Benchmarks are intentionally small and focus on core query execution paths:
@@ -44,6 +56,12 @@ Benchmarks are intentionally small and focus on core query execution paths:
   - `executeFriends`: runs `friends.graphql` over the same dataset.
   - These tests exercise `TraversalExecutor`, `TraversalEdgesFetcher`, and traversal wiring.
   - Expect roughly constant time for this fixed dataset unless traversal logic changes.
+
+- Relationship type facets (RelationshipTypeFacetBenchmark)
+  - `legacyTypeFacets`: simulates the previous implementation, which looked up `rdf:type` once per relationship.
+  - `optimizedTypeFacets`: measures the current implementation, which deduplicates related nodes first and looks up
+    `rdf:type` once per unique related node.
+  - This benchmark is the best direct measure of the type-facet optimization in the Telicent graph schema.
 
 Resources used by the benchmarks are stored under:
 
