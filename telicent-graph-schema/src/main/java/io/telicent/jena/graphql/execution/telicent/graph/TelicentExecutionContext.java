@@ -15,7 +15,10 @@ package io.telicent.jena.graphql.execution.telicent.graph;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.sparql.core.DatasetGraph;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 
 /**
@@ -25,6 +28,7 @@ public class TelicentExecutionContext {
 
     private final DatasetGraph dsg;
     private final String authToken;
+    private final Map<Object, Object> requestCache = new ConcurrentHashMap<>();
 
     /**
      * Creates a new execution context
@@ -63,5 +67,19 @@ public class TelicentExecutionContext {
      */
     public boolean hasAuthToken() {
         return StringUtils.isNotBlank(this.authToken);
+    }
+
+    /**
+     * Gets an existing cached value for the given key, or computes and caches it for the lifetime of this execution
+     * context if absent.
+     *
+     * @param key      Cache key
+     * @param supplier Value supplier
+     * @param <T>      Value type
+     * @return Cached or computed value
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOrCompute(Object key, Supplier<T> supplier) {
+        return (T) this.requestCache.computeIfAbsent(key, ignored -> supplier.get());
     }
 }

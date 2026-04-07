@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import org.apache.jena.graph.Node;
@@ -42,8 +43,34 @@ public abstract class AbstractNodeTypesFetcher<TOutput>
     protected Stream<Node> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   List<Filter> filters) {
         // NB - Filters not enabled for node types
+        return getNodeTypes(environment, dsg, node).stream();
+    }
+
+    /**
+     * Gets the declared types for a node, reusing request-scoped cached values where available
+     *
+     * @param environment Data fetching environment
+     * @param dsg         Dataset graph
+     * @param node        Node
+     * @return Declared types
+     */
+    protected List<Node> getNodeTypes(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
+        TelicentExecutionContext context = environment.getLocalContext();
+        return context.getOrCompute(new NodeCacheKey(NodeKind.TYPES, node.getNode()),
+                                    () -> loadNodeTypes(dsg, node));
+    }
+
+    /**
+     * Loads the declared types for a node from the dataset
+     *
+     * @param dsg  Dataset graph
+     * @param node Node
+     * @return Declared types
+     */
+    protected List<Node> loadNodeTypes(DatasetGraph dsg, TelicentGraphNode node) {
         return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
                   .map(Quad::getObject)
-                  .filter(t -> t.isURI() || t.isBlank());
+                  .filter(t -> t.isURI() || t.isBlank())
+                  .toList();
     }
 }
