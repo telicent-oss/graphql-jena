@@ -57,6 +57,16 @@ Benchmarks are intentionally small and focus on core query execution paths:
   - These tests exercise `TraversalExecutor`, `TraversalEdgesFetcher`, and traversal wiring.
   - Expect roughly constant time for this fixed dataset unless traversal logic changes.
 
+- Telicent graph relationship fetch reuse (RelationshipFetcherReuseBenchmark)
+  - `outRelsCountsAndPredicateFacets_uncached`: simulates the old behavior where rels, counts, and predicate facets each
+    traverse the same filtered relationship set independently.
+  - `outRelsCountsAndPredicateFacets_cached`: measures the same work with one shared request context so the filtered
+    relationship selection is reused.
+  - `outRelsCountsAndAllFacets_uncached`: extends the above to include type facets as well.
+  - `outRelsCountsAndAllFacets_cached`: measures the same heavier path with request-scoped reuse enabled.
+  - These tests exercise the Telicent graph relationship fetchers directly and are the best benchmark for the new
+    request-scoped relationship cache.
+   
 - Relationship type facets (RelationshipTypeFacetBenchmark)
   - `legacyTypeFacets`: simulates the previous implementation, which looked up `rdf:type` once per relationship.
   - `optimizedTypeFacets`: measures the current implementation, which deduplicates related nodes first and looks up

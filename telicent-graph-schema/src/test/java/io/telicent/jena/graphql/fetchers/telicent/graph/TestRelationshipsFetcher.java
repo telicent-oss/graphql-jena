@@ -14,12 +14,14 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.DataFetchingEnvironmentImpl;
+import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.Relationship;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
-import org.apache.commons.lang3.StringUtils;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import org.apache.commons.lang3.Strings;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -33,6 +35,7 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static org.apache.jena.graph.NodeFactory.*;
@@ -438,11 +441,85 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         Assert.assertEquals(outCount, 1_000);
     }
 
+    @Test
+    public void givenSameRequestContext_whenFetchingRelationshipsAndCounts_thenRelationshipTraversalIsReused()
+            throws Exception {
+        // Given
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node subject = createURI("subject");
+        generateManyRelationships(dsg, GRAPH, subject);
+        AtomicInteger relTraversalCount = new AtomicInteger();
+        AtomicInteger countTraversalCount = new AtomicInteger();
+        RelationshipsFetcher relFetcher = new CountingRelationshipsFetcher(EdgeDirection.OUT, relTraversalCount);
+        RelationshipCountsFetcher countFetcher = new CountingRelationshipCountsFetcher(EdgeDirection.OUT,
+                                                                                       countTraversalCount);
+        Map<String, Object> arguments = Map.of(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER,
+                                               Map.of(TelicentGraphSchema.ARGUMENT_MODE, "EXCLUDE",
+                                                      TelicentGraphSchema.ARGUMENT_VALUES, List.of(
+                                                               RDF.type.getURI())));
+
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        DataFetchingEnvironment relEnvironment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
+                                                                           .localContext(context)
+                                                                           .source(new TelicentGraphNode(subject,
+                                                                                                         null))
+                                                                           .arguments(arguments)
+                                                                           .build();
+        DataFetchingEnvironment countEnvironment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
+                                                                             .localContext(context)
+                                                                             .source(new NodePlaceholder(
+                                                                                     new TelicentGraphNode(subject,
+                                                                                                           null)))
+                                                                             .arguments(arguments)
+                                                                             .build();
+
+        // When
+        List<Relationship> relationships = relFetcher.get(relEnvironment);
+        Integer count = countFetcher.get(countEnvironment);
+
+        // Then
+        Assert.assertEquals(relationships.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+        Assert.assertEquals(count.intValue(), 1_000);
+        Assert.assertEquals(relTraversalCount.get(), 1);
+        Assert.assertEquals(countTraversalCount.get(), 0,
+                            "Expected count fetcher to reuse the existing relationship traversal");
+    }
+
     private static void generateManyRelationships(DatasetGraph dsg, Node graph, Node subject) {
         Node predicate = createURI("predicate");
         for (int i = 0; i < 1_000; i++) {
             dsg.add(graph, subject, predicate, createURI("object" + i));
             dsg.add(graph, createURI("subject" + i), predicate, subject);
+        }
+    }
+
+    private static final class CountingRelationshipsFetcher extends RelationshipsFetcher {
+        private final AtomicInteger traversalCount;
+
+        private CountingRelationshipsFetcher(EdgeDirection direction, AtomicInteger traversalCount) {
+            super(direction);
+            this.traversalCount = traversalCount;
+        }
+
+        @Override
+        protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
+            this.traversalCount.incrementAndGet();
+            return super.generateRelationships(dsg, node, filters);
+        }
+    }
+
+    private static final class CountingRelationshipCountsFetcher extends RelationshipCountsFetcher {
+        private final AtomicInteger traversalCount;
+
+        private CountingRelationshipCountsFetcher(EdgeDirection direction, AtomicInteger traversalCount) {
+            super(direction);
+            this.traversalCount = traversalCount;
+        }
+
+        @Override
+        protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
+            this.traversalCount.incrementAndGet();
+            return super.generateRelationships(dsg, node, filters);
         }
     }
 }
