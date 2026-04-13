@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.LiteralProperty;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
@@ -26,6 +27,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.jena.graph.NodeFactory.*;
 
@@ -66,6 +68,46 @@ public class TestLiteralsFetcher extends AbstractFetcherTests {
         // Then
         Assert.assertNotNull(count);
         Assert.assertEquals(count, 1_000);
+    }
+
+    @Test
+    public void givenSharedRequestContext_whenFetchingPropertiesAndCounting_thenLiteralScanIsReused() throws Exception {
+        // Given
+        AtomicInteger scans = new AtomicInteger();
+        AbstractLiteralsFetcher<List<LiteralProperty>> propertiesFetcher = new LiteralPropertiesFetcher() {
+            @Override
+            protected List<org.apache.jena.sparql.core.Quad> loadLiteralProperties(DatasetGraph dsg, TelicentGraphNode node) {
+                scans.incrementAndGet();
+                return super.loadLiteralProperties(dsg, node);
+            }
+        };
+        AbstractLiteralsFetcher<Integer> countFetcher = new LiteralsCountFetcher() {
+            @Override
+            protected List<org.apache.jena.sparql.core.Quad> loadLiteralProperties(DatasetGraph dsg, TelicentGraphNode node) {
+                scans.incrementAndGet();
+                return super.loadLiteralProperties(dsg, node);
+            }
+        };
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = createURI("graph");
+        Node subject = createURI("subject");
+        generateManyLiterals(dsg, graph, subject);
+
+        DataFetchingEnvironment propertiesEnvironment =
+                prepareFetchingEnvironment(dsg, new TelicentGraphNode(subject, null));
+        DataFetchingEnvironment countEnvironment =
+                prepareFetchingEnvironment((TelicentExecutionContext) propertiesEnvironment.getLocalContext(),
+                                           new NodePlaceholder(new TelicentGraphNode(subject, null)));
+
+        // When
+        List<LiteralProperty> properties = propertiesFetcher.get(propertiesEnvironment);
+        Integer count = countFetcher.get(countEnvironment);
+
+        // Then
+        Assert.assertNotNull(properties);
+        Assert.assertEquals(properties.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+        Assert.assertEquals(count, 1_000);
+        Assert.assertEquals(scans.get(), 1);
     }
 
     private static void generateManyLiterals(DatasetGraph dsg, Node graph, Node subject) {
