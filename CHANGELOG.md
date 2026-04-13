@@ -1,5 +1,14 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.12.0
+
+- Telicent Graph Schema improvements:
+    - Various internal improvements to the GraphQL fetchers to cache potentially shared information and reduce 
+      unnecessary duplicate calls to the underlying Jena `DatasetGraph`
+- Build improvements:
+    - Smart Caches Core upgraded to 0.36.3
+    - Jetty upgraded to 12.1.7
+
 # 0.11.1
 
 - Build improvements:
