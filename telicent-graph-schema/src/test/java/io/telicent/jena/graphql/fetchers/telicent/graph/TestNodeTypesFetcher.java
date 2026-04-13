@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
@@ -26,6 +27,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.jena.graph.NodeFactory.*;
 
@@ -129,6 +131,45 @@ public class TestNodeTypesFetcher extends AbstractFetcherTests {
         // Then
         Assert.assertNotNull(count);
         Assert.assertEquals(count, 1_000);
+    }
+
+    @Test
+    public void givenSharedRequestContext_whenFetchingTypesAndCounting_thenTypeScanIsReused() throws Exception {
+        // Given
+        AtomicInteger scans = new AtomicInteger();
+        AbstractNodeTypesFetcher<List<TelicentGraphNode>> typesFetcher = new NodeTypesFetcher() {
+            @Override
+            protected List<Node> loadNodeTypes(DatasetGraph dsg, TelicentGraphNode node) {
+                scans.incrementAndGet();
+                return super.loadNodeTypes(dsg, node);
+            }
+        };
+        AbstractNodeTypesFetcher<Integer> countFetcher = new NodeTypeCountsFetcher() {
+            @Override
+            protected List<Node> loadNodeTypes(DatasetGraph dsg, TelicentGraphNode node) {
+                scans.incrementAndGet();
+                return super.loadNodeTypes(dsg, node);
+            }
+        };
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node graph = createURI("graph");
+        Node subject = createURI("subject");
+        generateManyTypes(dsg, graph, subject);
+
+        DataFetchingEnvironment typesEnvironment = prepareFetchingEnvironment(dsg, new TelicentGraphNode(subject, null));
+        DataFetchingEnvironment countEnvironment =
+                prepareFetchingEnvironment((TelicentExecutionContext) typesEnvironment.getLocalContext(),
+                                           new NodePlaceholder(new TelicentGraphNode(subject, null)));
+
+        // When
+        List<TelicentGraphNode> types = typesFetcher.get(typesEnvironment);
+        Integer count = countFetcher.get(countEnvironment);
+
+        // Then
+        Assert.assertNotNull(types);
+        Assert.assertEquals(types.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+        Assert.assertEquals(count, 1_000);
+        Assert.assertEquals(scans.get(), 1);
     }
 
     private static void generateManyTypes(DatasetGraph dsg, Node graph, Node subject) {

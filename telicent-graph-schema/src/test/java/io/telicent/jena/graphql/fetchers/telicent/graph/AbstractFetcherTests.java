@@ -28,6 +28,10 @@ public class AbstractFetcherTests {
 
     protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(DatasetGraph dsg, T source) {
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        return prepareFetchingEnvironment(context, source);
+    }
+
+    protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(TelicentExecutionContext context, T source) {
         return DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()
                 .localContext(context)
@@ -37,6 +41,10 @@ public class AbstractFetcherTests {
 
     protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(DatasetGraph dsg, T source, Map<String, Object> arguments) {
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        return prepareFetchingEnvironment(context, source, arguments);
+    }
+
+    protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(TelicentExecutionContext context, T source, Map<String, Object> arguments) {
         return DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()
                 .localContext(context)
