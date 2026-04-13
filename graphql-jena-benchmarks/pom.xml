@@ -21,6 +21,11 @@
     <dependencies>
         <dependency>
             <groupId>io.telicent.jena.graphql</groupId>
+            <artifactId>telicent-graph-schema</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.telicent.jena.graphql</groupId>
             <artifactId>graphql-jena-core</artifactId>
             <version>${project.version}</version>
         </dependency>
