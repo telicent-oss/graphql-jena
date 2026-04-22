@@ -105,8 +105,6 @@
         <dependency.json-smart>2.6.0</dependency.json-smart>
         <!-- CVE-2024-47554 -->
         <dependency.commons-io>2.21.0</dependency.commons-io>
-        <!-- CVE-2025-48734 -->
-        <dependency.commons-beanutils>1.11.0</dependency.commons-beanutils>
         <!-- CVE-2025-48976 -->
         <dependency.commons-fileupload>2.0.0-M5</dependency.commons-fileupload>
         <!-- CVE-2026-1605 -->
