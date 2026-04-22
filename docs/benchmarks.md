@@ -28,6 +28,18 @@ time in milliseconds per operation:
 java -jar graphql-jena-benchmarks/target/benchmarks.jar -wi 2 -i 3 -f 1 -bm avgt -tu ms
 ```
 
+To focus on the relationship type facets benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*RelationshipTypeFacetBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms
+```
+
+To compare allocation pressure and memory churn for the same benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*RelationshipTypeFacetBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms -prof gc
+```
+
 ## Benchmark Tests Included
 
 Benchmarks are intentionally small and focus on core query execution paths:
@@ -44,6 +56,32 @@ Benchmarks are intentionally small and focus on core query execution paths:
   - `executeFriends`: runs `friends.graphql` over the same dataset.
   - These tests exercise `TraversalExecutor`, `TraversalEdgesFetcher`, and traversal wiring.
   - Expect roughly constant time for this fixed dataset unless traversal logic changes.
+
+- Telicent graph relationship fetch reuse (RelationshipFetcherReuseBenchmark)
+  - `outRelsCountsAndPredicateFacets_uncached`: simulates the old behavior where rels, counts, and predicate facets each
+    traverse the same filtered relationship set independently.
+  - `outRelsCountsAndPredicateFacets_cached`: measures the same work with one shared request context so the filtered
+    relationship selection is reused.
+  - `outRelsCountsAndAllFacets_uncached`: extends the above to include type facets as well.
+  - `outRelsCountsAndAllFacets_cached`: measures the same heavier path with request-scoped reuse enabled.
+  - These tests exercise the Telicent graph relationship fetchers directly and are the best benchmark for the new
+    request-scoped relationship cache.
+   
+- Relationship type facets (RelationshipTypeFacetBenchmark)
+  - `legacyTypeFacets`: simulates the previous implementation, which looked up `rdf:type` once per relationship.
+  - `optimizedTypeFacets`: measures the current implementation, which deduplicates related nodes first and looks up
+    `rdf:type` once per unique related node.
+  - This benchmark is the best direct measure of the type-facet optimization in the Telicent graph schema.
+
+- Node type reuse (NodeTypeCacheBenchmark)
+  - `typesAndCount_uncached` vs `typesAndCount_cached`: compares the old behavior where `types` and
+    `relCounts.types` each rescan the dataset against the new request-scoped cache.
+  - `propertiesAndCount_uncached` vs `propertiesAndCount_cached`: compares the same before/after shape
+    for literal `properties` and `relCounts.properties`.
+  - These tests exercise the request-scoped cache in `TelicentExecutionContext` and the abstract node
+    type/literal fetchers used by the Telicent graph schema.
+  - Expect the cached variants to reduce both latency and allocation per operation, with the gain growing
+    as the number of attached types/literals increases.
 
 Resources used by the benchmarks are stored under:
 
@@ -76,6 +114,18 @@ Notes:
 - JFR requires the ability to attach to the JVM; sandboxed environments may block this.
 - Forked runs (`-f 1`) are recommended for stable measurements.
 - Use the same JVM version and hardware when comparing results over time.
+
+To run just the node fact reuse benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*NodeTypeCacheBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms
+```
+
+To compare allocation pressure for the same benchmark:
+
+```bash
+java -jar graphql-jena-benchmarks/target/benchmarks.jar '.*NodeTypeCacheBenchmark.*' -wi 2 -i 5 -f 1 -bm avgt -tu ms -prof gc
+```
 
 ## Output Files
 

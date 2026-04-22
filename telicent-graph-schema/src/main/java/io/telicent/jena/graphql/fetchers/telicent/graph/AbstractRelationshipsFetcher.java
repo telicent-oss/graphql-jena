@@ -13,7 +13,9 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
+import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -80,13 +82,34 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     @Override
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   List<Filter> filters) {
+        RelationshipSelectionCacheKey cacheKey = new RelationshipSelectionCacheKey(node.getNode(), this.direction,
+                                                                                   environment.getArgument(
+                                                                                           TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER),
+                                                                                   environment.getArgument(
+                                                                                           TelicentGraphSchema.ARGUMENT_NODE_FILTER),
+                                                                                   environment.getArgument(
+                                                                                           TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
+        TelicentExecutionContext executionContext = environment.getLocalContext();
+        List<Quad> quads = executionContext.getOrCompute(cacheKey, () -> generateRelationships(dsg, node, filters));
+        return quads.stream();
+    }
+
+    /**
+     * Builds the filtered relationships for this fetcher
+     *
+     * @param dsg     Dataset graph
+     * @param node    Source node
+     * @param filters Filters to apply
+     * @return Materialised list of relationships
+     */
+    protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
         // If a Predicate INCLUDE filter can do a more targeted initial stream
         List<Tuple4<Node>> quadPatterns = getPreFilter(filters, node);
         Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, node, quadPatterns) : stream(dsg, node);
         for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
-        return quads;
+        return quads.toList();
     }
 
     /**
