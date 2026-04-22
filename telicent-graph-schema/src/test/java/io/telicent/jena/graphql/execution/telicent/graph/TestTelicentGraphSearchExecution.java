@@ -54,7 +54,7 @@ public class TestTelicentGraphSearchExecution extends AbstractExecutionTests {
         Map<String, ?> pagedData = Map.of("limit", "10", "offset", "20", "results", List.of(Map.of("document",
                                                                                                    Map.of("uri",
                                                                                                           TestTelicentGraphExecution.OBI_WAN_KENOBI))));
-        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/graph-search?query=test&limit=10&offset=20")).willReturn(
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/documents/uri-search?query=test&limit=10&offset=20")).willReturn(
                 ok().withBody(MAPPER.writeValueAsString(pagedData))));
     }
 

@@ -92,7 +92,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
                                         boolean useFastGraphSearch) {
         StringBuilder builder = new StringBuilder();
         builder.append(searchApiUrl)
-               .append(useFastGraphSearch ? "/documents/graph-search?query=" : "/documents?query=")
+               .append(useFastGraphSearch ? "/documents/uri-search?query=" : "/documents?query=")
                .append(URLEncoder.encode(searchTerm, StandardCharsets.UTF_8));
 
         Integer limit = environment.getArgument(TelicentGraphSchema.ARGUMENT_LIMIT);

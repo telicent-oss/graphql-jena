@@ -50,7 +50,7 @@ public class TestAbstractSearchFetcher {
                                                                environment);
 
         // Then
-        Assert.assertEquals(searchUrl.getPath(), "/documents/graph-search");
+        Assert.assertEquals(searchUrl.getPath(), "/documents/uri-search");
         Assert.assertEquals(searchUrl.getQuery(), "query=test");
     }
 
@@ -101,7 +101,7 @@ public class TestAbstractSearchFetcher {
                                                                        environment);
 
         // Then
-        Assert.assertEquals(searchUrl.getPath(), "/api/search/documents/graph-search");
+        Assert.assertEquals(searchUrl.getPath(), "/api/search/documents/uri-search");
         Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(), "query=test"));
         for (Map.Entry<String, String> entry : expectedQuerystringParameters.entrySet()) {
             Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(),
@@ -127,7 +127,7 @@ public class TestAbstractSearchFetcher {
         URI searchUrl = AbstractSearchFetcher.buildSearchApiRequestUri("https://some-deployment/api/search", "test",
                                                                        environment);
 
-        Assert.assertEquals(searchUrl.getPath(), "/api/search/documents/graph-search");
+        Assert.assertEquals(searchUrl.getPath(), "/api/search/documents/uri-search");
         Assert.assertEquals(searchUrl.getQuery(), "query=test");
     }
 
