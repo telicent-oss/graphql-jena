@@ -110,7 +110,7 @@
         <!-- CVE-2025-48976 -->
         <dependency.commons-fileupload>2.0.0-M5</dependency.commons-fileupload>
         <!-- CVE-2026-1605 -->
-        <dependency.jetty>12.1.6</dependency.jetty>
+        <dependency.jetty>12.1.7</dependency.jetty>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
