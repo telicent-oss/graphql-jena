@@ -1,5 +1,19 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.12.1
+
+- Build improvements:
+    - Maven Central plugin changed to `waitUntil` the `validated` rather than the `published` state to avoid builds
+      timing out due to Maven Central load/outages
+    - Apache Commons IO upgraded to 2.22.0
+    - Apache Jena upgraded to 6.1.0
+    - GraphQL upgraded to 26.0
+    - Jackson upgraded to 2.21.3
+    - JWT Servlet Auth upgraded to 4.1.0
+    - SLF4J upgraded to 2.0.18
+    - Smart Caches Core upgraded to 0.38.0
+    - Various build and test dependencies upgraded to latest available
+
 # 0.12.0
 
 - Telicent Graph Schema improvements:
