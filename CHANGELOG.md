@@ -1,6 +1,6 @@
 # GraphQL Extensions for Apache Jena
 
-# 0.12.1
+# 0.12.2
 
 - Build improvements:
     - Maven Central plugin changed to `waitUntil` the `validated` rather than the `published` state to avoid builds
