@@ -76,7 +76,7 @@
         <plugin.dependency>3.11.0</plugin.dependency>
         <plugin.editorconfig>0.2.0</plugin.editorconfig>
         <plugin.gpg>3.2.8</plugin.gpg>
-        <plugin.jacoco>0.8.14</plugin.jacoco>
+        <plugin.jacoco>0.8.15</plugin.jacoco>
         <plugin.jar>3.5.0</plugin.jar>
         <plugin.javadoc>3.12.0</plugin.javadoc>
         <plugin.license>5.0.0</plugin.license>
@@ -89,7 +89,7 @@
         <dependency.airline>3.2.0</dependency.airline>
         <dependency.graphql>26.0</dependency.graphql>
         <dependency.jena>6.1.0</dependency.jena>
-        <dependency.jackson>2.21.4</dependency.jackson>
+        <dependency.jackson>2.22.0</dependency.jackson>
         <dependency.jersey>3.1.11</dependency.jersey>
         <dependency.jwt-servlet>4.1.1</dependency.jwt-servlet>
         <dependency.logback>1.5.34</dependency.logback>
