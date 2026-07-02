@@ -494,6 +494,7 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>validated</waitUntil>
+                    <deploymentName>GraphQL Jena Extensions ${project.version}</deploymentName>
                 </configuration>
             </plugin>
 
