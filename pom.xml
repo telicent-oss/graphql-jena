@@ -479,6 +479,7 @@
                 <configuration>
                     <outputName>${project.artifactId}-${project.version}-bom</outputName>
                     <skipNotDeployed>false</skipNotDeployed> <!-- Forces SBOM generation -->
+                    <outputFormat>json</outputFormat>
                 </configuration>
             </plugin>
 
