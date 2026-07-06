@@ -69,6 +69,13 @@
         <coverage.minimum>0.9</coverage.minimum>
         <coverage.skip>false</coverage.skip>
 
+        <!-- Skipping of test JARs -->
+        <!--
+        Test and Test Source JARs will not be produced by default, modules can set this property to false if they have
+        reusable test code they want to make available to downstream consumers
+        -->
+        <skip.testJars>true</skip.testJars>
+
         <!-- Plugin Versions -->
         <plugin.central>0.11.0</plugin.central>
         <plugin.compiler>3.15.0</plugin.compiler>
@@ -260,6 +267,10 @@
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
+                        <configuration>
+                            <skipIfEmpty>true</skipIfEmpty>
+                            <skip>${skip.testJars}</skip>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -495,6 +506,7 @@
                     <autoPublish>true</autoPublish>
                     <waitUntil>validated</waitUntil>
                     <deploymentName>GraphQL Jena Extensions ${project.version}</deploymentName>
+                    <checksums>required</checksums>
                 </configuration>
             </plugin>
 
