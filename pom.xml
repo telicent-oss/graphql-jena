@@ -96,9 +96,9 @@
         <dependency.airline>3.2.0</dependency.airline>
         <dependency.graphql>26.0</dependency.graphql>
         <dependency.jena>6.1.0</dependency.jena>
-        <dependency.jackson>2.22.0</dependency.jackson>
+        <dependency.jackson>2.22.1</dependency.jackson>
         <dependency.jersey>3.1.12</dependency.jersey>
-        <dependency.jwt-servlet>4.1.2</dependency.jwt-servlet>
+        <dependency.jwt-servlet>4.1.3</dependency.jwt-servlet>
         <dependency.logback>1.5.37</dependency.logback>
         <dependency.mockito>5.23.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
@@ -115,7 +115,7 @@
         <!-- CVE-2025-48976 -->
         <dependency.commons-fileupload>2.0.0-M5</dependency.commons-fileupload>
         <!-- CVE-2026-1605 -->
-        <dependency.jetty>12.1.10</dependency.jetty>
+        <dependency.jetty>12.1.11</dependency.jetty>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
