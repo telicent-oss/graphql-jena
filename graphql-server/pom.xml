@@ -26,6 +26,12 @@
             <groupId>io.telicent.smart-caches</groupId>
             <artifactId>jaxrs-base-server</artifactId>
             <version>${dependency.smart-caches}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>jena-fuseki-main</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
