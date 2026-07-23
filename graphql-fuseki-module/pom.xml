@@ -41,10 +41,6 @@
                     <groupId>org.eclipse.jetty.ee11</groupId>
                     <artifactId>jetty-ee11-servlets</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.ee11</groupId>
-                    <artifactId>jetty-security</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
