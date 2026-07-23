@@ -42,10 +42,6 @@
             <artifactId>wiremock</artifactId>
             <scope>test</scope>
             <exclusions>
-<!--                <exclusion>-->
-<!--                    <groupId>com.google.errorprone</groupId>-->
-<!--                    <artifactId>error_prone_annotations</artifactId>-->
-<!--                </exclusion>-->
                 <!-- CVE-2024-57699 -->
                 <exclusion>
                     <artifactId>json-smart</artifactId>
