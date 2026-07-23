@@ -42,10 +42,6 @@
                     <artifactId>jetty-ee11-servlets</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.eclipse.jetty.ee11</groupId>
-                    <artifactId>jetty-security</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcprov-jdk18on</artifactId>
                 </exclusion>

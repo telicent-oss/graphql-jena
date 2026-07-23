@@ -94,6 +94,7 @@
 
         <!-- Dependency Versions -->
         <dependency.airline>3.3.0</dependency.airline>
+        <dependency.errorprone>2.50.0</dependency.errorprone>
         <dependency.graphql>26.0</dependency.graphql>
         <dependency.jena>6.1.0</dependency.jena>
         <dependency.jackson>2.22.1</dependency.jackson>
@@ -142,13 +143,7 @@
                 <groupId>org.apache.jena</groupId>
                 <artifactId>jena-arq</artifactId>
                 <version>${dependency.jena}</version>
-                <exclusions>
-                    <!-- Excluded due to upstream Jena issue https://github.com/apache/jena/issues/2593 -->
-                    <exclusion>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-suite-engine</artifactId>
-                    </exclusion>
-                </exclusions>
+
             </dependency>
 
             <dependency>
@@ -169,6 +164,13 @@
                 <version>${dependency.slf4j}</version>
             </dependency>
 
+            <!-- Pin transitive version to avoid reactor version skew (CycloneDX aggregate BOM warning) -->
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>${dependency.errorprone}</version>
+            </dependency>
+
             <!-- Test Dependencies -->
             <dependency>
                 <groupId>org.testng</groupId>
@@ -181,16 +183,12 @@
                 <artifactId>wiremock</artifactId>
                 <version>${dependency.wiremock}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.errorprone</groupId>
-                        <artifactId>error_prone_annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.checkerframework</groupId>
-                        <artifactId>checker-qual</artifactId>
-                    </exclusion>
-                </exclusions>
+<!--                <exclusions>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>com.google.errorprone</groupId>-->
+<!--                        <artifactId>error_prone_annotations</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
