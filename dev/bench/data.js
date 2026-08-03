@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785126041026,
+  "lastUpdate": 1785730635822,
   "repoUrl": "https://github.com/telicent-oss/graphql-jena",
   "entries": {
     "StoreBenchmark": [
@@ -5964,6 +5964,328 @@ window.BENCHMARK_DATA = {
           {
             "name": "io.telicent.jena.graphql.benchmarks.TraversalQueryBenchmark.executeSimple",
             "value": 0.01925895636769358,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Rob Vesse",
+            "username": "rvesse",
+            "email": "rob.vesse@telicent.io"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "a01ad8378a11262e3ac163e26adb424e83beaff1",
+          "message": "Merge pull request #172 from telicent-oss/dependabot/maven/patches-e02379a771\n\nBump the patches group with 5 updates",
+          "timestamp": "2026-07-29T09:58:33Z",
+          "url": "https://github.com/telicent-oss/graphql-jena/commit/a01ad8378a11262e3ac163e26adb424e83beaff1"
+        },
+        "date": 1785730635480,
+        "tool": "jmh",
+        "benches": [
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.DatasetQueryBenchmark.executeFiltered ( {\"size\":\"10\"} )",
+            "value": 0.02663871178132259,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.DatasetQueryBenchmark.executeFiltered ( {\"size\":\"100\"} )",
+            "value": 0.03337125434993988,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.DatasetQueryBenchmark.executeFiltered ( {\"size\":\"1000\"} )",
+            "value": 0.029549240982188103,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.DatasetQueryBenchmark.executeSimple ( {\"size\":\"10\"} )",
+            "value": 0.08506446883035558,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.DatasetQueryBenchmark.executeSimple ( {\"size\":\"100\"} )",
+            "value": 0.40534714689890694,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.DatasetQueryBenchmark.executeSimple ( {\"size\":\"1000\"} )",
+            "value": 3.6469775242838356,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.propertiesAndCount_cached ( {\"nodeCount\":\"100\"} )",
+            "value": 0.003993153686627029,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.propertiesAndCount_cached ( {\"nodeCount\":\"1000\"} )",
+            "value": 0.02365308990238769,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.propertiesAndCount_cached ( {\"nodeCount\":\"5000\"} )",
+            "value": 0.09988560528388186,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.propertiesAndCount_uncached ( {\"nodeCount\":\"100\"} )",
+            "value": 0.006630658863699615,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.propertiesAndCount_uncached ( {\"nodeCount\":\"1000\"} )",
+            "value": 0.0455023771930179,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.propertiesAndCount_uncached ( {\"nodeCount\":\"5000\"} )",
+            "value": 0.23251793465278459,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.typesAndCount_cached ( {\"nodeCount\":\"100\"} )",
+            "value": 0.004397408572573644,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.typesAndCount_cached ( {\"nodeCount\":\"1000\"} )",
+            "value": 0.023534956897949145,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.typesAndCount_cached ( {\"nodeCount\":\"5000\"} )",
+            "value": 0.11837599939462191,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.typesAndCount_uncached ( {\"nodeCount\":\"100\"} )",
+            "value": 0.007607306347853252,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.typesAndCount_uncached ( {\"nodeCount\":\"1000\"} )",
+            "value": 0.04909226109801744,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.NodeTypeCacheBenchmark.typesAndCount_uncached ( {\"nodeCount\":\"5000\"} )",
+            "value": 0.24511844430231394,
+            "unit": "ms/op",
+            "extra": "iterations: 5\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"subject-only\",\"size\":\"10\"} )",
+            "value": 0.0007096377409419779,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"subject-only\",\"size\":\"100\"} )",
+            "value": 0.00391450454785872,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"subject-only\",\"size\":\"1000\"} )",
+            "value": 0.03183371480773498,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"triple\",\"size\":\"10\"} )",
+            "value": 0.0005364472630651392,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"triple\",\"size\":\"100\"} )",
+            "value": 0.0019697165385346143,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"triple\",\"size\":\"1000\"} )",
+            "value": 0.01351090832784758,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"all-fields\",\"size\":\"10\"} )",
+            "value": 0.0004989590489391978,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"all-fields\",\"size\":\"100\"} )",
+            "value": 0.001761468592354703,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"all-fields\",\"size\":\"1000\"} )",
+            "value": 0.014338219160678825,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"graph-only\",\"size\":\"10\"} )",
+            "value": 0.0007474123827390667,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"graph-only\",\"size\":\"100\"} )",
+            "value": 0.003836865099346719,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.QuadsFetcherMappingBenchmark.mapQuads ( {\"selection\":\"graph-only\",\"size\":\"1000\"} )",
+            "value": 0.03158267206955423,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndAllFacets_cached ( {\"relationshipCount\":\"100\"} )",
+            "value": 0.045040651700528254,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndAllFacets_cached ( {\"relationshipCount\":\"1000\"} )",
+            "value": 0.4535008081951375,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndAllFacets_cached ( {\"relationshipCount\":\"5000\"} )",
+            "value": 2.0236203787404317,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndAllFacets_uncached ( {\"relationshipCount\":\"100\"} )",
+            "value": 0.05750193895893806,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndAllFacets_uncached ( {\"relationshipCount\":\"1000\"} )",
+            "value": 0.5169650166529833,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndAllFacets_uncached ( {\"relationshipCount\":\"5000\"} )",
+            "value": 2.4397403793241446,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndPredicateFacets_cached ( {\"relationshipCount\":\"100\"} )",
+            "value": 0.009227568568451992,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndPredicateFacets_cached ( {\"relationshipCount\":\"1000\"} )",
+            "value": 0.052647944756147015,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndPredicateFacets_cached ( {\"relationshipCount\":\"5000\"} )",
+            "value": 0.2650371667230689,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndPredicateFacets_uncached ( {\"relationshipCount\":\"100\"} )",
+            "value": 0.01606596712137563,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndPredicateFacets_uncached ( {\"relationshipCount\":\"1000\"} )",
+            "value": 0.10604879844373583,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipFetcherReuseBenchmark.outRelsCountsAndPredicateFacets_uncached ( {\"relationshipCount\":\"5000\"} )",
+            "value": 0.6048054351606043,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipTypeFacetBenchmark.legacyTypeFacets ( {\"relationshipCount\":\"100\"} )",
+            "value": 0.020013853771167916,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipTypeFacetBenchmark.legacyTypeFacets ( {\"relationshipCount\":\"1000\"} )",
+            "value": 0.0928671451485979,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipTypeFacetBenchmark.legacyTypeFacets ( {\"relationshipCount\":\"5000\"} )",
+            "value": 0.6309967653647003,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipTypeFacetBenchmark.optimizedTypeFacets ( {\"relationshipCount\":\"100\"} )",
+            "value": 0.004772157053442469,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipTypeFacetBenchmark.optimizedTypeFacets ( {\"relationshipCount\":\"1000\"} )",
+            "value": 0.04061586818107985,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.RelationshipTypeFacetBenchmark.optimizedTypeFacets ( {\"relationshipCount\":\"5000\"} )",
+            "value": 0.25869602508952033,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.TraversalQueryBenchmark.executeFriends",
+            "value": 0.0255952304031753,
+            "unit": "ms/op",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          },
+          {
+            "name": "io.telicent.jena.graphql.benchmarks.TraversalQueryBenchmark.executeSimple",
+            "value": 0.019600824591517213,
             "unit": "ms/op",
             "extra": "iterations: 3\nforks: 1\nthreads: 1"
           }
