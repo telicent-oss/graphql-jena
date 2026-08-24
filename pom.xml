@@ -76,6 +76,9 @@
         -->
         <skip.testJars>true</skip.testJars>
 
+        <!-- SonarQube analysis, invoked from CI via mvn sonar:sonar -->
+        <sonar.projectKey>telicent-oss_graphql-jena</sonar.projectKey>
+
         <!-- Plugin Versions -->
         <plugin.central>0.11.0</plugin.central>
         <plugin.compiler>3.15.0</plugin.compiler>
