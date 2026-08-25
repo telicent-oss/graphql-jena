@@ -29,6 +29,7 @@ import java.util.stream.Stream;
  *
  * @param <TOutput> Output type
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractStateRelationshipsFetcher<TOutput>
         extends AbstractPagingFetcher<State, Quad, TOutput> {
 

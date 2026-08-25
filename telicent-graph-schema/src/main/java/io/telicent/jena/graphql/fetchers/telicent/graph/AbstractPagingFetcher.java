@@ -36,6 +36,7 @@ import java.util.stream.Stream;
  * @param <TSource> Source type
  * @param <TOutput> Output type that will be produced as the end result of the data fetch
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements DataFetcher<TOutput> {
 
     private final long defaultLimit, maxLimit;

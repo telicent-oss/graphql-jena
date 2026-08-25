@@ -27,6 +27,7 @@ import java.util.stream.Stream;
  * Abstract data fetcher that finds literals directly attached to nodes
  * @param <TOutput> Output type
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractLiteralsFetcher<TOutput>
         extends AbstractPagingFetcher<TelicentGraphNode, Quad, TOutput> {
 
