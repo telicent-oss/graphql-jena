@@ -90,6 +90,6 @@ public class TestPredicateFilter {
 
         // When and Then
         Node predicate = NodeFactory.createURI("predicate");
-        filter.getQuadPatterns(Node.ANY, Node.ANY, predicate, Node.ANY);;
+        filter.getQuadPatterns(Node.ANY, Node.ANY, predicate, Node.ANY);
     }
 }

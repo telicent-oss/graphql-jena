@@ -92,6 +92,6 @@ public class TestSubjectFilter {
 
         // When and Then
         Node subject = NodeFactory.createURI("subject");
-        filter.getQuadPatterns(Node.ANY, subject, Node.ANY, Node.ANY);;
+        filter.getQuadPatterns(Node.ANY, subject, Node.ANY, Node.ANY);
     }
 }
