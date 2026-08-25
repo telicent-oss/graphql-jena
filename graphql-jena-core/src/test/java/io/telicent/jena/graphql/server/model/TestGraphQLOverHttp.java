@@ -17,6 +17,7 @@ import graphql.ExecutionResultImpl;
 import graphql.GraphQLError;
 import graphql.execution.AbortExecutionException;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
@@ -95,52 +96,30 @@ public class TestGraphQLOverHttp {
         Assert.assertNotNull(request);
     }
 
-    @Test
-    public void test_parseRequest_POST()  {
-        // given
-        String requestString = "";
-        String testInput = "{}";
-        InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
-        // when
-        GraphQLRequest request = parseRequest(requestString, "POST", (a, b) -> "{}", a -> mockInputStream);
-        //then
-        Assert.assertNotNull(request);
+    @DataProvider(name = "parseRequestCases")
+    private static Object[][] parseRequestCases() {
+        //@formatter:off
+        return new Object[][] {
+                // method, request body, parameter value, expects failure
+                { "POST", "{}", "{}",        false },
+                { "POST", "{",  "something", true  },
+                { "GET",  "{}", "invalid",   true  },
+                { "GET",  "{}", "{}",        false }
+        };
+        //@formatter:on
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
-    public void test_parseRequest_POST_exception() {
+    @Test(dataProvider = "parseRequestCases")
+    public void test_parseRequest(String method, String body, String parameterValue, boolean expectsFailure) {
         // given
-        String requestString = "";
-        String testInput = "{";
-        InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
-        // when
-        GraphQLRequest request = parseRequest(requestString, "POST", (a, b) -> "something", a -> mockInputStream);
-        //then
-        Assert.assertNotNull(request);
-    }
-
-    @Test(expectedExceptions = RuntimeException.class)
-    public void test_parseRequest_GET_exception()  {
-        // given
-        String requestString = "";
-        String testInput = "{}";
-        InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
-        // when
-        GraphQLRequest request = parseRequest(requestString, "GET", (a, b) -> "invalid", a -> mockInputStream);
-        //then
-        Assert.assertNotNull(request);
-    }
-
-    @Test
-    public void test_parseRequest_GET()  {
-        // given
-        String requestString = "";
-        String testInput = "{}";
-        InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
-        // when
-        GraphQLRequest request = parseRequest(requestString, "GET", (a, b) -> "{}", a -> mockInputStream);
-        //then
-        Assert.assertNotNull(request);
+        InputStream mockInputStream = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+        // when and then
+        if (expectsFailure) {
+            Assert.assertThrows(RuntimeException.class,
+                                () -> parseRequest("", method, (a, b) -> parameterValue, a -> mockInputStream));
+        } else {
+            Assert.assertNotNull(parseRequest("", method, (a, b) -> parameterValue, a -> mockInputStream));
+        }
     }
 
 
