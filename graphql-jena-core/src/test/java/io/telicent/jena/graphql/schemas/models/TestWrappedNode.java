@@ -48,14 +48,8 @@ public class TestWrappedNode {
 
     @Test(dataProvider = "validLiteralNodeTypes")
     public void test_WrappedNode_validLiteralNodes(Node node, String expectedValue) {
-        // given
-        // when
-        WrappedNode wrappedNode = new WrappedNode(node);
-        // then
-        Assert.assertNotNull(wrappedNode);
-        Assert.assertEquals(wrappedNode.getValue(), expectedValue);
-        Map<String, Object> map = wrappedNode.toMap();
-        Assert.assertNotNull(map);
+        // Literal nodes must satisfy exactly the same contract, only the input data differs
+        test_WrappedNode_validNodes(node, expectedValue);
     }
 
 

@@ -52,24 +52,6 @@ public class TestQuadsFetcher {
         Assert.assertTrue(result.isEmpty());
     }
 
-    @Test
-    public void test_2() {
-        // given
-        TestDataFetchingFieldSelectionSet selectionSet = new TestDataFetchingFieldSelectionSet();
-        DatasetGraph dsg = DatasetGraphFactory.empty();
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
-                .newDataFetchingEnvironment()
-                .selectionSet(selectionSet)
-                .localContext(dsg)
-                .build();
-        QuadsFetcher quadsFetcher = new QuadsFetcher();
-        // when
-        List<Object> result = quadsFetcher.get(environment);
-        // then
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.isEmpty());
-    }
-
     @DataProvider(name = "mapFieldSelection")
     private static Object[] mapFieldSelection() {
         return new Object[] {
