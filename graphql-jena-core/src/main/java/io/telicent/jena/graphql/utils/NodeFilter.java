@@ -92,7 +92,7 @@ public class NodeFilter {
      * @param argument Raw kinds argument
      * @return Set of node kinds
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "java:S1319" })
     public static EnumSet<NodeKind> parseKinds(Object argument) {
         if (argument == null) {
             return EnumSet.allOf(NodeKind.class);
