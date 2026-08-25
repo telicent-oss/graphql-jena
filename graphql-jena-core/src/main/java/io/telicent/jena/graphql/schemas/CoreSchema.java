@@ -35,6 +35,7 @@ public class CoreSchema {
     /**
      * Node type
      */
+    @SuppressWarnings("java:S115")
     public static final String Node_TYPE = "Node";
     /**
      * Node kind field
