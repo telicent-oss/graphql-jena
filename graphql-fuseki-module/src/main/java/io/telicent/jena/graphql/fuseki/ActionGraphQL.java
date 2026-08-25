@@ -119,7 +119,7 @@ public class ActionGraphQL extends ActionService {
         try {
             request = GraphQLOverHttp.parseRequest(httpAction, method, ActionGraphQL::getRequestParameter,
                                                    ActionGraphQL::getRequestBody);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             ServletOps.errorBadRequest(e.getMessage());
         }
 

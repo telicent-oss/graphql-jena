@@ -197,7 +197,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
                 throw new RuntimeException("Failed to make query for search term " + environment.getArgument(
                         "searchTerm") + ", received status " + response.statusCode());
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to make query for search term " + environment.getArgument(
                     "searchTerm") + ".  Search service may be unavailable in your environment.", e);
         }
