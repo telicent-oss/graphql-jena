@@ -73,12 +73,12 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
     private final TelicentGraphExecutor starwars, falklands;
 
     public TestTelicentGraphExecution() throws IOException {
-        DatasetGraph starwars = RDFParserBuilder.create()
+        DatasetGraph starwarsDsg = RDFParserBuilder.create()
                                                 .lang(Lang.TURTLE)
                                                 .source(TestTelicentGraphExecution.class.getResourceAsStream(
                                                         "/data/starwars.ttl"))
                                                 .toDatasetGraph();
-        this.starwars = new TelicentGraphExecutor(starwars);
+        this.starwars = new TelicentGraphExecutor(starwarsDsg);
 
         DatasetGraph sandyWoodward = RDFParserBuilder.create()
                                                      .lang(Lang.TURTLE)
