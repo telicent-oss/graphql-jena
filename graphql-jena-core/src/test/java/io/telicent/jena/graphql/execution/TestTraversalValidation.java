@@ -12,17 +12,12 @@
  */
 package io.telicent.jena.graphql.execution;
 
-import io.telicent.jena.graphql.schemas.TraversalSchema;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-@SuppressWarnings("unchecked")
 public class TestTraversalValidation extends AbstractExecutionTests {
 
     private static final String QUERY_BASE = "/queries/traversal/";
@@ -44,20 +39,6 @@ public class TestTraversalValidation extends AbstractExecutionTests {
     private static final String LITERALS_TRAVERSAL = loadQuery("literals.graphql");
 
     private static final String BLANKS_TRAVERSAL = loadQuery("blanks.graphql");
-
-    private static void verifyTargets(List<Object> edges, List<String> expected) {
-        for (Object edge : edges) {
-            Assert.assertTrue(edge instanceof Map<?, ?>);
-            Map<String, Object> traversalEdge = (Map<String, Object>) edge;
-            Assert.assertTrue(traversalEdge.containsKey(TraversalSchema.TARGET_FIELD));
-            Map<String, Object> target = (Map<String, Object>) traversalEdge.get(TraversalSchema.TARGET_FIELD);
-            Assert.assertTrue(target.containsKey(TraversalSchema.NODE_FIELD));
-            Map<String, Object> node = (Map<String, Object>) target.get(TraversalSchema.NODE_FIELD);
-            Assert.assertTrue(node.containsKey(TraversalSchema.VALUE_FIELD));
-            String value = (String) node.get(TraversalSchema.VALUE_FIELD);
-            Assert.assertTrue(expected.contains(value));
-        }
-    }
 
     @DataProvider(name = "validQueries")
     private static Object[] validQueryList() {
