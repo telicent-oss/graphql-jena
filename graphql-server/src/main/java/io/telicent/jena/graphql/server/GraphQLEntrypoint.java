@@ -86,6 +86,7 @@ public class GraphQLEntrypoint extends AbstractAppEntrypoint {
      * @param args Arguments
      */
     @ExcludeFromJacocoGeneratedReport
+    @SuppressWarnings("java:S106")
     public static void main(String[] args) {
         try {
             GraphQLEntrypoint entrypoint = SingleCommand.singleCommand(GraphQLEntrypoint.class).parse(args);
