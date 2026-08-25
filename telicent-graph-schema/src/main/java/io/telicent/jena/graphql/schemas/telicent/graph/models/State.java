@@ -34,7 +34,9 @@ public class State {
      }
      */
 
-    private final Node state, predicate, entity;
+    private final Node state;
+    private final Node predicate;
+    private final Node entity;
 
     private Node period;
 

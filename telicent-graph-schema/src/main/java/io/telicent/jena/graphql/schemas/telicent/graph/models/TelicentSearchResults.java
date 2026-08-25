@@ -23,7 +23,8 @@ import java.util.Map;
  * Represents a set of Telicent Search results, includes metadata about the results as well as the results themselves
  */
 public class TelicentSearchResults {
-    private final int limit, offset;
+    private final int limit;
+    private final int offset;
     private final boolean maybeMore;
     private final String searchTerm;
     private final SearchType searchType;

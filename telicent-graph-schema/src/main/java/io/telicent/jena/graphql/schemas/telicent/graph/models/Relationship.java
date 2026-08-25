@@ -35,7 +35,9 @@ public class Relationship {
 
     private static final NodeFormatterNT FORMATTER = new NodeFormatterNT();
 
-    private final TelicentGraphNode subject, predicate, object;
+    private final TelicentGraphNode subject;
+    private final TelicentGraphNode predicate;
+    private final TelicentGraphNode object;
     private String id = null;
 
     /**

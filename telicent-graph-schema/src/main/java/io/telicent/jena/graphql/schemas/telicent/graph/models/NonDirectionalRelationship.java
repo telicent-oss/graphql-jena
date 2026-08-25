@@ -27,7 +27,8 @@ public class NonDirectionalRelationship {
      }
      */
 
-    private final TelicentGraphNode predicate, entity;
+    private final TelicentGraphNode predicate;
+    private final TelicentGraphNode entity;
 
     /**
      * Creates a new relationship

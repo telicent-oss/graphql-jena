@@ -22,8 +22,10 @@ import java.util.Map;
  */
 public class GraphQLRequest {
 
-    private String query, operationName;
-    private Map<String, Object> variables = new HashMap<>(), extensions = new HashMap<>();
+    private String query;
+    private String operationName;
+    private Map<String, Object> variables = new HashMap<>();
+    private Map<String, Object> extensions = new HashMap<>();
 
     /**
      * Creates an empty GraphQL Request that may be populated by its setter methods

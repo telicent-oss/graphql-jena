@@ -39,7 +39,8 @@ import java.util.stream.Stream;
 @SuppressWarnings("java:S119")
 public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements DataFetcher<TOutput> {
 
-    private final long defaultLimit, maxLimit;
+    private final long defaultLimit;
+    private final long maxLimit;
 
     /**
      * Creates a new paging fetcher with default limit settings

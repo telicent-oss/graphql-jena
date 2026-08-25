@@ -28,7 +28,8 @@ import java.util.Objects;
  * </p>
  */
 public class FacetPlaceholderFetcher implements DataFetcher<FacetInfoPlaceholder> {
-    private final DataFetcher<List<FacetInfo>> predicatesFetcher, typesFetcher;
+    private final DataFetcher<List<FacetInfo>> predicatesFetcher;
+    private final DataFetcher<List<FacetInfo>> typesFetcher;
 
     /**
      * Creates a new placeholder fetcher

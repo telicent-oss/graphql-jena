@@ -34,7 +34,8 @@ public class LiteralProperty {
 }
      */
 
-    private final Node predicate, literal;
+    private final Node predicate;
+    private final Node literal;
     private final PrefixMap prefixes;
 
     /**
