@@ -72,14 +72,11 @@ public class StatePeriodFetcher implements DataFetcher<String> {
                 case TelicentGraphSchema.FIELD_PERIOD -> {
                     // This is only relevant when the period is attached directly to the state and not via any bounding
                     // states
-                    if (StringUtils.isNotBlank(periodValue)) {
-                        return periodValue;
-                    }
+                    return StringUtils.isNotBlank(periodValue) ? periodValue : null;
                 }
                 default -> throw new IllegalArgumentException(
                         "Field " + environment.getField().getName() + " not handled by this DataFetcher");
             }
-            return null;
         });
     }
 
