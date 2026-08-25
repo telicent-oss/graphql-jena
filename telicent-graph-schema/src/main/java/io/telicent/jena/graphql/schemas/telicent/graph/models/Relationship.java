@@ -101,6 +101,7 @@ public class Relationship {
      *
      * @return Relationship ID
      */
+    @SuppressWarnings("java:S4790")
     public String getId() {
         if (this.id == null) {
             try (StringWriterI writer = new StringWriterI()) {
