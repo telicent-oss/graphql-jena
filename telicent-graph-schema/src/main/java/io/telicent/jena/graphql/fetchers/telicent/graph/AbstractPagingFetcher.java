@@ -69,7 +69,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
         List<Filter> filters = new ArrayList<>();
         if (this.enableFilters()) {
             createFilters(environment, filters);
-            filters.removeIf(f -> f instanceof IncludeAllFilter);
+            filters.removeIf(IncludeAllFilter.class::isInstance);
         }
 
         return Txn.calculateRead(dsg, () -> {
