@@ -17,6 +17,7 @@ import java.util.Objects;
 /**
  * Represents a simplified form of a relationship
  */
+@SuppressWarnings("java:S125")
 public class NonDirectionalRelationship {
 
     /*

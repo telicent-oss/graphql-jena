@@ -20,6 +20,7 @@ import java.util.Objects;
 /**
  * Represents an entity state
  */
+@SuppressWarnings("java:S125")
 public class State {
 
     /*

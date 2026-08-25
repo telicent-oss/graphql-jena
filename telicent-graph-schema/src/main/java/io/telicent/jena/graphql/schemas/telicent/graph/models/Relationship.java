@@ -19,6 +19,7 @@ import org.apache.jena.riot.out.NodeFormatterNT;
 /**
  * Represents a relationship
  */
+@SuppressWarnings("java:S125")
 public class Relationship {
 
     /*

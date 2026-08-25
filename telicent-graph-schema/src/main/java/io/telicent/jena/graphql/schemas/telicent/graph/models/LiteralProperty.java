@@ -21,6 +21,7 @@ import java.util.Objects;
 /**
  * Represents a literal property
  */
+@SuppressWarnings("java:S125")
 public class LiteralProperty {
 
     /*
