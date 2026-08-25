@@ -86,7 +86,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
         if (includesGraph) {
             expectedFields++;
         }
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>(Math.max(1, expectedFields * 2));
+        LinkedHashMap<String, Object> map = LinkedHashMap.newLinkedHashMap(Math.max(1, expectedFields));
         if (includesSubject) {
             map.put(CoreSchema.SUBJECT_FIELD, q.getSubject());
         }
