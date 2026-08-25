@@ -82,6 +82,7 @@ public class NodeFetcher implements DataFetcher<WrappedNode> {
         };
     }
 
+    @SuppressWarnings("java:S6880")
     private WrappedNode wrap(Object o) {
         if (o instanceof Node node) {
             return wrap(node);
