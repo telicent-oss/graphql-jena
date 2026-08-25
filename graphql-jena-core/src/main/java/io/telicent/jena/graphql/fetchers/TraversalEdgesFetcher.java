@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.fetchers;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.schemas.CoreSchema;
 import io.telicent.jena.graphql.schemas.TraversalSchema;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.models.NodeKind;
@@ -48,7 +49,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
         TraversalNode node = environment.getSource();
 
         // Determine which edges we are traversing and which edges we care about
-        List<Node> predicateFilters = NodeFilter.parseList(environment.getArgument(TraversalSchema.PREDICATE_FIELD));
+        List<Node> predicateFilters = NodeFilter.parseList(environment.getArgument(CoreSchema.PREDICATE_FIELD));
         EnumSet<NodeKind> kinds = NodeFilter.parseKinds(environment.getArgument(TraversalSchema.KINDS_ARGUMENT));
 
         return Txn.calculateRead(dsg, () -> {
