@@ -20,6 +20,7 @@ import org.apache.jena.sys.JenaSystem;
 
 import java.util.Map;
 
+@SuppressWarnings("java:S2187")
 public class AbstractFetcherTests {
 
     static {

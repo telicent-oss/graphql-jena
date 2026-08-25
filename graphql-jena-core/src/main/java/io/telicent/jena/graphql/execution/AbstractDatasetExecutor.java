@@ -57,6 +57,7 @@ public abstract class AbstractDatasetExecutor implements GraphQLExecutor, GraphQ
      * @param dsg Default Dataset Graph over which queries will execute
      * @throws IOException Thrown if there is a problem reading in the underlying GraphQL schema
      */
+    @SuppressWarnings({ "java:S1135", "java:S5993" })
     public AbstractDatasetExecutor(DatasetGraph dsg) throws IOException {
         this.dsg = dsg;
         Objects.requireNonNull(dsg, "DatasetGraph to execute over cannot be null");

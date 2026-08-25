@@ -33,6 +33,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
     /**
      * Creates a new Quads Fetcher that fetches quads from an underlying RDF dataset
      */
+    @SuppressWarnings("java:S1186")
     public QuadsFetcher() {
 
     }
@@ -62,8 +63,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
                 } else {
                     return dsg.stream(graph, subject, predicate, object)
                               .map(q -> map(q, includesSubject, includesPredicate, includesObject, includesGraph))
-                              .collect(
-                                      Collectors.toList());
+                              .toList();
                 }
             }
             return dsg.stream(graph, subject, predicate, object).collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
         if (includesGraph) {
             expectedFields++;
         }
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>(Math.max(1, expectedFields * 2));
+        LinkedHashMap<String, Object> map = LinkedHashMap.newLinkedHashMap(Math.max(1, expectedFields));
         if (includesSubject) {
             map.put(CoreSchema.SUBJECT_FIELD, q.getSubject());
         }

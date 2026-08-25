@@ -25,6 +25,7 @@ public class StartingSearchWithMetadataFetcher extends AbstractSearchFetcher<Tel
     /**
      * Creates a new fetcher that uses a search query to find nodes of interest
      */
+    @SuppressWarnings("java:S1186")
     public StartingSearchWithMetadataFetcher() {
 
     }

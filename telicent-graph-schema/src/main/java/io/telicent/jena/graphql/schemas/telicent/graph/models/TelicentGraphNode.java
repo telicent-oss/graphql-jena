@@ -76,6 +76,7 @@ public class TelicentGraphNode {
      *
      * @return URI hash
      */
+    @SuppressWarnings("java:S4790")
     public String getUriHash() {
         return DigestUtils.sha1Hex(this.getUri());
     }

@@ -24,7 +24,6 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -35,11 +34,13 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
     /**
      * Creates a fetcher that finds the states associated with a given URI
      */
+    @SuppressWarnings("java:S1186")
     public StartingStatesFetcher() {
 
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public List<State> get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
@@ -49,7 +50,7 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
                                                                                       findStates(dsg, node),
                                                                                       TelicentGraphSchema.DEFAULT_LIMIT,
                                                                                       TelicentGraphSchema.MAX_LIMIT)
-                                                                 .collect(Collectors.toList()));
+                                                                 .toList());
     }
 
     private static Stream<State> findStates(DatasetGraph dsg, Node node) {

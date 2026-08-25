@@ -17,6 +17,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 public class ExecutorWithWrongConstructor extends AbstractBadExecutor {
 
 
+    @SuppressWarnings("java:S1172")
     public ExecutorWithWrongConstructor(DatasetGraph dsg, int param, boolean anotherParam) {
         super(dsg);
     }

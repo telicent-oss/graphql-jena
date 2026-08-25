@@ -31,11 +31,13 @@ public class StatePeriodFetcher implements DataFetcher<String> {
     /**
      * Creates a new fetcher that populates the period fields for a state
      */
+    @SuppressWarnings("java:S1186")
     public StatePeriodFetcher() {
 
     }
 
     @Override
+    @SuppressWarnings({ "java:S2259", "java:S3776" })
     public String get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
@@ -70,14 +72,11 @@ public class StatePeriodFetcher implements DataFetcher<String> {
                 case TelicentGraphSchema.FIELD_PERIOD -> {
                     // This is only relevant when the period is attached directly to the state and not via any bounding
                     // states
-                    if (StringUtils.isNotBlank(periodValue)) {
-                        return periodValue;
-                    }
+                    return StringUtils.isNotBlank(periodValue) ? periodValue : null;
                 }
                 default -> throw new IllegalArgumentException(
                         "Field " + environment.getField().getName() + " not handled by this DataFetcher");
             }
-            return null;
         });
     }
 

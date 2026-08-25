@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.fetchers;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.schemas.CoreSchema;
 import io.telicent.jena.graphql.schemas.TraversalSchema;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.models.NodeKind;
@@ -26,7 +27,6 @@ import org.apache.jena.system.Txn;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A {@link DataFetcher} that fetches the incoming/outgoing edges from a node as part of answering a Traversal GraphQL
@@ -37,6 +37,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
     /**
      * Creates a traversal edges fetcher that finds the incoming/outgoing edges for a traversal node
      */
+    @SuppressWarnings("java:S1186")
     public TraversalEdgesFetcher() {
 
     }
@@ -47,7 +48,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
         TraversalNode node = environment.getSource();
 
         // Determine which edges we are traversing and which edges we care about
-        List<Node> predicateFilters = NodeFilter.parseList(environment.getArgument(TraversalSchema.PREDICATE_FIELD));
+        List<Node> predicateFilters = NodeFilter.parseList(environment.getArgument(CoreSchema.PREDICATE_FIELD));
         EnumSet<NodeKind> kinds = NodeFilter.parseKinds(environment.getArgument(TraversalSchema.KINDS_ARGUMENT));
 
         return Txn.calculateRead(dsg, () -> {
@@ -60,7 +61,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
                           .flatMap(p -> dsg.stream(Node.ANY, Node.ANY, p, node.getNode().getNode())
                           .map(q -> TraversalEdge.of(q.getPredicate(), EdgeDirection.IN, q.getSubject())))
                           .filter(e -> kinds.contains(e.getTarget().getNode().getKind()))
-                          .collect(Collectors.toList());
+                          .toList();
             case TraversalSchema.OUTGOING_FIELD ->
                     predicateFilters
                           .stream()
@@ -68,7 +69,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
                           .flatMap(p -> dsg.stream(Node.ANY, node.getNode().getNode(), p, Node.ANY))
                           .map(q -> TraversalEdge.of(q.getPredicate(), EdgeDirection.OUT, q.getObject()))
                           .filter(e -> kinds.contains(e.getTarget().getNode().getKind()))
-                          .collect(Collectors.toList());
+                          .toList();
             //@formatter:on
                 default -> throw new IllegalArgumentException("Unrecognised field " + environment.getField().getName());
             };

@@ -23,7 +23,8 @@ import java.util.Map;
  * Represents a set of Telicent Search results, includes metadata about the results as well as the results themselves
  */
 public class TelicentSearchResults {
-    private final int limit, offset;
+    private final int limit;
+    private final int offset;
     private final boolean maybeMore;
     private final String searchTerm;
     private final SearchType searchType;
@@ -78,10 +79,10 @@ public class TelicentSearchResults {
         Object rawValue = map.get("maybeMore");
         if (rawValue == null) {
             return false;
-        } else if (rawValue instanceof Boolean) {
-            return (Boolean) rawValue;
-        } else if (rawValue instanceof String) {
-            return Boolean.parseBoolean((String) rawValue);
+        } else if (rawValue instanceof Boolean boolValue) {
+            return boolValue;
+        } else if (rawValue instanceof String stringValue) {
+            return Boolean.parseBoolean(stringValue);
         } else {
             return false;
         }
@@ -91,11 +92,11 @@ public class TelicentSearchResults {
         Object rawValue = map.get(field);
         if (rawValue == null) {
             return -1;
-        } else if (rawValue instanceof Integer) {
-            return (Integer) rawValue;
-        } else if (rawValue instanceof String) {
+        } else if (rawValue instanceof Integer intValue) {
+            return intValue;
+        } else if (rawValue instanceof String stringValue) {
             try {
-                return Integer.parseInt((String) rawValue);
+                return Integer.parseInt(stringValue);
             } catch (NumberFormatException e) {
                 return -1;
             }

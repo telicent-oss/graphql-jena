@@ -27,13 +27,6 @@ import java.util.stream.Stream;
  */
 public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Integer> {
 
-//    /**
-//     * Default constructor
-//     */
-//    public RelationshipCountsFetcher() {
-//        super();
-//    }
-
     /**
      * Creates a new relationship counts fetcher
      * @param direction Direction of relationships to count
@@ -43,6 +36,7 @@ public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Inte
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         NodePlaceholder counts = environment.getSource();
         return counts.parent();

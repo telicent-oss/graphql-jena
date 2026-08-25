@@ -71,6 +71,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
     /**
      * Creates a new abstract search fetcher
      */
+    @SuppressWarnings("java:S5993")
     public AbstractSearchFetcher() {
 
     }
@@ -145,7 +146,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
      * @param environment Data Fetching environment
      * @return Telicent Search Results
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "java:S2142", "java:S3776", "java:S112" })
     protected TelicentSearchResults searchCommon(DataFetchingEnvironment environment) {
         configureSearchApiUrl();
 
@@ -197,7 +198,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
                 throw new RuntimeException("Failed to make query for search term " + environment.getArgument(
                         "searchTerm") + ", received status " + response.statusCode());
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to make query for search term " + environment.getArgument(
                     "searchTerm") + ".  Search service may be unavailable in your environment.", e);
         }

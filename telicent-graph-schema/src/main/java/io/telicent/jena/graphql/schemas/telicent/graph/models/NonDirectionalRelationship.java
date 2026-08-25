@@ -17,6 +17,7 @@ import java.util.Objects;
 /**
  * Represents a simplified form of a relationship
  */
+@SuppressWarnings("java:S125")
 public class NonDirectionalRelationship {
 
     /*
@@ -26,7 +27,8 @@ public class NonDirectionalRelationship {
      }
      */
 
-    private final TelicentGraphNode predicate, entity;
+    private final TelicentGraphNode predicate;
+    private final TelicentGraphNode entity;
 
     /**
      * Creates a new relationship

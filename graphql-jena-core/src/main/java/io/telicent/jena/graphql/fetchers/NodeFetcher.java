@@ -31,6 +31,7 @@ public class NodeFetcher implements DataFetcher<WrappedNode> {
     /**
      * Creates a new node fetcher that extracts the individual nodes (or RDF terms) from a larger data structure
      */
+    @SuppressWarnings("java:S1186")
     public NodeFetcher() {
 
     }
@@ -39,10 +40,10 @@ public class NodeFetcher implements DataFetcher<WrappedNode> {
     @SuppressWarnings("unchecked")
     public WrappedNode get(DataFetchingEnvironment environment) {
         Object parent = environment.getSource();
-        if (parent instanceof Triple) {
-            return get(environment, (Triple) parent);
-        } else if (parent instanceof Quad) {
-            return get(environment, (Quad) parent);
+        if (parent instanceof Triple triple) {
+            return get(environment, triple);
+        } else if (parent instanceof Quad quad) {
+            return get(environment, quad);
         } else if (parent instanceof Map<?, ?>) {
             return get(environment, (Map<String, Object>) parent);
         } else {
@@ -81,11 +82,12 @@ public class NodeFetcher implements DataFetcher<WrappedNode> {
         };
     }
 
+    @SuppressWarnings("java:S6880")
     private WrappedNode wrap(Object o) {
-        if (o instanceof Node) {
-            return wrap((Node) o);
-        } else if (o instanceof WrappedNode) {
-            return (WrappedNode) o;
+        if (o instanceof Node node) {
+            return wrap(node);
+        } else if (o instanceof WrappedNode wrappedNode) {
+            return wrappedNode;
         } else {
             throw new IllegalArgumentException("Cannot fetch Node for field type that is not Node/WrappedNode");
         }

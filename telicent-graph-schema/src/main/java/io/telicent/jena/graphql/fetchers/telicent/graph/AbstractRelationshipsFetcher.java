@@ -37,6 +37,7 @@ import java.util.stream.Stream;
  *
  * @param <TOutput> Output type
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractRelationshipsFetcher<TOutput>
         extends AbstractPagingFetcher<TelicentGraphNode, Quad, TOutput> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRelationshipsFetcher.class);
@@ -80,6 +81,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   List<Filter> filters) {
         RelationshipSelectionCacheKey cacheKey = new RelationshipSelectionCacheKey(node.getNode(), this.direction,
@@ -105,7 +107,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
         // If a Predicate INCLUDE filter can do a more targeted initial stream
         List<Tuple4<Node>> quadPatterns = getPreFilter(filters, node);
-        Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, node, quadPatterns) : stream(dsg, node);
+        Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, quadPatterns) : stream(dsg, node);
         for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
@@ -137,6 +139,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
      * @param filters Filters that apply
      * @return Pre-filter quad patterns, or {@code null} if no eligible filters
      */
+    @SuppressWarnings({ "java:S1168", "java:S3776" })
     private List<Tuple4<Node>> getPreFilter(List<Filter> filters, TelicentGraphNode node) {
         if (CollectionUtils.isEmpty(filters)) {
             return null;
@@ -176,11 +179,10 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
      * </p>
      *
      * @param dsg          Dataset Graph
-     * @param node         Starting Node
      * @param quadPatterns Quad patterns to use
      * @return Stream of quads representing relationships
      */
-    private Stream<Quad> streamPreFiltered(DatasetGraph dsg, TelicentGraphNode node, List<Tuple4<Node>> quadPatterns) {
+    private Stream<Quad> streamPreFiltered(DatasetGraph dsg, List<Tuple4<Node>> quadPatterns) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Translated pre-filter eligible filters into following {} Quad Patterns:\n  {}",
                          quadPatterns.size(),

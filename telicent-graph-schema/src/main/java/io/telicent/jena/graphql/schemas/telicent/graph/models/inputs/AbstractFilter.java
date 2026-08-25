@@ -38,6 +38,7 @@ public abstract class AbstractFilter implements Filter {
      * @param mode   Filter Mode
      * @param values Values to filter by
      */
+    @SuppressWarnings("java:S5993")
     public AbstractFilter(FilterMode mode, Collection<Node> values) {
         this.mode = Objects.requireNonNull(mode, "mode cannot be null");
         this.values.addAll(Objects.requireNonNull(values, "Values to filter by cannot be null"));

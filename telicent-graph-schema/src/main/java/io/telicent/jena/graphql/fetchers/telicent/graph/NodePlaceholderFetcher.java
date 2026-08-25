@@ -30,6 +30,7 @@ public class NodePlaceholderFetcher implements DataFetcher<NodePlaceholder> {
     /**
      * Creates a new fetcher
      */
+    @SuppressWarnings("java:S1186")
     public NodePlaceholderFetcher() {
 
     }

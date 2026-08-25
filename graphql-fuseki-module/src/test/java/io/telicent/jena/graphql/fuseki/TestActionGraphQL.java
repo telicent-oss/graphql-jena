@@ -271,6 +271,7 @@ public class TestActionGraphQL {
         }
 
         @Override
+        @SuppressWarnings("java:S1186")
         public void setReadListener(ReadListener readListener) {
         }
     }

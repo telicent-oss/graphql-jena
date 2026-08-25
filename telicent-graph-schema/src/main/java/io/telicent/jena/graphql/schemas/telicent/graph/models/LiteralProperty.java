@@ -21,6 +21,7 @@ import java.util.Objects;
 /**
  * Represents a literal property
  */
+@SuppressWarnings("java:S125")
 public class LiteralProperty {
 
     /*
@@ -33,7 +34,8 @@ public class LiteralProperty {
 }
      */
 
-    private final Node predicate, literal;
+    private final Node predicate;
+    private final Node literal;
     private final PrefixMap prefixes;
 
     /**

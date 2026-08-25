@@ -212,6 +212,7 @@ public class TestDatasetExecution extends AbstractExecutionTests {
     }
 
     @Test
+    @SuppressWarnings("java:S2133")
     public void casting_01() throws IOException {
         DatasetGraph dsg = DatasetGraphFactory.empty();
         DatasetExecutor executor = new DatasetExecutor(dsg);
@@ -220,6 +221,7 @@ public class TestDatasetExecution extends AbstractExecutionTests {
     }
 
     @Test
+    @SuppressWarnings("java:S2133")
     public void test_NonCoreSchemaExecutor() throws IOException {
         DatasetGraph dsg = DatasetGraphFactory.empty();
         NonCoreSchemaDatasetExecutor executor = new NonCoreSchemaDatasetExecutor(dsg);

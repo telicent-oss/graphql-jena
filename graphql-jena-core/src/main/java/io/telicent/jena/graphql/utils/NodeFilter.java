@@ -49,6 +49,7 @@ public class NodeFilter {
      * @param n Node
      * @return Node filter
      */
+    @SuppressWarnings("java:S1168")
     public static Map<String, Object> make(Node n) {
         if (n == null) {
             return null;
@@ -78,8 +79,8 @@ public class NodeFilter {
                 }
             }
             return filters;
-        } else if (argument instanceof Node) {
-            return List.of((Node) argument);
+        } else if (argument instanceof Node node) {
+            return List.of(node);
         } else {
             throw new IllegalArgumentException("Unsupported type to parse a list of Node Filters from");
         }
@@ -91,7 +92,7 @@ public class NodeFilter {
      * @param argument Raw kinds argument
      * @return Set of node kinds
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "java:S1319" })
     public static EnumSet<NodeKind> parseKinds(Object argument) {
         if (argument == null) {
             return EnumSet.allOf(NodeKind.class);

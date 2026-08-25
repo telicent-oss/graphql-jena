@@ -41,6 +41,7 @@ public class AbstractGraphQLResource {
     /**
      * Creates an abstract resource for handling GraphQL requests
      */
+    @SuppressWarnings("java:S1186")
     public AbstractGraphQLResource() {
 
     }
@@ -78,6 +79,7 @@ public class AbstractGraphQLResource {
      * @param validate       flag indicating execution (false) or validation (true)
      * @return either a successful response (200) or the error(s) (400).
      */
+    @SuppressWarnings("java:S107")
     protected final Response executeOrValidateGraphQL(HttpHeaders headers, String query, String operationName,
                                                       String variables, String extensions,
                                                       ServletContext servletContext, Class<?> executorType,
@@ -112,6 +114,7 @@ public class AbstractGraphQLResource {
      * @param validate       flag indicating execution (false) or validation (true)
      * @return either a successful response (200) or the error(s) (400).
      */
+    @SuppressWarnings("java:S107")
     protected final Response executeOrValidateGraphQL(HttpHeaders headers, String query, String operationName,
                                                       Map<String, Object> variables, Map<String, Object> extensions,
                                                       ServletContext servletContext, Class<?> executorType,

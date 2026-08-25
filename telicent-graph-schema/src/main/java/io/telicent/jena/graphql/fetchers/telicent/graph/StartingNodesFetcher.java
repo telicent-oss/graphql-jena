@@ -26,7 +26,6 @@ import org.apache.jena.system.Txn;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -46,6 +45,7 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public Object get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
@@ -57,8 +57,11 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
 
         return Txn.calculateRead(dsg, () -> {
             List<TelicentGraphNode> nodes = select(environment, startFilters, dsg, graphFilter).map(
-                    n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
-            return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
+                    n -> new TelicentGraphNode(n, dsg.prefixes())).toList();
+            if (this.multiSelect) {
+                return nodes;
+            }
+            return nodes.isEmpty() ? null : nodes.get(0);
         });
     }
 
@@ -102,8 +105,8 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
                                                                                                                                       .getCanonicalName());
             }
         } else {
-            if (rawStart instanceof String) {
-                return Set.of(parseStart((String) rawStart));
+            if (rawStart instanceof String uri) {
+                return Set.of(parseStart(uri));
             } else {
                 throw new IllegalArgumentException(
                         "Argument " + TelicentGraphSchema.ARGUMENT_URI + " received as wrong type, expected String but got " + rawStart.getClass()

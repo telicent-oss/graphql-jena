@@ -28,6 +28,7 @@ public class StartingSearchFetcher extends AbstractSearchFetcher<List<TelicentGr
     /**
      * Creates a new fetcher that uses a search query to find nodes of interest
      */
+    @SuppressWarnings("java:S1186")
     public StartingSearchFetcher() {
 
     }

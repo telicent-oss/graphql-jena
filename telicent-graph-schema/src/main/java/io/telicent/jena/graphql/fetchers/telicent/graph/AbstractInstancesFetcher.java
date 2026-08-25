@@ -28,6 +28,7 @@ import java.util.stream.Stream;
  *
  * @param <TOutput> Output type
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractInstancesFetcher<TOutput>
         extends AbstractPagingFetcher<TelicentGraphNode, Node, TOutput> {
     private static final Node RDF_TYPE = RDF.type.asNode();

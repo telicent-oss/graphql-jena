@@ -49,6 +49,6 @@ public class TestTelicentExecutionContext {
         boolean actual = context.hasAuthToken();
         // then
         Assert.assertTrue(actual);
-        Assert.assertEquals(RANDOM_STRING, context.getAuthToken());
+        Assert.assertEquals(context.getAuthToken(), RANDOM_STRING);
     }
 }

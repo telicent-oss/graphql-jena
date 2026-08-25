@@ -33,6 +33,7 @@ public class StateRelationshipCountsFetcher extends AbstractStateRelationshipsFe
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected State getSource(DataFetchingEnvironment environment) {
         StateRelationshipCounts counts = environment.getSource();
         return counts.parent();

@@ -20,7 +20,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -32,6 +31,7 @@ public class LiteralPropertiesFetcher
     /**
      * Creates a fetcher that finds the literal properties associated with a node
      */
+    @SuppressWarnings("java:S1186")
     public LiteralPropertiesFetcher() {
 
     }
@@ -40,6 +40,6 @@ public class LiteralPropertiesFetcher
     protected List<LiteralProperty> map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                         Stream<Quad> input) {
         return input.map(q -> new LiteralProperty(q.getPredicate(), q.getObject(), dsg.prefixes()))
-                    .collect(Collectors.toList());
+                    .toList();
     }
 }

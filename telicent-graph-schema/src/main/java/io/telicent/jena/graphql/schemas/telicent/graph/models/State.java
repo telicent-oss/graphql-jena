@@ -20,6 +20,7 @@ import java.util.Objects;
 /**
  * Represents an entity state
  */
+@SuppressWarnings("java:S125")
 public class State {
 
     /*
@@ -33,7 +34,9 @@ public class State {
      }
      */
 
-    private final Node state, predicate, entity;
+    private final Node stateNode;
+    private final Node predicate;
+    private final Node entity;
 
     private Node period;
 
@@ -48,7 +51,7 @@ public class State {
         Objects.requireNonNull(state);
         Objects.requireNonNull(entity);
         Objects.requireNonNull(predicate);
-        this.state = state;
+        this.stateNode = state;
         this.predicate = predicate;
         this.entity = entity;
     }
@@ -59,10 +62,10 @@ public class State {
      * @return State URI
      */
     public String getUri() {
-        if (this.state.isURI()) {
-            return this.state.getURI();
-        } else if (this.state.isBlank()) {
-            return TelicentGraphSchema.BLANK_NODE_PREFIX + this.state.getBlankNodeLabel();
+        if (this.stateNode.isURI()) {
+            return this.stateNode.getURI();
+        } else if (this.stateNode.isBlank()) {
+            return TelicentGraphSchema.BLANK_NODE_PREFIX + this.stateNode.getBlankNodeLabel();
         } else {
             throw new IllegalStateException("Not a Node with a URI");
         }
@@ -74,7 +77,7 @@ public class State {
      * @return State node
      */
     public Node getStateNode() {
-        return this.state;
+        return this.stateNode;
     }
 
     /**

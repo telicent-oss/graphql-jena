@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@SuppressWarnings("java:S2187")
 public class AbstractExecutionTests {
 
     private static final ObjectMapper JSON = new JsonMapper();

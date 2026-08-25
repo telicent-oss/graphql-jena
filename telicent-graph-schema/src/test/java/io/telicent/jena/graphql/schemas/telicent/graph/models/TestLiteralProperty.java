@@ -24,7 +24,6 @@ import static org.apache.jena.graph.NodeFactory.*;
 
 public class TestLiteralProperty {
 
-    private static final String BLANK_NODE_PREFIX = "_:";
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_literalProperty_noLiteral() {

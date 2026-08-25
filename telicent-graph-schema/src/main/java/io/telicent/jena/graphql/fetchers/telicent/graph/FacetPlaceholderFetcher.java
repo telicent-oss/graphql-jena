@@ -28,7 +28,8 @@ import java.util.Objects;
  * </p>
  */
 public class FacetPlaceholderFetcher implements DataFetcher<FacetInfoPlaceholder> {
-    private final DataFetcher<List<FacetInfo>> predicatesFetcher, typesFetcher;
+    private final DataFetcher<List<FacetInfo>> predicatesFetcher;
+    private final DataFetcher<List<FacetInfo>> typesFetcher;
 
     /**
      * Creates a new placeholder fetcher
@@ -43,6 +44,7 @@ public class FacetPlaceholderFetcher implements DataFetcher<FacetInfoPlaceholder
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public FacetInfoPlaceholder get(DataFetchingEnvironment environment) throws Exception {
         NodePlaceholder node = environment.getSource();
         return new FacetInfoPlaceholder(node.parent(), this.predicatesFetcher, this.typesFetcher);

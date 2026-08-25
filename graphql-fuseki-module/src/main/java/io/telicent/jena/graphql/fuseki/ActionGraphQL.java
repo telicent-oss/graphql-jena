@@ -111,6 +111,7 @@ public class ActionGraphQL extends ActionService {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public final void execute(HttpAction httpAction) {
         // Parse in the GraphQL Request which may have arrived as either a GET or a POST
         String method = httpAction.getRequestMethod().toUpperCase(Locale.ROOT);
@@ -119,7 +120,7 @@ public class ActionGraphQL extends ActionService {
         try {
             request = GraphQLOverHttp.parseRequest(httpAction, method, ActionGraphQL::getRequestParameter,
                                                    ActionGraphQL::getRequestBody);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             ServletOps.errorBadRequest(e.getMessage());
         }
 

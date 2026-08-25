@@ -19,7 +19,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -31,6 +30,7 @@ public class InstancesFetcher
     /**
      * Creates a fetcher that finds all instances of a type
      */
+    @SuppressWarnings("java:S1186")
     public InstancesFetcher() {
 
     }
@@ -38,6 +38,6 @@ public class InstancesFetcher
     @Override
     protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg,
                                           TelicentGraphNode source, Stream<Node> input) {
-        return input.map(n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
+        return input.map(n -> new TelicentGraphNode(n, dsg.prefixes())).toList();
     }
 }

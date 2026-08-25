@@ -30,6 +30,7 @@ public class UnknownOperationMapper implements ExceptionMapper<UnknownOperationE
     /**
      * Creates a new exception mapper that handles GraphQL {@link UnknownOperationException}
      */
+    @SuppressWarnings("java:S1186")
     public UnknownOperationMapper() {
 
     }

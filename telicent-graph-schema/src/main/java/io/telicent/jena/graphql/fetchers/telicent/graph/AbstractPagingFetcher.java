@@ -36,9 +36,11 @@ import java.util.stream.Stream;
  * @param <TSource> Source type
  * @param <TOutput> Output type that will be produced as the end result of the data fetch
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements DataFetcher<TOutput> {
 
-    private final long defaultLimit, maxLimit;
+    private final long defaultLimit;
+    private final long maxLimit;
 
     /**
      * Creates a new paging fetcher with default limit settings
@@ -59,6 +61,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public final TOutput get(DataFetchingEnvironment environment) throws Exception {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
@@ -66,7 +69,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
         List<Filter> filters = new ArrayList<>();
         if (this.enableFilters()) {
             createFilters(environment, filters);
-            filters.removeIf(f -> f instanceof IncludeAllFilter);
+            filters.removeIf(IncludeAllFilter.class::isInstance);
         }
 
         return Txn.calculateRead(dsg, () -> {
@@ -193,6 +196,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param argument    Argument to parse a filter from
      * @return Filter
      */
+    @SuppressWarnings("java:S3776")
     protected final Filter parseFilter(DataFetchingEnvironment environment, String argument) {
         Object rawFilter = environment.getArgument(argument);
         if (rawFilter == null) {

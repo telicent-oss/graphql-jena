@@ -22,7 +22,6 @@ import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.graph.NodeFactory.createURI;
 
 public class TestState {
-    private static final String BLANK_NODE_PREFIX = "_:";
 
     @Test
     public void test_getURI_happy() {

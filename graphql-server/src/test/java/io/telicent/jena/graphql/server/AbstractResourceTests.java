@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("java:S2187")
 public class AbstractResourceTests {
 
     protected final Client client = ClientBuilder.newClient(new ClientConfig());

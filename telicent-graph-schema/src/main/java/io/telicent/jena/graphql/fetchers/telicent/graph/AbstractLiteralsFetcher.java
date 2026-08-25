@@ -27,6 +27,7 @@ import java.util.stream.Stream;
  * Abstract data fetcher that finds literals directly attached to nodes
  * @param <TOutput> Output type
  */
+@SuppressWarnings("java:S119")
 public abstract class AbstractLiteralsFetcher<TOutput>
         extends AbstractPagingFetcher<TelicentGraphNode, Quad, TOutput> {
 
@@ -51,6 +52,7 @@ public abstract class AbstractLiteralsFetcher<TOutput>
      * @param node        Node
      * @return Literal properties
      */
+    @SuppressWarnings("java:S2259")
     protected List<Quad> getLiteralProperties(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
         TelicentExecutionContext context = environment.getLocalContext();
         return context.getOrCompute(new NodeCacheKey(NodeKind.LITERALS, node.getNode()),

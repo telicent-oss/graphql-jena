@@ -21,7 +21,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -45,7 +44,7 @@ public class RelationshipsFetcher
         return input.map(q -> new Relationship(new TelicentGraphNode(q.getSubject(), dsg.prefixes()),
                                                new TelicentGraphNode(q.getPredicate(), dsg.prefixes()),
                                                new TelicentGraphNode(q.getObject(), dsg.prefixes())))
-                    .collect(Collectors.toList());
+                    .toList();
     }
 
 }

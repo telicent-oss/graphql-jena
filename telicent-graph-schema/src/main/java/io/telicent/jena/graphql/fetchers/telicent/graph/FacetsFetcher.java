@@ -28,11 +28,13 @@ public class FacetsFetcher implements DataFetcher<List<FacetInfo>> {
     /**
      * Creates a new fetcher
      */
+    @SuppressWarnings("java:S1186")
     public FacetsFetcher() {
 
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public List<FacetInfo> get(DataFetchingEnvironment environment) throws Exception {
         FacetInfoPlaceholder placeholder = environment.getSource();
         return switch (environment.getField().getName()) {
