@@ -122,6 +122,7 @@ public class GraphQLOverHttp {
      * @return GraphQL Request
      * @throws RuntimeException If the HTTP Request cannot be parsed successfully
      */
+    @SuppressWarnings("java:S112")
     public static <T> GraphQLRequest parseRequest(T httpRequest, String method,
                                                   BiFunction<T, String, String> getParameter,
                                                   Function<T, InputStream> getRequestBody) {
