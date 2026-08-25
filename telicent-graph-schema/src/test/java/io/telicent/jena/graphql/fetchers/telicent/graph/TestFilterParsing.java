@@ -129,7 +129,7 @@ public class TestFilterParsing extends AbstractPagingFetcher<TelicentGraphNode, 
         // When
         Filter result = this.createTypeFilter(null, null);
         // Then
-        Assert.assertEquals(IncludeAllFilter.INSTANCE, result);
+        Assert.assertEquals(result, IncludeAllFilter.INSTANCE);
     }
 
     private static class TestTypePagingFetcher extends TestFilterParsing {

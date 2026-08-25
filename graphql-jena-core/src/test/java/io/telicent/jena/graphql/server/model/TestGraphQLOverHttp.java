@@ -39,7 +39,7 @@ public class TestGraphQLOverHttp {
         // when
         int actual = selectHttpStatus(result);
         // then
-        Assert.assertEquals(200, actual);
+        Assert.assertEquals(actual, 200);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TestGraphQLOverHttp {
         // when
         int actual = selectHttpStatus(result);
         // then
-        Assert.assertEquals(400, actual);
+        Assert.assertEquals(actual, 400);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class TestGraphQLOverHttp {
         // when
         int actual = selectHttpStatus(result);
         // then
-        Assert.assertEquals(200, actual);
+        Assert.assertEquals(actual, 200);
     }
 
     @Test

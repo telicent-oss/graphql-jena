@@ -29,7 +29,7 @@ public class TestGraphQLRequest {
         graphQLRequest.setVariables(Collections.emptyMap());
         graphQLRequest.setExtensions(Collections.emptyMap());
         // then
-        Assert.assertEquals(RANDOM_ID, graphQLRequest.getOperationName());
+        Assert.assertEquals(graphQLRequest.getOperationName(), RANDOM_ID);
         Assert.assertNotNull(graphQLRequest.getVariables());
         Assert.assertNotNull(graphQLRequest.getExtensions());
     }
