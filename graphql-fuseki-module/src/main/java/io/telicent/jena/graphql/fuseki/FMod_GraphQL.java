@@ -35,6 +35,7 @@ import java.util.Set;
  * A Fuseki module that provides a GraphQL operation that can be used to accept GraphQL queries against the underlying
  * Dataset using an arbitrary schema as provided by the underlying {@link GraphQLOverDatasetExecutor} implementation.
  */
+@SuppressWarnings("java:S101")
 public class FMod_GraphQL implements FusekiAutoModule {
 
     private static final String VERSION = Version.versionForClass(FMod_GraphQL.class).orElse("<development>");
