@@ -107,7 +107,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
         // If a Predicate INCLUDE filter can do a more targeted initial stream
         List<Tuple4<Node>> quadPatterns = getPreFilter(filters, node);
-        Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, node, quadPatterns) : stream(dsg, node);
+        Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, quadPatterns) : stream(dsg, node);
         for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
@@ -179,11 +179,10 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
      * </p>
      *
      * @param dsg          Dataset Graph
-     * @param node         Starting Node
      * @param quadPatterns Quad patterns to use
      * @return Stream of quads representing relationships
      */
-    private Stream<Quad> streamPreFiltered(DatasetGraph dsg, TelicentGraphNode node, List<Tuple4<Node>> quadPatterns) {
+    private Stream<Quad> streamPreFiltered(DatasetGraph dsg, List<Tuple4<Node>> quadPatterns) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Translated pre-filter eligible filters into following {} Quad Patterns:\n  {}",
                          quadPatterns.size(),
