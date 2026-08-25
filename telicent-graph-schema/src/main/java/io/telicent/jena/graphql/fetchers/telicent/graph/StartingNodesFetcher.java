@@ -26,7 +26,6 @@ import org.apache.jena.system.Txn;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -58,7 +57,7 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
 
         return Txn.calculateRead(dsg, () -> {
             List<TelicentGraphNode> nodes = select(environment, startFilters, dsg, graphFilter).map(
-                    n -> new TelicentGraphNode(n, dsg.prefixes())).collect(Collectors.toList());
+                    n -> new TelicentGraphNode(n, dsg.prefixes())).toList();
             return multiSelect ? nodes : (!nodes.isEmpty() ? nodes.get(0) : null);
         });
     }

@@ -25,7 +25,6 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A GraphQL {@link DataFetcher} that finds all entities in the dataset
@@ -57,6 +56,6 @@ public class AllEntitiesFetcher implements DataFetcher<List<TelicentGraphNode>> 
                   .map(Quad::getSubject)
                   .distinct()
                   .map(n -> new TelicentGraphNode(n, dsg.prefixes()))
-                  .collect(Collectors.toList());
+                  .toList();
     }
 }

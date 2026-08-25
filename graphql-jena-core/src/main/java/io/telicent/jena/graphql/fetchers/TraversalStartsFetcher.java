@@ -23,7 +23,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.Txn;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A {@link DataFetcher} that generates the starting point of a Traversal GraphQL schema query
@@ -49,6 +48,6 @@ public class TraversalStartsFetcher implements DataFetcher<List<TraversalNode>> 
                                                         .map(Quad::getSubject)
                                                         .distinct()
                                                         .map(TraversalNode::of)
-                                                        .collect(Collectors.toList()));
+                                                        .toList());
     }
 }

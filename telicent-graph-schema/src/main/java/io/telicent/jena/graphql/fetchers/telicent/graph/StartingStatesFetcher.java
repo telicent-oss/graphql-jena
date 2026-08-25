@@ -24,7 +24,6 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -51,7 +50,7 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
                                                                                       findStates(dsg, node),
                                                                                       TelicentGraphSchema.DEFAULT_LIMIT,
                                                                                       TelicentGraphSchema.MAX_LIMIT)
-                                                                 .collect(Collectors.toList()));
+                                                                 .toList());
     }
 
     private static Stream<State> findStates(DatasetGraph dsg, Node node) {

@@ -27,7 +27,6 @@ import org.apache.jena.system.Txn;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A {@link DataFetcher} that fetches the incoming/outgoing edges from a node as part of answering a Traversal GraphQL
@@ -62,7 +61,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
                           .flatMap(p -> dsg.stream(Node.ANY, Node.ANY, p, node.getNode().getNode())
                           .map(q -> TraversalEdge.of(q.getPredicate(), EdgeDirection.IN, q.getSubject())))
                           .filter(e -> kinds.contains(e.getTarget().getNode().getKind()))
-                          .collect(Collectors.toList());
+                          .toList();
             case TraversalSchema.OUTGOING_FIELD ->
                     predicateFilters
                           .stream()
@@ -70,7 +69,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
                           .flatMap(p -> dsg.stream(Node.ANY, node.getNode().getNode(), p, Node.ANY))
                           .map(q -> TraversalEdge.of(q.getPredicate(), EdgeDirection.OUT, q.getObject()))
                           .filter(e -> kinds.contains(e.getTarget().getNode().getKind()))
-                          .collect(Collectors.toList());
+                          .toList();
             //@formatter:on
                 default -> throw new IllegalArgumentException("Unrecognised field " + environment.getField().getName());
             };

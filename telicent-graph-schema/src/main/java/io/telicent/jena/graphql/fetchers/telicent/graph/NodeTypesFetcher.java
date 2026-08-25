@@ -19,7 +19,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -39,6 +38,6 @@ public class NodeTypesFetcher
     @Override
     protected List<TelicentGraphNode> map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                           Stream<Node> input) {
-        return input.map(t -> new TelicentGraphNode(t, dsg.prefixes())).collect(Collectors.toList());
+        return input.map(t -> new TelicentGraphNode(t, dsg.prefixes())).toList();
     }
 }

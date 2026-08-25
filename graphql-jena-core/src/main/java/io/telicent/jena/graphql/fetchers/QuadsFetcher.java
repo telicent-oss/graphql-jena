@@ -63,8 +63,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
                 } else {
                     return dsg.stream(graph, subject, predicate, object)
                               .map(q -> map(q, includesSubject, includesPredicate, includesObject, includesGraph))
-                              .collect(
-                                      Collectors.toList());
+                              .toList();
                 }
             }
             return dsg.stream(graph, subject, predicate, object).collect(Collectors.toList());
