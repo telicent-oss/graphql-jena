@@ -13,9 +13,6 @@
 package io.telicent.jena.graphql.execution;
 
 import io.telicent.jena.graphql.schemas.TraversalSchema;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParserBuilder;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -60,17 +57,6 @@ public class TestTraversalValidation extends AbstractExecutionTests {
             String value = (String) node.get(TraversalSchema.VALUE_FIELD);
             Assert.assertTrue(expected.contains(value));
         }
-    }
-
-    private final TraversalExecutor executor;
-
-    public TestTraversalValidation() throws IOException {
-        DatasetGraph dsg = RDFParserBuilder.create()
-                                           .lang(Lang.TRIG)
-                                           .source(TestTraversalValidation.class.getResourceAsStream(
-                                                   "/data/traversals.trig"))
-                                           .toDatasetGraph();
-        this.executor = new TraversalExecutor(dsg);
     }
 
     @DataProvider(name = "validQueries")
