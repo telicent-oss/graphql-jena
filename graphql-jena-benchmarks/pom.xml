@@ -19,6 +19,7 @@
         <!-- Benchmark module is for internal performance testing only and is not a
              consumable artifact, so it must not be published to Maven Central. -->
         <gpg.skip>true</gpg.skip>
+        <sonar.skip>true</sonar.skip>
     </properties>
 
     <dependencies>

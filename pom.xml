@@ -76,6 +76,9 @@
         -->
         <skip.testJars>true</skip.testJars>
 
+        <!-- SonarQube analysis, invoked from CI via mvn sonar:sonar -->
+        <sonar.projectKey>telicent-oss_graphql-jena</sonar.projectKey>
+
         <!-- Plugin Versions -->
         <plugin.central>0.11.0</plugin.central>
         <plugin.compiler>3.15.0</plugin.compiler>
@@ -88,6 +91,7 @@
         <plugin.javadoc>3.12.0</plugin.javadoc>
         <plugin.license>5.1.2</plugin.license>
         <plugin.shade>3.6.2</plugin.shade>
+        <plugin.sonar>5.7.0.6970</plugin.sonar>
         <plugin.source>3.4.0</plugin.source>
         <plugin.surefire>3.5.6</plugin.surefire>
         <plugin.versions>2.21.0</plugin.versions>
@@ -526,6 +530,12 @@
                 <configuration>
                     <argLine>@{jacocoArgLine} -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${plugin.sonar}</version>
             </plugin>
 
         </plugins>
