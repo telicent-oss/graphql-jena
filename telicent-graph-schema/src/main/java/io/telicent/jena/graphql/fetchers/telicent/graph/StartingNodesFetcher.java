@@ -103,8 +103,8 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
                                                                                                                                       .getCanonicalName());
             }
         } else {
-            if (rawStart instanceof String) {
-                return Set.of(parseStart((String) rawStart));
+            if (rawStart instanceof String uri) {
+                return Set.of(parseStart(uri));
             } else {
                 throw new IllegalArgumentException(
                         "Argument " + TelicentGraphSchema.ARGUMENT_URI + " received as wrong type, expected String but got " + rawStart.getClass()

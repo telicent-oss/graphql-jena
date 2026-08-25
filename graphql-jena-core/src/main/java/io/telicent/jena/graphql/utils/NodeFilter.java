@@ -79,8 +79,8 @@ public class NodeFilter {
                 }
             }
             return filters;
-        } else if (argument instanceof Node) {
-            return List.of((Node) argument);
+        } else if (argument instanceof Node node) {
+            return List.of(node);
         } else {
             throw new IllegalArgumentException("Unsupported type to parse a list of Node Filters from");
         }
