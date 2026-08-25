@@ -71,6 +71,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
     /**
      * Creates a new abstract search fetcher
      */
+    @SuppressWarnings("java:S5993")
     public AbstractSearchFetcher() {
 
     }
