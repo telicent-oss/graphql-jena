@@ -18,7 +18,6 @@ import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContex
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.testng.Assert;
