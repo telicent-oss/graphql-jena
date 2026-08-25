@@ -28,6 +28,7 @@ public class GraphQLRequest {
     /**
      * Creates an empty GraphQL Request that may be populated by its setter methods
      */
+    @SuppressWarnings("java:S1186")
     public GraphQLRequest() {
 
     }

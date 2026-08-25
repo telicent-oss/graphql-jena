@@ -31,6 +31,7 @@ public class NodeTypesFetcher
     /**
      * Creates a fetcher that finds the types for nodes
      */
+    @SuppressWarnings("java:S1186")
     public NodeTypesFetcher() {
 
     }

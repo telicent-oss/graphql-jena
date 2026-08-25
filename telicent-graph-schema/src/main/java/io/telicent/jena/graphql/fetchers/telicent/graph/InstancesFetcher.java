@@ -31,6 +31,7 @@ public class InstancesFetcher
     /**
      * Creates a fetcher that finds all instances of a type
      */
+    @SuppressWarnings("java:S1186")
     public InstancesFetcher() {
 
     }

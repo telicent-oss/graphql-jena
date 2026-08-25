@@ -33,6 +33,7 @@ public class TraversalStartsFetcher implements DataFetcher<List<TraversalNode>> 
     /**
      * Creates a traversal starts fetcher that fetches the traversal nodes from which a traversal begins
      */
+    @SuppressWarnings("java:S1186")
     public TraversalStartsFetcher() {
 
     }

@@ -75,6 +75,7 @@ public class GraphQLEntrypoint extends AbstractAppEntrypoint {
     /**
      * Creates a new entrypoint for running the GraphQL Server application
      */
+    @SuppressWarnings("java:S1186")
     public GraphQLEntrypoint() {
 
     }

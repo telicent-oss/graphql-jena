@@ -32,6 +32,7 @@ public class LiteralPropertiesFetcher
     /**
      * Creates a fetcher that finds the literal properties associated with a node
      */
+    @SuppressWarnings("java:S1186")
     public LiteralPropertiesFetcher() {
 
     }

@@ -37,6 +37,7 @@ public class TraversalEdgesFetcher implements DataFetcher<List<TraversalEdge>> {
     /**
      * Creates a traversal edges fetcher that finds the incoming/outgoing edges for a traversal node
      */
+    @SuppressWarnings("java:S1186")
     public TraversalEdgesFetcher() {
 
     }

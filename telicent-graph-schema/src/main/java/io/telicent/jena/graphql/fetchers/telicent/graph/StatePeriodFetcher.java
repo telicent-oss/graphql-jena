@@ -31,6 +31,7 @@ public class StatePeriodFetcher implements DataFetcher<String> {
     /**
      * Creates a new fetcher that populates the period fields for a state
      */
+    @SuppressWarnings("java:S1186")
     public StatePeriodFetcher() {
 
     }

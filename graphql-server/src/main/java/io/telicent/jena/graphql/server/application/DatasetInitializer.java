@@ -40,6 +40,7 @@ public class DatasetInitializer implements ServletContextListener {
     /**
      * Creates a new servlet context listener that will initialise the RDF Dataset that GraphQL queries will operate over
      */
+    @SuppressWarnings("java:S1186")
     public DatasetInitializer() {
 
     }

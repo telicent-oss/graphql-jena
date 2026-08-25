@@ -33,6 +33,7 @@ public class QuadsFetcher implements DataFetcher<List<Object>> {
     /**
      * Creates a new Quads Fetcher that fetches quads from an underlying RDF dataset
      */
+    @SuppressWarnings("java:S1186")
     public QuadsFetcher() {
 
     }

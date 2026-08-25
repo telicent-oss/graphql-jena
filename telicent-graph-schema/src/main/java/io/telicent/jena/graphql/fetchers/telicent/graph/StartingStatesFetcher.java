@@ -35,6 +35,7 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
     /**
      * Creates a fetcher that finds the states associated with a given URI
      */
+    @SuppressWarnings("java:S1186")
     public StartingStatesFetcher() {
 
     }

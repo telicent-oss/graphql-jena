@@ -31,6 +31,7 @@ public class NodeFetcher implements DataFetcher<WrappedNode> {
     /**
      * Creates a new node fetcher that extracts the individual nodes (or RDF terms) from a larger data structure
      */
+    @SuppressWarnings("java:S1186")
     public NodeFetcher() {
 
     }

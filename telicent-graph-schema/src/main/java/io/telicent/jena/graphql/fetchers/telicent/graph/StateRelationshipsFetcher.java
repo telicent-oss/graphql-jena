@@ -33,6 +33,7 @@ public class StateRelationshipsFetcher
     /**
      * Creates a new fetcher that finds the relationships involving states
      */
+    @SuppressWarnings("java:S1186")
     public StateRelationshipsFetcher() {
 
     }

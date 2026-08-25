@@ -41,6 +41,7 @@ public class AbstractGraphQLResource {
     /**
      * Creates an abstract resource for handling GraphQL requests
      */
+    @SuppressWarnings("java:S1186")
     public AbstractGraphQLResource() {
 
     }

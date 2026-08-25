@@ -35,6 +35,7 @@ public class AllEntitiesFetcher implements DataFetcher<List<TelicentGraphNode>> 
     /**
      * Creates a fetcher that finds all entity nodes (URI/Blank Node subjects) in a dataset
      */
+    @SuppressWarnings("java:S1186")
     public AllEntitiesFetcher() {
 
     }

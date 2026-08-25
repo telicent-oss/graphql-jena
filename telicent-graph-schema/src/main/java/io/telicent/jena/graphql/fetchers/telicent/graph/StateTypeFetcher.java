@@ -32,6 +32,7 @@ public class StateTypeFetcher implements DataFetcher<String> {
     /**
      * Creates a new fetcher that finds the types for states
      */
+    @SuppressWarnings("java:S1186")
     public StateTypeFetcher() {
 
     }

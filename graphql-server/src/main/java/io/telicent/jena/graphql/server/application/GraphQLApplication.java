@@ -27,6 +27,7 @@ public class GraphQLApplication extends AbstractApplication {
     /**
      * Creates a new GraphQL application
      */
+    @SuppressWarnings("java:S1186")
     public GraphQLApplication() {
 
     }

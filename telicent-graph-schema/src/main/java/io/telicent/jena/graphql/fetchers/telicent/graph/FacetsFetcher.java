@@ -28,6 +28,7 @@ public class FacetsFetcher implements DataFetcher<List<FacetInfo>> {
     /**
      * Creates a new fetcher
      */
+    @SuppressWarnings("java:S1186")
     public FacetsFetcher() {
 
     }

@@ -35,6 +35,7 @@ public class DatasetResource extends AbstractGraphQLResource {
     /**
      * Creates a resource that can answer GraphQL queries using the basic GraphQL schemas we've defined
      */
+    @SuppressWarnings("java:S1186")
     public DatasetResource() {
 
     }
