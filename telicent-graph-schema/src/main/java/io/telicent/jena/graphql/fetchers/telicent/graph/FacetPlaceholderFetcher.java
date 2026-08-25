@@ -43,6 +43,7 @@ public class FacetPlaceholderFetcher implements DataFetcher<FacetInfoPlaceholder
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public FacetInfoPlaceholder get(DataFetchingEnvironment environment) throws Exception {
         NodePlaceholder node = environment.getSource();
         return new FacetInfoPlaceholder(node.parent(), this.predicatesFetcher, this.typesFetcher);

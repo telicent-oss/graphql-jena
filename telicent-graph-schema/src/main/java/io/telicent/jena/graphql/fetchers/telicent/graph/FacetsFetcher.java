@@ -34,6 +34,7 @@ public class FacetsFetcher implements DataFetcher<List<FacetInfo>> {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public List<FacetInfo> get(DataFetchingEnvironment environment) throws Exception {
         FacetInfoPlaceholder placeholder = environment.getSource();
         return switch (environment.getField().getName()) {

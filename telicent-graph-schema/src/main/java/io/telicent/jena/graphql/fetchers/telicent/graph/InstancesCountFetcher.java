@@ -33,6 +33,7 @@ public class InstancesCountFetcher extends AbstractInstancesFetcher<Integer> {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         NodePlaceholder counts = environment.getSource();
         return counts.parent();

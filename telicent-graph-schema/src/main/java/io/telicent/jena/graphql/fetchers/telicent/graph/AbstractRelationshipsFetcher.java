@@ -80,6 +80,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   List<Filter> filters) {
         RelationshipSelectionCacheKey cacheKey = new RelationshipSelectionCacheKey(node.getNode(), this.direction,

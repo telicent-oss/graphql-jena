@@ -54,6 +54,7 @@ public abstract class AbstractNodeTypesFetcher<TOutput>
      * @param node        Node
      * @return Declared types
      */
+    @SuppressWarnings("java:S2259")
     protected List<Node> getNodeTypes(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
         TelicentExecutionContext context = environment.getLocalContext();
         return context.getOrCompute(new NodeCacheKey(NodeKind.TYPES, node.getNode()),

@@ -59,6 +59,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public final TOutput get(DataFetchingEnvironment environment) throws Exception {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();

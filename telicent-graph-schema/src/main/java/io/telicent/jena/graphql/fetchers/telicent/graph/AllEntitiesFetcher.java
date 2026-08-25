@@ -41,6 +41,7 @@ public class AllEntitiesFetcher implements DataFetcher<List<TelicentGraphNode>> 
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public List<TelicentGraphNode> get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();

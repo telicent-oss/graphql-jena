@@ -46,6 +46,7 @@ public class StartingNodesFetcher implements DataFetcher<Object> {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public Object get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();

@@ -43,6 +43,7 @@ public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Inte
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         NodePlaceholder counts = environment.getSource();
         return counts.parent();

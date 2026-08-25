@@ -51,6 +51,7 @@ public abstract class AbstractLiteralsFetcher<TOutput>
      * @param node        Node
      * @return Literal properties
      */
+    @SuppressWarnings("java:S2259")
     protected List<Quad> getLiteralProperties(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
         TelicentExecutionContext context = environment.getLocalContext();
         return context.getOrCompute(new NodeCacheKey(NodeKind.LITERALS, node.getNode()),

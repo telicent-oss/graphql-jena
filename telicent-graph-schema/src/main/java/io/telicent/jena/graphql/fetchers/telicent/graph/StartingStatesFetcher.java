@@ -41,6 +41,7 @@ public class StartingStatesFetcher implements DataFetcher<List<State>> {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public List<State> get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();

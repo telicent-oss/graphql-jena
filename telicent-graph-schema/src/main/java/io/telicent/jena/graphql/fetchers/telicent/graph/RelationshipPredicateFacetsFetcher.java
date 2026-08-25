@@ -40,6 +40,7 @@ public class RelationshipPredicateFacetsFetcher extends AbstractRelationshipsFet
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         FacetInfoPlaceholder placeholder = environment.getSource();
         return placeholder.node();
