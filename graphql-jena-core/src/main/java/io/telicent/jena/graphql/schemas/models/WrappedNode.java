@@ -203,6 +203,7 @@ public class WrappedNode {
      * @param t Triple
      * @return Map representation thereof
      */
+    @SuppressWarnings("java:S1168")
     private static Map<String, Object> toMap(Triple t) {
         if (t == null) {
             return null;

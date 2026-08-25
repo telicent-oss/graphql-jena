@@ -49,6 +49,7 @@ public class NodeFilter {
      * @param n Node
      * @return Node filter
      */
+    @SuppressWarnings("java:S1168")
     public static Map<String, Object> make(Node n) {
         if (n == null) {
             return null;
