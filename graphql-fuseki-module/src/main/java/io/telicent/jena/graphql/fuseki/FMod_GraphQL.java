@@ -63,6 +63,7 @@ public class FMod_GraphQL implements FusekiAutoModule {
     }
 
     @Override
+    @SuppressWarnings("java:S3776")
     public void configDataAccessPoint(DataAccessPoint dap, Model configModel) {
         // Wire up any GraphQL operations correctly
         dap.getDataService().forEachEndpoint(e -> {

@@ -196,6 +196,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * @param argument    Argument to parse a filter from
      * @return Filter
      */
+    @SuppressWarnings("java:S3776")
     protected final Filter parseFilter(DataFetchingEnvironment environment, String argument) {
         Object rawFilter = environment.getArgument(argument);
         if (rawFilter == null) {

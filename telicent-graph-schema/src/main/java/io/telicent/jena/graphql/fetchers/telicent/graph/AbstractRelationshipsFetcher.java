@@ -139,7 +139,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
      * @param filters Filters that apply
      * @return Pre-filter quad patterns, or {@code null} if no eligible filters
      */
-    @SuppressWarnings("java:S1168")
+    @SuppressWarnings({ "java:S1168", "java:S3776" })
     private List<Tuple4<Node>> getPreFilter(List<Filter> filters, TelicentGraphNode node) {
         if (CollectionUtils.isEmpty(filters)) {
             return null;

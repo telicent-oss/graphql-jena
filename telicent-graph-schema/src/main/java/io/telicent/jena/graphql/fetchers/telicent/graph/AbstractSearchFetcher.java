@@ -146,7 +146,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
      * @param environment Data Fetching environment
      * @return Telicent Search Results
      */
-    @SuppressWarnings({ "unchecked", "java:S2142" })
+    @SuppressWarnings({ "unchecked", "java:S2142", "java:S3776" })
     protected TelicentSearchResults searchCommon(DataFetchingEnvironment environment) {
         configureSearchApiUrl();
 

@@ -37,7 +37,7 @@ public class StatePeriodFetcher implements DataFetcher<String> {
     }
 
     @Override
-    @SuppressWarnings("java:S2259")
+    @SuppressWarnings({ "java:S2259", "java:S3776" })
     public String get(DataFetchingEnvironment environment) {
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
