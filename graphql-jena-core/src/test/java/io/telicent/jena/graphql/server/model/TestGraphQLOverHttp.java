@@ -102,7 +102,7 @@ public class TestGraphQLOverHttp {
         String testInput = "{}";
         InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
         // when
-        GraphQLRequest request = parseRequest(requestString, "POST", (a, b) -> "{}", (a) -> mockInputStream);
+        GraphQLRequest request = parseRequest(requestString, "POST", (a, b) -> "{}", a -> mockInputStream);
         //then
         Assert.assertNotNull(request);
     }
@@ -114,7 +114,7 @@ public class TestGraphQLOverHttp {
         String testInput = "{";
         InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
         // when
-        GraphQLRequest request = parseRequest(requestString, "POST", (a, b) -> "something", (a) -> mockInputStream);
+        GraphQLRequest request = parseRequest(requestString, "POST", (a, b) -> "something", a -> mockInputStream);
         //then
         Assert.assertNotNull(request);
     }
@@ -126,7 +126,7 @@ public class TestGraphQLOverHttp {
         String testInput = "{}";
         InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
         // when
-        GraphQLRequest request = parseRequest(requestString, "GET", (a, b) -> "invalid", (a) -> mockInputStream);
+        GraphQLRequest request = parseRequest(requestString, "GET", (a, b) -> "invalid", a -> mockInputStream);
         //then
         Assert.assertNotNull(request);
     }
@@ -138,7 +138,7 @@ public class TestGraphQLOverHttp {
         String testInput = "{}";
         InputStream mockInputStream = new ByteArrayInputStream(testInput.getBytes());
         // when
-        GraphQLRequest request = parseRequest(requestString, "GET", (a, b) -> "{}", (a) -> mockInputStream);
+        GraphQLRequest request = parseRequest(requestString, "GET", (a, b) -> "{}", a -> mockInputStream);
         //then
         Assert.assertNotNull(request);
     }
