@@ -1,5 +1,15 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.12.3
+
+- Code quality improvements:
+    - SonarQube analysis added to the build via the `sonar-maven-plugin`, with the internal benchmarks module excluded
+      from analysis (CORE-1473)
+    - A large number of SonarQube issues addressed across all modules.  These changes are internal only, no public APIs or behaviour were changed
+- Build improvements:
+    - Improvements to build process to reduce size and remove unnecessary components.
+    - Various build and test dependencies upgraded to latest available
+
 # 0.12.2
 
 - Build improvements:
