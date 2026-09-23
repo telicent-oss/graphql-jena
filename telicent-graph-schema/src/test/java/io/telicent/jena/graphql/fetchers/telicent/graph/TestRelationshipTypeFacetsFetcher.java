@@ -56,6 +56,7 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
         dsg.add(new Quad(GRAPH, object1, RDF.type.asNode(), type1));
         dsg.add(new Quad(GRAPH, object1, RDF.type.asNode(), type2));
         dsg.add(new Quad(GRAPH, object2, RDF.type.asNode(), type1));
+        dsg.add(new Quad(createURI("second-graph"), object1, RDF.type.asNode(), type1));
 
         AtomicInteger typeLookupCount = new AtomicInteger();
         RelationshipTypeFacetsFetcher fetcher = new RelationshipTypeFacetsFetcher(EdgeDirection.OUT) {

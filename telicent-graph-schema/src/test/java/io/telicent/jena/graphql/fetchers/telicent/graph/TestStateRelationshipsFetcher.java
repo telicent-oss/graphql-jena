@@ -17,6 +17,7 @@ import graphql.schema.DataFetchingEnvironmentImpl;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NonDirectionalRelationship;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.State;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.StateRelationshipCounts;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -30,6 +31,36 @@ import java.util.List;
 import static org.apache.jena.graph.NodeFactory.*;
 
 public class TestStateRelationshipsFetcher {
+    @Test
+    public void givenStateRelationshipAssertedInSeveralGraphs_whenFetching_thenRelationshipAndCountAppearOnce() throws Exception {
+        // Given
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Node stateNode = createURI("state");
+        Node target = createURI("target");
+        Node predicate = createURI("predicate");
+        State state = new State(stateNode, Node.ANY, Node.ANY);
+        for (String graph : List.of("graph-a", "graph-b", "graph-c")) {
+            dsg.add(new Quad(createURI(graph), stateNode, predicate, target));
+        }
+
+        // When
+        List<NonDirectionalRelationship> relationships = new StateRelationshipsFetcher().get(
+                prepareEnvironment(dsg, state));
+        Integer count = new StateRelationshipCountsFetcher().get(
+                prepareEnvironment(dsg, new StateRelationshipCounts(state)));
+
+        // Then
+        Assert.assertEquals(relationships.size(), 1);
+        Assert.assertEquals(count, Integer.valueOf(1));
+    }
+
+    private static DataFetchingEnvironment prepareEnvironment(DatasetGraph dsg, Object source) {
+        return DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
+                                          .localContext(new TelicentExecutionContext(dsg, ""))
+                                          .source(source)
+                                          .build();
+    }
+
     @Test
     public void test_get_literalNode() throws Exception {
         // given

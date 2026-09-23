@@ -85,7 +85,7 @@ public class RelationshipTypeFacetsFetcher extends AbstractRelationshipsFetcher<
      * @return Stream of type quads
      */
     protected Stream<Quad> streamTypes(DatasetGraph dsg, Node relatedNode) {
-        return dsg.stream(Node.ANY, relatedNode, RDF.type.asNode(), Node.ANY);
+        return QuadStreams.distinctByTriple(dsg.stream(Node.ANY, relatedNode, RDF.type.asNode(), Node.ANY));
     }
 
     @Override

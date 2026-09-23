@@ -73,6 +73,7 @@ public abstract class AbstractNodeTypesFetcher<TOutput>
         return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
                   .map(Quad::getObject)
                   .filter(t -> t.isURI() || t.isBlank())
+                  .distinct()
                   .toList();
     }
 }

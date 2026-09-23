@@ -30,7 +30,8 @@ import static org.apache.jena.graph.NodeFactory.createURI;
 /**
  * Characterises duplication of triples that are asserted in more than one named graph.
  * <p>
- * The fetchers select quads with {@link Node#ANY} in the graph position and never deduplicate:
+ * The fetchers select quads with {@link Node#ANY} in the graph position.  Results must be deduplicated because this
+ * GraphQL API presents a union view rather than named-graph provenance:
  * </p>
  * <ul>
  *     <li>{@code AbstractNodeTypesFetcher.loadNodeTypes} - {@code dsg.stream(Node.ANY, subject, RDF.type, Node.ANY)}</li>
@@ -38,14 +39,9 @@ import static org.apache.jena.graph.NodeFactory.createURI;
  *     <li>{@code AbstractRelationshipsFetcher.stream} - {@code dsg.stream(Node.ANY, subject, Node.ANY, Node.ANY)}</li>
  * </ul>
  * <p>
- * RDF is set based, so a triple asserted in N named graphs is still a single triple in a union view, but these return
- * it N times.  In deployment the named graphs correspond to distributions, so an entity described identically by
- * several distributions has each of its types, properties and relationships reported once per distribution and
- * clients render apparent duplicates.
- * </p>
- * <p>
- * The assertions below deliberately pin the <strong>current</strong> behaviour.  When the fetchers deduplicate, each
- * count marked DEFECT becomes 1 and these assertions must be updated.
+ * RDF is set based, so a triple asserted in N named graphs is still a single triple in a union view.  In deployment
+ * the named graphs correspond to distributions, so an entity described identically by several distributions must not
+ * produce duplicate GraphQL values.
  * </p>
  */
 public class TestFetcherNamedGraphDuplication {
@@ -56,6 +52,9 @@ public class TestFetcherNamedGraphDuplication {
     private static final Node LABEL = createLiteralString("Shared Entity");
     private static final Node TARGET = createURI("https://example.org/entity#target");
     private static final Node RELATIONSHIP = createURI("https://example.org/ontology#relatedTo");
+    private static final Node DISTINCT_TYPE = createURI("https://example.org/ontology#DifferentThing");
+    private static final Node DISTINCT_LABEL = createLiteralString("A distinct label");
+    private static final Node DISTINCT_TARGET = createURI("https://example.org/entity#different-target");
 
     /**
      * The named graphs an identical triple is asserted in, standing in for the distributions that each supplied the
@@ -88,7 +87,7 @@ public class TestFetcherNamedGraphDuplication {
     }
 
     @Test
-    public void givenOneTypeAssertedInSeveralGraphs_whenLoadingNodeTypes_thenItIsReturnedOncePerGraph() {
+    public void givenOneTypeAssertedInSeveralGraphs_whenLoadingNodeTypes_thenItIsReturnedOnce() {
         // Given
         DatasetGraph dsg = datasetWithSubjectRepeatedAcrossGraphs();
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
@@ -97,16 +96,11 @@ public class TestFetcherNamedGraphDuplication {
         List<Node> types = fetcher.loadNodeTypes(dsg, subjectNode());
 
         // Then
-        // CORE-1552 BUG - one distinct type is asserted, but it is returned once per named graph asserting it
-        Assert.assertEquals(types.size(), DISTRIBUTION_GRAPHS.size(),
-                            "Expected one entry per named graph; a size of 1 means the fetcher now deduplicates and this test should be updated - see this class' Javadoc");
-        Assert.assertEquals(types.stream().distinct().count(), 1L,
-                            "Every entry should be the same type");
-        Assert.assertEquals(types.getFirst(), TYPE);
+        Assert.assertEquals(types, List.of(TYPE));
     }
 
     @Test
-    public void givenOneLiteralAssertedInSeveralGraphs_whenLoadingLiteralProperties_thenItIsReturnedOncePerGraph() {
+    public void givenOneLiteralAssertedInSeveralGraphs_whenLoadingLiteralProperties_thenItIsReturnedOnce() {
         // Given
         DatasetGraph dsg = datasetWithSubjectRepeatedAcrossGraphs();
         LiteralPropertiesFetcher fetcher = new LiteralPropertiesFetcher();
@@ -115,17 +109,13 @@ public class TestFetcherNamedGraphDuplication {
         List<Quad> properties = fetcher.loadLiteralProperties(dsg, subjectNode());
 
         // Then
-        // CORE-1552 BUG - one distinct literal property is asserted, but it is returned once per named graph asserting it
-        Assert.assertEquals(properties.size(), DISTRIBUTION_GRAPHS.size(),
-                            "Expected one entry per named graph; a size of 1 means the fetcher now deduplicates and this test should be updated - see this class' Javadoc");
-        Assert.assertEquals(properties.stream().map(Quad::getObject).distinct().count(), 1L,
-                            "Every entry should be the same literal value");
-        Assert.assertEquals(properties.stream().map(Quad::asTriple).distinct().count(), 1L,
-                            "Every entry should be the same triple, differing only by graph");
+        Assert.assertEquals(properties.size(), 1);
+        Assert.assertEquals(properties.getFirst().getPredicate(), LABEL_PREDICATE);
+        Assert.assertEquals(properties.getFirst().getObject(), LABEL);
     }
 
     @Test
-    public void givenOneRelationshipAssertedInSeveralGraphs_whenGeneratingRelationships_thenItIsReturnedOncePerGraph() {
+    public void givenOneRelationshipAssertedInSeveralGraphs_whenGeneratingRelationships_thenItIsReturnedOnce() {
         // Given
         DatasetGraph dsg = datasetWithSubjectRepeatedAcrossGraphs();
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.OUT);
@@ -134,11 +124,31 @@ public class TestFetcherNamedGraphDuplication {
         List<Quad> relationships = fetcher.generateRelationships(dsg, subjectNode(), List.of());
 
         // Then
-        // CORE-1552 BUG - two distinct outbound relationships are asserted (rdf:type and relatedTo, the literal is excluded),
-        //          but each is returned once per named graph asserting it
-        Assert.assertEquals(relationships.size(), DISTRIBUTION_GRAPHS.size() * 2,
-                            "Expected each relationship once per named graph; a smaller size means the fetcher now deduplicates and this test should be updated - see this class' Javadoc");
-        Assert.assertEquals(relationships.stream().map(Quad::asTriple).distinct().count(), 2L,
-                            "Only two distinct relationship triples are asserted");
+        // rdf:type and relatedTo are the two distinct outbound relationships; the literal is excluded.
+        Assert.assertEquals(relationships.size(), 2);
+        Assert.assertEquals(relationships.stream().map(Quad::asTriple).distinct().count(), 2L);
+    }
+
+    @Test
+    public void givenRepeatedAndDistinctStatementsAcrossGraphs_whenFetching_thenOnlyRepeatedStatementsAreDeduplicated() {
+        // Given
+        DatasetGraph dsg = datasetWithSubjectRepeatedAcrossGraphs();
+        Node graph = createURI(DISTRIBUTION_GRAPHS.getFirst());
+        dsg.add(new Quad(graph, SUBJECT, RDF.type.asNode(), DISTINCT_TYPE));
+        dsg.add(new Quad(graph, SUBJECT, LABEL_PREDICATE, DISTINCT_LABEL));
+        dsg.add(new Quad(graph, SUBJECT, RELATIONSHIP, DISTINCT_TARGET));
+
+        // When
+        List<Node> types = new NodeTypesFetcher().loadNodeTypes(dsg, subjectNode());
+        List<Quad> properties = new LiteralPropertiesFetcher().loadLiteralProperties(dsg, subjectNode());
+        List<Quad> relationships =
+                new RelationshipsFetcher(EdgeDirection.OUT).generateRelationships(dsg, subjectNode(), List.of());
+
+        // Then
+        Assert.assertEquals(types.size(), 2);
+        Assert.assertTrue(types.containsAll(List.of(TYPE, DISTINCT_TYPE)));
+        Assert.assertEquals(properties.stream().map(Quad::getObject).toList(), List.of(LABEL, DISTINCT_LABEL));
+        Assert.assertEquals(relationships.size(), 4);
+        Assert.assertTrue(relationships.stream().anyMatch(q -> q.getObject().equals(DISTINCT_TARGET)));
     }
 }
