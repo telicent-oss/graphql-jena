@@ -1,5 +1,11 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.12.4
+
+- Telicent Graph Schema fixes:
+    - GraphQL union-view fetchers now return repeated RDF types, literal properties and relationships once when the
+      same triple is present in several named graphs.  Relationship counts and type facets now use the same semantics.
+
 # 0.12.3
 
 - Code quality improvements:
