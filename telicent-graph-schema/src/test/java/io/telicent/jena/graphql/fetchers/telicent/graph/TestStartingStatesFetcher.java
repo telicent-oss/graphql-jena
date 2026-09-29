@@ -36,23 +36,23 @@ public class TestStartingStatesFetcher {
         // given
         StartingStatesFetcher fetcher = new StartingStatesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), iesTerm("isStateOf"),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), iesTerm("isStateOf"),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"),  IS_START_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"),  IS_START_OF,
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"),  IS_END_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"),  IS_END_OF,
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"),  iesTerm("isPartOf"),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"),  iesTerm("isPartOf"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"),  iesTerm("isParticipant"),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"),  iesTerm("isParticipant"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("mismatch"),  IS_END_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("mismatch"),  IS_END_OF,
                          createURI("object")));
 
 
@@ -76,23 +76,23 @@ public class TestStartingStatesFetcher {
 
         StartingStatesFetcher fetcher = new StartingStatesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), iesTerm("isStateOf"),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), iesTerm("isStateOf"),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"),  IS_START_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"),  IS_START_OF,
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"),  IS_END_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"),  IS_END_OF,
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"),  iesTerm("isPartOf"),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"),  iesTerm("isPartOf"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"),  iesTerm("isParticipant"),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"),  iesTerm("isParticipant"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("mismatch"),  IS_END_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("mismatch"),  IS_END_OF,
                          createURI("object")));
 
         
@@ -115,23 +115,23 @@ public class TestStartingStatesFetcher {
         // given
         StartingStatesFetcher fetcher = new StartingStatesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), iesTerm("isStateOf"),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), iesTerm("isStateOf"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject1"),  IS_START_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject1"),  IS_START_OF,
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject2"),  IS_END_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject2"),  IS_END_OF,
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject3"),  iesTerm("isPartOf"),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject3"),  iesTerm("isPartOf"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject4"),  iesTerm("isParticipant"),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject4"),  iesTerm("isParticipant"),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject5"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject5"), RDF.type.asNode(),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("mismatch"),  IS_END_OF,
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("mismatch"),  IS_END_OF,
                          createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("mismatch"),  RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("mismatch"),  RDF.type.asNode(),
                          createURI("object")));
 
 

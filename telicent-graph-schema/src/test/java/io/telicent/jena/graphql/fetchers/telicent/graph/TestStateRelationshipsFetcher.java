@@ -35,9 +35,9 @@ public class TestStateRelationshipsFetcher {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), createLiteralString("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), createLiteralString("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), createLiteralString("predicate3"), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), createLiteralString("predicate1"), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), createLiteralString("predicate2"), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), createLiteralString("predicate3"), createURI("object")));
 
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -57,9 +57,9 @@ public class TestStateRelationshipsFetcher {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), createLiteralString("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), createLiteralString("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), createLiteralString("predicate3"), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), createLiteralString("predicate1"), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), createLiteralString("predicate2"), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), createLiteralString("predicate3"), createURI("object")));
 
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -79,9 +79,9 @@ public class TestStateRelationshipsFetcher {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), createLiteralString("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), createLiteralString("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), createLiteralString("predicate3"), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), createLiteralString("predicate1"), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), createLiteralString("predicate2"), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), createLiteralString("predicate3"), createURI("object")));
 
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -101,12 +101,12 @@ public class TestStateRelationshipsFetcher {
         // given
         StateRelationshipsFetcher fetcher = new StateRelationshipsFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(), createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), createURI("predicate"), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), createURI("predicate"), createURI("object")));
 
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl

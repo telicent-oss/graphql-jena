@@ -37,7 +37,7 @@ public class TestIncludeAllFilter {
         // Given
         Filter filter = IncludeAllFilter.INSTANCE;
         Stream<Quad> stream = Stream.of(
-                new Quad(Quad.defaultGraphIRI, NodeFactory.createURI("subject"), NodeFactory.createURI("predicate"),
+                Quad.create(Quad.defaultGraphIRI, NodeFactory.createURI("subject"), NodeFactory.createURI("predicate"),
                          NodeFactory.createLiteralString("object")));
 
         // When

@@ -38,11 +38,11 @@ public class TestNodeTypesFetcher extends AbstractFetcherTests {
         // given
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createURI("object")));
 
         DataFetchingEnvironment environment =
@@ -59,11 +59,11 @@ public class TestNodeTypesFetcher extends AbstractFetcherTests {
         // given
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), RDF.type.asNode(),
                          createURI("object")));
 
         DataFetchingEnvironment environment =
@@ -80,11 +80,11 @@ public class TestNodeTypesFetcher extends AbstractFetcherTests {
         // given
         NodeTypesFetcher fetcher = new NodeTypesFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(),
                          createURI("object")));
 
         DataFetchingEnvironment environment =

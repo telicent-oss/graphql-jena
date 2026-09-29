@@ -34,9 +34,9 @@ public class TestAllEntitiesFetcher {
         // given
         AllEntitiesFetcher fetcher = new AllEntitiesFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createURI("object")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()
@@ -54,9 +54,9 @@ public class TestAllEntitiesFetcher {
         // given
         AllEntitiesFetcher fetcher = new AllEntitiesFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object")));
-        dsg.add(new Quad(createURI("graph"), createURI("subject"), RDF.type.asNode(), createBlankNode("object")));
-        dsg.add(new Quad(createURI("graph"), createURI("subject"), RDF.type.asNode(), createURI("object")));
+        dsg.add(Quad.create(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object")));
+        dsg.add(Quad.create(createURI("graph"), createURI("subject"), RDF.type.asNode(), createBlankNode("object")));
+        dsg.add(Quad.create(createURI("graph"), createURI("subject"), RDF.type.asNode(), createURI("object")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()
@@ -75,9 +75,9 @@ public class TestAllEntitiesFetcher {
         // given
         AllEntitiesFetcher fetcher = new AllEntitiesFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), RDF.type.asNode(), createURI("object")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()

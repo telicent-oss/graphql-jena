@@ -121,8 +121,8 @@ public class RelationshipFetcherReuseBenchmark {
                 Node predicate = NodeFactory.createURI("https://example.org/predicate/" + (i % 12));
                 Node object = NodeFactory.createURI("https://example.org/object/" + i);
                 Node type = NodeFactory.createURI("https://example.org/type/" + (i % 8));
-                dsg.add(new Quad(graph, sourceNode, predicate, object));
-                dsg.add(new Quad(graph, object, RDF.type.asNode(), type));
+                dsg.add(Quad.create(graph, sourceNode, predicate, object));
+                dsg.add(Quad.create(graph, object, RDF.type.asNode(), type));
             }
         }
 
