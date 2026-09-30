@@ -67,11 +67,11 @@ public class TestStartingSearchFetcher {
         // given
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createURI("object")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment =
@@ -88,11 +88,11 @@ public class TestStartingSearchFetcher {
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createURI("object")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "authtoken");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
@@ -112,11 +112,11 @@ public class TestStartingSearchFetcher {
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(),
                          createURI("object")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
@@ -144,7 +144,7 @@ public class TestStartingSearchFetcher {
 
         StartingSearchFetcher fetcher = new StartingSearchFetcher();
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object1")));
+        dsg.add(Quad.create(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object1")));
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
                                                                          .localContext(context)
@@ -181,8 +181,8 @@ public class TestStartingSearchFetcher {
 
     public static DatasetGraph createPagedSearchTestDataset() {
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object1")));
-        dsg.add(new Quad(createURI("graph"), createURI("subject2"), RDF.type.asNode(), createLiteralString("object2")));
+        dsg.add(Quad.create(createURI("graph"), createURI("subject"), RDF.type.asNode(), createLiteralString("object1")));
+        dsg.add(Quad.create(createURI("graph"), createURI("subject2"), RDF.type.asNode(), createLiteralString("object2")));
         return dsg;
     }
 

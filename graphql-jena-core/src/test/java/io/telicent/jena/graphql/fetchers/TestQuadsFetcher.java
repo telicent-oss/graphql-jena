@@ -100,7 +100,7 @@ public class TestQuadsFetcher {
         Node subject = NodeFactory.createURI("https://example.org/subject");
         Node predicate = NodeFactory.createURI("https://example.org/predicate");
         Node object = NodeFactory.createURI("https://example.org/object");
-        dsg.add(new Quad(graph, subject, predicate, object));
+        dsg.add(Quad.create(graph, subject, predicate, object));
 
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
                 .newDataFetchingEnvironment()

@@ -46,6 +46,7 @@ public class TestFusekiGraphQL {
 
     private FusekiServer.Builder build(File configFile) {
         return FusekiServer.create()
+                           .port(0)
                            .fusekiModules(FusekiModules.create(new FMod_GraphQL()))
                            .enableCors(true, null)
                            .parseConfigFile(configFile.getAbsolutePath());

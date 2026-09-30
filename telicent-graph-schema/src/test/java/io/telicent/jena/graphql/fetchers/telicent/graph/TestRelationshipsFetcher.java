@@ -49,9 +49,9 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(GRAPH, createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(GRAPH, createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(GRAPH, createURI("subject3"), createURI("predicate3"), createURI("object")));
+        dsg.add(Quad.create(GRAPH, createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
+        dsg.add(Quad.create(GRAPH, createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
+        dsg.add(Quad.create(GRAPH, createURI("subject3"), createURI("predicate3"), createURI("object")));
         DataFetchingEnvironment environment =
                 prepareFetchingEnvironment(dsg, new TelicentGraphNode(createBlankNode("object"), null));
 
@@ -68,9 +68,9 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         // given
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.IN);
         DatasetGraph dsg = DatasetGraphFactory.create();
-        dsg.add(new Quad(GRAPH, createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
-        dsg.add(new Quad(GRAPH, createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
-        dsg.add(new Quad(GRAPH, createURI("subject3"), createURI("predicate3"), createURI("object")));
+        dsg.add(Quad.create(GRAPH, createURI("subject1"), createURI("predicate1"), createLiteralString("object")));
+        dsg.add(Quad.create(GRAPH, createURI("subject2"), createURI("predicate2"), createBlankNode("object")));
+        dsg.add(Quad.create(GRAPH, createURI("subject3"), createURI("predicate3"), createURI("object")));
         DataFetchingEnvironment environment =
                 prepareFetchingEnvironment(dsg, new TelicentGraphNode(createURI("object"), null));
 
@@ -89,9 +89,9 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.OUT);
         DatasetGraph dsg = DatasetGraphFactory.create();
         Node subject = createURI("subject");
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate1"), createURI("object1")));
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate2"), createBlankNode("object2")));
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate3"), createURI("object3")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate1"), createURI("object1")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate2"), createBlankNode("object2")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate3"), createURI("object3")));
 
         for (Quad q : dsg.stream().toList()) {
             // Given
@@ -123,9 +123,9 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
         RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.OUT);
         DatasetGraph dsg = DatasetGraphFactory.create();
         Node subject = createURI("subject");
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate1"), createURI("object1")));
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate2"), createBlankNode("object2")));
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate3"), createURI("object3")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate1"), createURI("object1")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate2"), createBlankNode("object2")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate3"), createURI("object3")));
 
         for (Quad q : dsg.stream().toList()) {
             // Given
@@ -153,22 +153,22 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
 
         // Subject is related via predicate 1 to object 1 which has types 1 and 2
         Node object1 = createURI("object1");
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate1"), object1));
-        dsg.add(new Quad(GRAPH, object1, createURI("predicate1"), subject));
-        dsg.add(new Quad(GRAPH, object1, rdfType, createURI("type1")));
-        dsg.add(new Quad(GRAPH, object1, rdfType, createURI("type2")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate1"), object1));
+        dsg.add(Quad.create(GRAPH, object1, createURI("predicate1"), subject));
+        dsg.add(Quad.create(GRAPH, object1, rdfType, createURI("type1")));
+        dsg.add(Quad.create(GRAPH, object1, rdfType, createURI("type2")));
 
         // Subject is related via predicate 2 to object 2 which has types 1 and 3
         Node object2 = createURI("object2");
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate2"), object2));
-        dsg.add(new Quad(GRAPH, object2, createURI("predicate2"), subject));
-        dsg.add(new Quad(GRAPH, object2, rdfType, createURI("type1")));
-        dsg.add(new Quad(GRAPH, object2, rdfType, createURI("type3")));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate2"), object2));
+        dsg.add(Quad.create(GRAPH, object2, createURI("predicate2"), subject));
+        dsg.add(Quad.create(GRAPH, object2, rdfType, createURI("type1")));
+        dsg.add(Quad.create(GRAPH, object2, rdfType, createURI("type3")));
 
         // Subject is related via predicate 3 to object 3 which has no types
         Node object3 = createURI("object3");
-        dsg.add(new Quad(GRAPH, subject, createURI("predicate3"), object3));
-        dsg.add(new Quad(GRAPH, object3, createURI("predicate3"), subject));
+        dsg.add(Quad.create(GRAPH, subject, createURI("predicate3"), object3));
+        dsg.add(Quad.create(GRAPH, object3, createURI("predicate3"), subject));
     }
 
     @DataProvider(name = "outboundTypeFilters")

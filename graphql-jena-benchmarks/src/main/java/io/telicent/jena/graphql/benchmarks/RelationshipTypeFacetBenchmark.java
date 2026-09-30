@@ -111,13 +111,13 @@ public class RelationshipTypeFacetBenchmark {
             for (int i = 0; i < relationshipCount; i++) {
                 Node predicate = NodeFactory.createURI("https://example.org/predicate/" + (i % 12));
                 Node object = NodeFactory.createURI("https://example.org/object/" + (i % uniqueObjects));
-                dsg.add(new Quad(graph, source, predicate, object));
+                dsg.add(Quad.create(graph, source, predicate, object));
             }
             for (int i = 0; i < uniqueObjects; i++) {
                 Node object = NodeFactory.createURI("https://example.org/object/" + i);
-                dsg.add(new Quad(graph, object, RDF.type.asNode(),
+                dsg.add(Quad.create(graph, object, RDF.type.asNode(),
                                  NodeFactory.createURI("https://example.org/type/" + (i % 8))));
-                dsg.add(new Quad(graph, object, RDF.type.asNode(),
+                dsg.add(Quad.create(graph, object, RDF.type.asNode(),
                                  NodeFactory.createURI("https://example.org/type/" + ((i + 3) % 8))));
             }
         }

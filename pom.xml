@@ -129,6 +129,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--
+            Without this graphql-fuseki-module resolved commons-io 2.21.0, via Jena, while the other modules got 2.22.0,
+            which left an orphaned version in the aggregate SBOM
+            -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${dependency.commons-io}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.graphql-java</groupId>
                 <artifactId>graphql-java</artifactId>
@@ -242,6 +252,15 @@
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                     <release>${jdk.version}</release>
+                    <!--
+                    Report each deprecation and unchecked warning individually rather than javac's summary notes,
+                    which only say that some input files have them
+                    -->
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -301,7 +320,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <javadocVersion>${java.version}</javadocVersion>
                     <quiet>true</quiet>
                     <encoding>UTF-8</encoding>
                     <charset>UTF-8</charset>
@@ -367,6 +385,7 @@
                                 <exclude>*-trivy-*</exclude>
                                 <exclude>**/*.jfr</exclude>
                                 <exclude>**/*.json</exclude>
+                                <exclude>.mvn/maven.config</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
@@ -537,9 +556,10 @@
     </build>
 
     <repositories>
+        <!-- Needed for Telicent SNAPSHOTs of our OSS libraries, OSSRH (s01.oss.sonatype.org) has been retired -->
         <repository>
-            <id>sonatype-oss</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -559,5 +579,15 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <profiles>
+        <!--
+        CI builds every module with -Pdocker, but no module here defines a docker profile.  This empty one stops Maven
+        warning that the requested profile doesn't exist.
+        -->
+        <profile>
+            <id>docker</id>
+        </profile>
+    </profiles>
 
 </project>

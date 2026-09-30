@@ -49,14 +49,14 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
         Node type1 = createURI("type1");
         Node type2 = createURI("type2");
 
-        dsg.add(new Quad(GRAPH, subject, predicate1, object1));
-        dsg.add(new Quad(GRAPH, subject, predicate2, object1));
-        dsg.add(new Quad(GRAPH, subject, predicate1, object2));
+        dsg.add(Quad.create(GRAPH, subject, predicate1, object1));
+        dsg.add(Quad.create(GRAPH, subject, predicate2, object1));
+        dsg.add(Quad.create(GRAPH, subject, predicate1, object2));
 
-        dsg.add(new Quad(GRAPH, object1, RDF.type.asNode(), type1));
-        dsg.add(new Quad(GRAPH, object1, RDF.type.asNode(), type2));
-        dsg.add(new Quad(GRAPH, object2, RDF.type.asNode(), type1));
-        dsg.add(new Quad(createURI("second-graph"), object1, RDF.type.asNode(), type1));
+        dsg.add(Quad.create(GRAPH, object1, RDF.type.asNode(), type1));
+        dsg.add(Quad.create(GRAPH, object1, RDF.type.asNode(), type2));
+        dsg.add(Quad.create(GRAPH, object2, RDF.type.asNode(), type1));
+        dsg.add(Quad.create(createURI("second-graph"), object1, RDF.type.asNode(), type1));
 
         AtomicInteger typeLookupCount = new AtomicInteger();
         RelationshipTypeFacetsFetcher fetcher = new RelationshipTypeFacetsFetcher(EdgeDirection.OUT) {

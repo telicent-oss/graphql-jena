@@ -198,10 +198,10 @@ public class TestNodeFetcher {
     @DataProvider(name = "validQuadFieldsAndNodes")
     private static Object[][] validQuadFieldsAndNodes() {
             return new Object[][] {
-            {"graph", new Quad(createBlankNode(RANDOM_ID), Node.ANY, Node.ANY, Node.ANY)},
-            {"subject", new Quad(Node.ANY, createBlankNode(RANDOM_ID), Node.ANY, Node.ANY)},
-            {"predicate", new Quad(Node.ANY, Node.ANY, createBlankNode(RANDOM_ID), Node.ANY)},
-            {"object", new Quad(Node.ANY, Node.ANY, Node.ANY, createBlankNode(RANDOM_ID))},
+            {"graph", Quad.create(createBlankNode(RANDOM_ID), Node.ANY, Node.ANY, Node.ANY)},
+            {"subject", Quad.create(Node.ANY, createBlankNode(RANDOM_ID), Node.ANY, Node.ANY)},
+            {"predicate", Quad.create(Node.ANY, Node.ANY, createBlankNode(RANDOM_ID), Node.ANY)},
+            {"object", Quad.create(Node.ANY, Node.ANY, Node.ANY, createBlankNode(RANDOM_ID))},
         };
     }
 

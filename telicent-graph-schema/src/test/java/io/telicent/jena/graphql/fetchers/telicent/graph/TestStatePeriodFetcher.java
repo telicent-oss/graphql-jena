@@ -35,9 +35,9 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createURI("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("end")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -57,10 +57,10 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("subject"), IesFetchers.IN_PERIOD, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IS_END_OF, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("subject"), IesFetchers.IN_PERIOD, createURI("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("end")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -80,9 +80,9 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createURI("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("start")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -102,10 +102,10 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IN_PERIOD, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IS_START_OF, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), IesFetchers.IN_PERIOD, createBlankNode("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("start")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -125,10 +125,10 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IN_PERIOD, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IN_PERIOD, createLiteralString("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("start")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -148,10 +148,10 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createURI("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IN_PERIOD, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IS_START_OF, createURI("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createLiteralString("subject"), IesFetchers.IN_PERIOD, createLiteralString("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("start")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -171,8 +171,8 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createLiteralString("object")));
-        dsg.add(new Quad(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createBlankNode("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createLiteralString("object")));
+        dsg.add(Quad.create(createLiteralString("graph"), createBlankNode("subject"), RDF.type.asNode(), createBlankNode("object")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("NoMatch")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -191,9 +191,9 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("state"), IesFetchers.IS_STATE_OF, createLiteralString("subject")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("state"), IesFetchers.IN_PERIOD, createURI("period")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("period"), IesFetchers.PERIOD_REPRESENTATION, createLiteralString("2024")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("state"), IesFetchers.IS_STATE_OF, createLiteralString("subject")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("state"), IesFetchers.IN_PERIOD, createURI("period")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("period"), IesFetchers.PERIOD_REPRESENTATION, createLiteralString("2024")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("period")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
@@ -213,8 +213,8 @@ public class TestStatePeriodFetcher {
         // given
         StatePeriodFetcher fetcher = new StatePeriodFetcher();
         DatasetGraph dsg  = DatasetGraphFactory.create();
-        dsg.add(new Quad(createLiteralString("graph"), createURI("state"), IesFetchers.IS_STATE_OF, createLiteralString("subject")));
-        dsg.add(new Quad(createLiteralString("graph"), createURI("state"), IesFetchers.IN_PERIOD, createURI("period")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("state"), IesFetchers.IS_STATE_OF, createLiteralString("subject")));
+        dsg.add(Quad.create(createLiteralString("graph"), createURI("state"), IesFetchers.IN_PERIOD, createURI("period")));
         MergedField mergedField = MergedField.newMergedField().addField(new Field("period")).build();
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl
