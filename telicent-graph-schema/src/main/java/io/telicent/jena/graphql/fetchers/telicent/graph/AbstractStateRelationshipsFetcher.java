@@ -57,7 +57,8 @@ public abstract class AbstractStateRelationshipsFetcher<TOutput>
     @Override
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, State state, List<Filter> filters) {
         // NB - Filters not enabled for state relationships
-        return Streams.concat(AbstractStateRelationshipsFetcher.outbound(dsg, state),
-                              AbstractStateRelationshipsFetcher.inbound(dsg, state));
+        return QuadStreams.distinctByTriple(
+                Streams.concat(AbstractStateRelationshipsFetcher.outbound(dsg, state),
+                               AbstractStateRelationshipsFetcher.inbound(dsg, state)));
     }
 }

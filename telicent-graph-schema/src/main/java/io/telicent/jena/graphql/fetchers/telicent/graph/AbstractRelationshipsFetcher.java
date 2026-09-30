@@ -111,7 +111,7 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
         for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
-        return quads.toList();
+        return QuadStreams.distinctByTriple(quads).toList();
     }
 
     /**

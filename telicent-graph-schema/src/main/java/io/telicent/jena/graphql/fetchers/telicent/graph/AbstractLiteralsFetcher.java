@@ -67,8 +67,8 @@ public abstract class AbstractLiteralsFetcher<TOutput>
      * @return Literal properties
      */
     protected List<Quad> loadLiteralProperties(DatasetGraph dsg, TelicentGraphNode node) {
-        return dsg.stream(Node.ANY, node.getNode(), Node.ANY, Node.ANY)
-                  .filter(q -> q.getObject().isLiteral())
-                  .toList();
+        return QuadStreams.distinctByTriple(dsg.stream(Node.ANY, node.getNode(), Node.ANY, Node.ANY)
+                                                .filter(q -> q.getObject().isLiteral()))
+                          .toList();
     }
 }
