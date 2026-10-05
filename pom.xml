@@ -104,11 +104,11 @@
         <dependency.jackson>2.22.3</dependency.jackson>
         <dependency.jersey>3.1.12</dependency.jersey>
         <dependency.jwt-servlet>4.1.4</dependency.jwt-servlet>
-        <dependency.logback>1.6.4</dependency.logback>
+        <dependency.logback>1.6.5</dependency.logback>
         <dependency.mockito>5.24.0</dependency.mockito>
         <dependency.mockito-inline>5.2.0</dependency.mockito-inline>
         <dependency.slf4j>2.0.20</dependency.slf4j>
-        <dependency.smart-caches>1.7.0</dependency.smart-caches>
+        <dependency.smart-caches>1.7.1</dependency.smart-caches>
         <dependency.testng>7.12.0</dependency.testng>
         <dependency.wiremock>3.13.2</dependency.wiremock>
 
