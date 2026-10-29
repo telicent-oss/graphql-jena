@@ -69,12 +69,12 @@ public abstract class AbstractDatasetExecutor implements GraphQLExecutor, GraphQ
 
         // Add Query Cache here
         // TODO Eventually should make the cache size configurable here
-        Cache<String, CompletableFuture<PreparsedDocumentEntry>> cache =
-                Caffeine.newBuilder().maximumSize(1_000).build();
+        // Ensure that we parse on the calling thread and return an already completed future,
+        // as the read transaction opened in execute() only exists on the calling thread
+        Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(1_000).build();
         PreparsedDocumentProvider preparsedCache =
-                (executionInput, computeFunction) -> cache.get(executionInput.getQuery(),
-                                                               key -> CompletableFuture.supplyAsync(
-                                                                       () -> computeFunction.apply(executionInput)));
+                (executionInput, computeFunction) -> CompletableFuture.completedFuture(
+                        cache.get(executionInput.getQuery(), key -> computeFunction.apply(executionInput)));
 
         //@formatter:off
         this.graphQL
