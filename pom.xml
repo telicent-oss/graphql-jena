@@ -121,6 +121,8 @@
         <dependency.commons-fileupload>2.0.0-M5</dependency.commons-fileupload>
         <!-- CVE-2026-1605 -->
         <dependency.jetty>12.1.14</dependency.jetty>
+        <!-- CVE-2026-108106, CVE-2026-93451 -->
+        <dependency.snappy>1.1.10.12</dependency.snappy>
 
         <!-- Build configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -211,6 +213,12 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- CVE-2026-108106, CVE-2026-93451 -->
+            <dependency>
+                <groupId>org.xerial.snappy</groupId>
+                <artifactId>snappy-java</artifactId>
+                <version>${dependency.snappy}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
