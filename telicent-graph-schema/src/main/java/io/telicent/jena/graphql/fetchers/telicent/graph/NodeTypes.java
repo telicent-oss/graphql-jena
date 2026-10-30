@@ -20,6 +20,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -45,7 +46,8 @@ final class NodeTypes {
      * @return Declared types
      */
     static List<Node> get(DataFetchingEnvironment environment, Node node, Supplier<List<Node>> loader) {
-        TelicentExecutionContext context = environment.getLocalContext();
+        TelicentExecutionContext context = Objects.requireNonNull(environment.getLocalContext(),
+                                                                 "TelicentExecutionContext is required for node type lookups");
         return context.getOrCompute(new NodeCacheKey(NodeKind.TYPES, node), loader);
     }
 
