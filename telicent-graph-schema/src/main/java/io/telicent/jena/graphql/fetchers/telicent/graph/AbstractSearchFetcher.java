@@ -66,7 +66,10 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchFetcher.class);
     private static final ObjectMapper JSON = new ObjectMapper();
     private final HttpClient client = HttpClient.newBuilder().build();
-    private String searchApiUrl = null;
+    // Initialisation-on-demand holder resolves configuration once, safely across request threads.
+    private static class SearchApiConfiguration {
+        private static final String URL = configureSearchApiUrl();
+    }
 
     /**
      * Creates a new abstract search fetcher
@@ -148,8 +151,6 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
      */
     @SuppressWarnings({ "unchecked", "java:S2142", "java:S3776", "java:S112" })
     protected TelicentSearchResults searchCommon(DataFetchingEnvironment environment) {
-        configureSearchApiUrl();
-
         TelicentExecutionContext context = environment.getLocalContext();
         DatasetGraph dsg = context.getDatasetGraph();
         String rawGraph = environment.getArgument(TelicentGraphSchema.ARGUMENT_GRAPH);
@@ -162,7 +163,7 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
         }
         List<Node> startFilters = new ArrayList<>();
         HttpRequest.Builder request = HttpRequest.newBuilder(
-                AbstractSearchFetcher.buildSearchApiRequestUri(this.searchApiUrl, searchTerm, environment)).GET();
+                AbstractSearchFetcher.buildSearchApiRequestUri(SearchApiConfiguration.URL, searchTerm, environment)).GET();
         if (context.hasAuthToken()) {
             // If we have an authentication token need to copy it to our search request so that our request reflects the
             // requesting users data access
@@ -214,12 +215,13 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
         return telicentResults;
     }
 
-    private void configureSearchApiUrl() {
+    private static String configureSearchApiUrl() {
         // Get the Search API URL trimming off any trailing slash
-        this.searchApiUrl = AbstractSearchFetcher.findSearchApiUrl();
-        if (this.searchApiUrl.endsWith("/")) {
-            this.searchApiUrl = this.searchApiUrl.substring(0, this.searchApiUrl.length() - 1);
+        String searchApiUrl = AbstractSearchFetcher.findSearchApiUrl();
+        if (searchApiUrl.endsWith("/")) {
+            searchApiUrl = searchApiUrl.substring(0, searchApiUrl.length() - 1);
         }
-        LOGGER.info("Configured Search API URL as {}", this.searchApiUrl);
+        LOGGER.debug("Configured Search API URL as {}", searchApiUrl);
+        return searchApiUrl;
     }
 }
