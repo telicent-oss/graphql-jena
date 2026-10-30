@@ -21,7 +21,6 @@ import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.vocabulary.RDF;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,10 +54,15 @@ public class RelationshipTypeFacetsFetcher extends AbstractRelationshipsFetcher<
         Map<Node, Integer> relatedNodeCounts = new HashMap<>();
         input.forEach(q -> relatedNodeCounts.merge(getRelatedNode(q), 1, Integer::sum));
 
+        // Each related node's types come from the request-scoped cache (NodeTypes), so a node whose types another field
+        // of this request already fetched (e.g. inRels { domain { types } }) isn't looked up again, and the types loaded
+        // here are reused by those fields and by the facets for the other direction
         Map<Node, Integer> typeFacetCounts = new HashMap<>();
         for (Map.Entry<Node, Integer> entry : relatedNodeCounts.entrySet()) {
-            streamTypes(dsg, entry.getKey()).forEach(q -> typeFacetCounts.merge(q.getObject(), entry.getValue(),
-                                                                                Integer::sum));
+            Node relatedNode = entry.getKey();
+            for (Node type : NodeTypes.get(environment, relatedNode, () -> loadTypes(dsg, relatedNode))) {
+                typeFacetCounts.merge(type, entry.getValue(), Integer::sum);
+            }
         }
 
         return typeFacetCounts.entrySet()
@@ -78,14 +82,14 @@ public class RelationshipTypeFacetsFetcher extends AbstractRelationshipsFetcher<
     }
 
     /**
-     * Streams the type quads for a related node.
+     * Loads the declared types for a related node, called only when this request hasn't already loaded them
      *
      * @param dsg         Dataset graph
      * @param relatedNode Related node
-     * @return Stream of type quads
+     * @return Declared types
      */
-    protected Stream<Quad> streamTypes(DatasetGraph dsg, Node relatedNode) {
-        return QuadStreams.distinctByTriple(dsg.stream(Node.ANY, relatedNode, RDF.type.asNode(), Node.ANY));
+    protected List<Node> loadTypes(DatasetGraph dsg, Node relatedNode) {
+        return NodeTypes.load(dsg, relatedNode);
     }
 
     @Override
