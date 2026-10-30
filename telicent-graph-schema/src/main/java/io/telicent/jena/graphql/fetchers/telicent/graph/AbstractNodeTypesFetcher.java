@@ -13,13 +13,10 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -57,9 +54,7 @@ public abstract class AbstractNodeTypesFetcher<TOutput>
      */
     @SuppressWarnings("java:S2259")
     protected List<Node> getNodeTypes(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node) {
-        TelicentExecutionContext context = environment.getLocalContext();
-        return context.getOrCompute(new NodeCacheKey(NodeKind.TYPES, node.getNode()),
-                                    () -> loadNodeTypes(dsg, node));
+        return NodeTypes.get(environment, node.getNode(), () -> loadNodeTypes(dsg, node));
     }
 
     /**
@@ -70,10 +65,6 @@ public abstract class AbstractNodeTypesFetcher<TOutput>
      * @return Declared types
      */
     protected List<Node> loadNodeTypes(DatasetGraph dsg, TelicentGraphNode node) {
-        return dsg.stream(Node.ANY, node.getNode(), RDF.type.asNode(), Node.ANY)
-                  .map(Quad::getObject)
-                  .filter(t -> t.isURI() || t.isBlank())
-                  .distinct()
-                  .toList();
+        return NodeTypes.load(dsg, node.getNode());
     }
 }

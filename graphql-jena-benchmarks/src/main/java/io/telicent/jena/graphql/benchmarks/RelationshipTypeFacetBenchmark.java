@@ -15,6 +15,7 @@ package io.telicent.jena.graphql.benchmarks;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
+import io.telicent.jena.graphql.fetchers.telicent.graph.NodeTypesFetcher;
 import io.telicent.jena.graphql.fetchers.telicent.graph.RelationshipTypeFacetsFetcher;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.FacetInfo;
@@ -39,6 +40,8 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +49,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Benchmarks the relationship type facets fetcher before and after deduplicating related-node type lookups.
+ * Benchmarks the relationship type facets fetcher: legacy (one type lookup per relationship), previous (one per unique
+ * related node) and optimized (one per unique related node, shared with the request's other fields). Every invocation
+ * is a new request with its own execution context, so nothing is cached between invocations.
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -74,9 +79,12 @@ public class RelationshipTypeFacetBenchmark {
         public int relationshipCount;
 
         private DatasetGraph dsg;
-        private DataFetchingEnvironment environment;
+        private FacetInfoPlaceholder source;
+        private final List<Node> relatedNodes = new ArrayList<>();
         private RelationshipTypeFacetsFetcher optimizedFetcher;
+        private RelationshipTypeFacetsFetcher previousFetcher;
         private RelationshipTypeFacetsFetcher legacyFetcher;
+        private final NodeTypesFetcher typesFetcher = new NodeTypesFetcher();
 
         /**
          * Creates a benchmark state container.
@@ -92,17 +100,48 @@ public class RelationshipTypeFacetBenchmark {
             this.dsg = DatasetGraphFactory.create();
             Node source = NodeFactory.createURI("https://example.org/source");
             generateDataset(this.dsg, source, this.relationshipCount);
+            this.relatedNodes.clear();
+            this.dsg.stream(Node.ANY, source, Node.ANY, Node.ANY).map(Quad::getObject).distinct()
+                    .forEach(this.relatedNodes::add);
 
-            TelicentExecutionContext context = new TelicentExecutionContext(this.dsg, "");
-            this.environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
-                                                         .localContext(context)
-                                                         .source(new FacetInfoPlaceholder(new TelicentGraphNode(source,
-                                                                                                                null),
-                                                                                          null, null))
-                                                         .arguments(Map.of())
-                                                         .build();
+            this.source = new FacetInfoPlaceholder(new TelicentGraphNode(source, null), null, null);
             this.optimizedFetcher = new RelationshipTypeFacetsFetcher(EdgeDirection.OUT);
+            this.previousFetcher = new PreviousRelationshipTypeFacetsFetcher();
             this.legacyFetcher = new LegacyRelationshipTypeFacetsFetcher();
+        }
+
+        /**
+         * Creates the environment for one GraphQL request. Each invocation gets a fresh execution context, as each real
+         * request does, so neither fetcher can reuse relationships or types cached by an earlier invocation.
+         *
+         * @return Data fetching environment for a new request
+         */
+        private DataFetchingEnvironment newRequest() {
+            return DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
+                                              .localContext(new TelicentExecutionContext(this.dsg, ""))
+                                              .source(this.source)
+                                              .arguments(Map.of())
+                                              .build();
+        }
+
+        /**
+         * Runs one request that fetches the type facets with the given fetcher, then the types of every related node
+         * (as {@code relFacets { outRels { types } } outRels { range { types } }} does)
+         *
+         * @param facetsFetcher Type facets fetcher
+         * @param blackhole     JMH blackhole
+         * @throws Exception If fetcher execution fails
+         */
+        private void facetsAndRelatedTypes(RelationshipTypeFacetsFetcher facetsFetcher, Blackhole blackhole)
+                throws Exception {
+            DataFetchingEnvironment request = newRequest();
+            blackhole.consume(facetsFetcher.get(request));
+            for (Node related : this.relatedNodes) {
+                blackhole.consume(this.typesFetcher.get(
+                        DataFetchingEnvironmentImpl.newDataFetchingEnvironment(request)
+                                                   .source(new TelicentGraphNode(related, null))
+                                                   .build()));
+            }
         }
 
         private static void generateDataset(DatasetGraph dsg, Node source, int relationshipCount) {
@@ -124,6 +163,45 @@ public class RelationshipTypeFacetBenchmark {
     }
 
     /**
+     * Measures the type facets as they were before request-scoped type re-use (one lookup per unique related node,
+     * not shared with other fields), for comparison with {@link #optimizedTypeFacets}.
+     *
+     * @param state Shared benchmark state.
+     * @param blackhole JMH blackhole.
+     * @throws Exception If fetcher execution fails.
+     */
+    @Benchmark
+    public void previousTypeFacets(RelationshipTypeFacetState state, Blackhole blackhole) throws Exception {
+        blackhole.consume(state.previousFetcher.get(state.newRequest()));
+    }
+
+    /**
+     * Measures one request that fetches the type facets and then each related node's types, before type re-use: every
+     * related node's types are looked up twice, once by the facets and once by the {@code types} field.
+     *
+     * @param state Shared benchmark state.
+     * @param blackhole JMH blackhole.
+     * @throws Exception If fetcher execution fails.
+     */
+    @Benchmark
+    public void previousFacetsAndRelatedTypes(RelationshipTypeFacetState state, Blackhole blackhole) throws Exception {
+        state.facetsAndRelatedTypes(state.previousFetcher, blackhole);
+    }
+
+    /**
+     * Measures the same request with type re-use: the {@code types} fields reuse the types the facets loaded.
+     *
+     * @param state Shared benchmark state.
+     * @param blackhole JMH blackhole.
+     * @throws Exception If fetcher execution fails.
+     */
+    @Benchmark
+    public void optimizedFacetsAndRelatedTypes(RelationshipTypeFacetState state, Blackhole blackhole)
+            throws Exception {
+        state.facetsAndRelatedTypes(state.optimizedFetcher, blackhole);
+    }
+
+    /**
      * Measures the optimized type facets fetcher.
      *
      * @param state Shared benchmark state.
@@ -132,7 +210,7 @@ public class RelationshipTypeFacetBenchmark {
      */
     @Benchmark
     public void optimizedTypeFacets(RelationshipTypeFacetState state, Blackhole blackhole) throws Exception {
-        List<FacetInfo> facets = state.optimizedFetcher.get(state.environment);
+        List<FacetInfo> facets = state.optimizedFetcher.get(state.newRequest());
         blackhole.consume(facets);
     }
 
@@ -145,14 +223,49 @@ public class RelationshipTypeFacetBenchmark {
      */
     @Benchmark
     public void legacyTypeFacets(RelationshipTypeFacetState state, Blackhole blackhole) throws Exception {
-        List<FacetInfo> facets = state.legacyFetcher.get(state.environment);
+        List<FacetInfo> facets = state.legacyFetcher.get(state.newRequest());
         blackhole.consume(facets);
+    }
+
+    private static final class PreviousRelationshipTypeFacetsFetcher extends RelationshipTypeFacetsFetcher {
+
+        private PreviousRelationshipTypeFacetsFetcher() {
+            super(EdgeDirection.OUT);
+        }
+
+        @Override
+        protected List<FacetInfo> map(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
+                                      Stream<Quad> input) {
+            // The type facets before request-scoped type re-use: each unique related node's types are streamed from
+            // the dataset (deduplicated across graphs), without consulting or populating the request cache
+            Map<Node, Integer> relatedNodeCounts = new HashMap<>();
+            input.forEach(q -> relatedNodeCounts.merge(getRelatedNode(q), 1, Integer::sum));
+            Map<Node, Integer> typeFacetCounts = new HashMap<>();
+            for (Map.Entry<Node, Integer> entry : relatedNodeCounts.entrySet()) {
+                dsg.stream(Node.ANY, entry.getKey(), RDF.type.asNode(), Node.ANY)
+                   .map(Quad::asTriple)
+                   .distinct()
+                   .forEach(t -> typeFacetCounts.merge(t.getObject(), entry.getValue(), Integer::sum));
+            }
+            return typeFacetCounts.entrySet()
+                                  .stream()
+                                  .map(e -> new FacetInfo(e.getKey(), dsg.prefixes(), e.getValue()))
+                                  .toList();
+        }
     }
 
     private static final class LegacyRelationshipTypeFacetsFetcher extends RelationshipTypeFacetsFetcher {
 
         private LegacyRelationshipTypeFacetsFetcher() {
             super(EdgeDirection.OUT);
+        }
+
+        private Stream<Quad> streamTypes(DatasetGraph dsg, Node relatedNode) {
+            // Preserve the legacy uncached lookup and union-graph deduplication for each relationship.
+            return dsg.stream(Node.ANY, relatedNode, RDF.type.asNode(), Node.ANY)
+                      .map(Quad::asTriple)
+                      .distinct()
+                      .map(triple -> Quad.create(Quad.defaultGraphNodeGenerated, triple));
         }
 
         @Override
