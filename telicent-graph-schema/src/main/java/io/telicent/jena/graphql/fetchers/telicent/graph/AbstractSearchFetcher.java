@@ -69,6 +69,16 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
     // Initialisation-on-demand holder resolves configuration once, safely across request threads.
     private static class SearchApiConfiguration {
         private static final String URL = configureSearchApiUrl();
+
+        private static String configureSearchApiUrl() {
+            // Get the Search API URL trimming off any trailing slash
+            String searchApiUrl = AbstractSearchFetcher.findSearchApiUrl();
+            if (searchApiUrl.endsWith("/")) {
+                searchApiUrl = searchApiUrl.substring(0, searchApiUrl.length() - 1);
+            }
+            LOGGER.debug("Configured Search API URL as {}", searchApiUrl);
+            return searchApiUrl;
+        }
     }
 
     /**
@@ -213,15 +223,5 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
                                                                                  .toList());
         telicentResults.setNodes(nodes);
         return telicentResults;
-    }
-
-    private static String configureSearchApiUrl() {
-        // Get the Search API URL trimming off any trailing slash
-        String searchApiUrl = AbstractSearchFetcher.findSearchApiUrl();
-        if (searchApiUrl.endsWith("/")) {
-            searchApiUrl = searchApiUrl.substring(0, searchApiUrl.length() - 1);
-        }
-        LOGGER.debug("Configured Search API URL as {}", searchApiUrl);
-        return searchApiUrl;
     }
 }
