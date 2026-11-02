@@ -24,7 +24,6 @@ import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.jena.graphql.server.model.GraphQLRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -129,7 +128,7 @@ public class ActionGraphQL extends ActionService {
             DatasetGraph dsg = httpAction.getActiveDSG();
             dsg = prepare(httpAction, request, dsg);
 
-            FmtLog.info(httpAction.log, "[%d] GraphQL Query = \n%s", httpAction.id, request.getQuery());
+            httpAction.log.debug("[{}] GraphQL Query = \n{}", httpAction.id, request.getQuery());
             ExecutionResult result = this.executor.execute(dsg, request);
 
             httpAction.setResponseHeader("Content-Type", GraphQLOverHttp.CONTENT_TYPE_GRAPHQL_RESPONSE_JSON);

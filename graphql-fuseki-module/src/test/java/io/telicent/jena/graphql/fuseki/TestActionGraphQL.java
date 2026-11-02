@@ -206,6 +206,8 @@ public class TestActionGraphQL {
         // then
         assertFalse(exceptionThrown, "No exception should be thrown");
         verify(LOGGER, never()).warn(eq("Failed to serialize GraphQL Results"), any(IOException.class));
+        verify(LOGGER).debug("[{}] GraphQL Query = \n{}", action.id, SAMPLE_QUERY);
+        verify(LOGGER, never()).info(anyString());
     }
 
 
@@ -235,6 +237,8 @@ public class TestActionGraphQL {
         // then
         assertFalse(exceptionThrown, exceptionMessage);
         verify(LOGGER, never()).warn(eq("Failed to serialize GraphQL Results"), any(IOException.class));
+        verify(LOGGER).debug("[{}] GraphQL Query = \n{}", action.id, SAMPLE_QUERY);
+        verify(LOGGER, never()).info(anyString());
     }
 
     private HttpAction getHttpAction() {
