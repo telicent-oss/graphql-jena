@@ -110,6 +110,8 @@ public class RelationshipTypeFacetBenchmark {
 
         /**
          * Builds a synthetic dataset and fetchers for the benchmark.
+         *
+         * @throws IOException If the temporary TDB2 database directory can't be created
          */
         @Setup
         public void setup() throws IOException {
