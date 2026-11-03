@@ -26,6 +26,10 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.system.Txn;
+import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.sys.TDBInternal;
 import org.apache.jena.vocabulary.RDF;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -37,10 +41,15 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +87,14 @@ public class RelationshipTypeFacetBenchmark {
         @Param({"100", "1000", "5000"})
         public int relationshipCount;
 
+        /**
+         * Where the dataset is held: {@code mem} (in-memory) or {@code tdb2} (an on-disk TDB2 database, as Graph uses)
+         */
+        @Param({"mem", "tdb2"})
+        public String storage;
+
         private DatasetGraph dsg;
+        private Path tdb2Dir;
         private FacetInfoPlaceholder source;
         private final List<Node> relatedNodes = new ArrayList<>();
         private RelationshipTypeFacetsFetcher optimizedFetcher;
@@ -94,20 +110,48 @@ public class RelationshipTypeFacetBenchmark {
 
         /**
          * Builds a synthetic dataset and fetchers for the benchmark.
+         *
+         * @throws IOException If the temporary TDB2 database directory can't be created
          */
         @Setup
-        public void setup() {
-            this.dsg = DatasetGraphFactory.create();
+        public void setup() throws IOException {
+            if ("tdb2".equals(this.storage)) {
+                this.tdb2Dir = Files.createTempDirectory("relationship-type-facets-tdb2");
+                this.dsg = DatabaseMgr.connectDatasetGraph(this.tdb2Dir.toString());
+            } else {
+                this.dsg = DatasetGraphFactory.create();
+            }
             Node source = NodeFactory.createURI("https://example.org/source");
-            generateDataset(this.dsg, source, this.relationshipCount);
+            Txn.executeWrite(this.dsg, () -> generateDataset(this.dsg, source, this.relationshipCount));
             this.relatedNodes.clear();
-            this.dsg.stream(Node.ANY, source, Node.ANY, Node.ANY).map(Quad::getObject).distinct()
-                    .forEach(this.relatedNodes::add);
+            Txn.executeRead(this.dsg, () -> this.dsg.stream(Node.ANY, source, Node.ANY, Node.ANY)
+                                                    .map(Quad::getObject)
+                                                    .distinct()
+                                                    .forEach(this.relatedNodes::add));
 
             this.source = new FacetInfoPlaceholder(new TelicentGraphNode(source, null), null, null);
             this.optimizedFetcher = new RelationshipTypeFacetsFetcher(EdgeDirection.OUT);
             this.previousFetcher = new PreviousRelationshipTypeFacetsFetcher();
             this.legacyFetcher = new LegacyRelationshipTypeFacetsFetcher();
+        }
+
+        /**
+         * Closes the dataset and removes the TDB2 database, if any
+         *
+         * @throws IOException If the database directory can't be removed
+         */
+        @TearDown
+        public void tearDown() throws IOException {
+            if (this.tdb2Dir != null) {
+                TDBInternal.expel(this.dsg);
+                try (Stream<Path> paths = Files.walk(this.tdb2Dir)) {
+                    for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
+                        Files.delete(path);
+                    }
+                }
+            } else {
+                this.dsg.close();
+            }
         }
 
         /**
@@ -134,13 +178,20 @@ public class RelationshipTypeFacetBenchmark {
          */
         private void facetsAndRelatedTypes(RelationshipTypeFacetsFetcher facetsFetcher, Blackhole blackhole)
                 throws Exception {
+            // One read transaction for the whole request, as Graph has, so each field's fetcher joins it rather than
+            // starting its own
             DataFetchingEnvironment request = newRequest();
-            blackhole.consume(facetsFetcher.get(request));
-            for (Node related : this.relatedNodes) {
-                blackhole.consume(this.typesFetcher.get(
-                        DataFetchingEnvironmentImpl.newDataFetchingEnvironment(request)
-                                                   .source(new TelicentGraphNode(related, null))
-                                                   .build()));
+            this.dsg.begin(TxnType.READ);
+            try {
+                blackhole.consume(facetsFetcher.get(request));
+                for (Node related : this.relatedNodes) {
+                    blackhole.consume(this.typesFetcher.get(
+                            DataFetchingEnvironmentImpl.newDataFetchingEnvironment(request)
+                                                       .source(new TelicentGraphNode(related, null))
+                                                       .build()));
+                }
+            } finally {
+                this.dsg.end();
             }
         }
 
