@@ -17,13 +17,11 @@ import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
-import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentSearchResults;
 import io.telicent.jena.graphql.server.model.GraphQLOverHttp;
 import io.telicent.servlet.auth.jwt.JwtHttpConstants;
 import io.telicent.servlet.auth.jwt.verifier.aws.AwsConstants;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -41,7 +39,6 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -58,11 +55,6 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
      * The default Search API URL used if none was supplied
      */
     public static final String DEFAULT_SEARCH_API_URL = "http://localhost:8181";
-    /**
-     * The environment variable/system property used to configure whether graph searches use the tailored Search API
-     * endpoint by default.
-     */
-    public static final String ENV_SEARCH_API_USE_FAST_GRAPH_SEARCH = "SEARCH_API_USE_FAST_GRAPH_SEARCH";
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchFetcher.class);
     private static final ObjectMapper JSON = new ObjectMapper();
     private final HttpClient client = HttpClient.newBuilder().build();
@@ -99,14 +91,10 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
      */
     public static URI buildSearchApiRequestUri(String searchApiUrl, String searchTerm,
                                                DataFetchingEnvironment environment) {
-        return buildSearchApiRequestUri(searchApiUrl, searchTerm, environment, useFastGraphSearchByDefault());
-    }
-
-    static URI buildSearchApiRequestUri(String searchApiUrl, String searchTerm, DataFetchingEnvironment environment,
-                                        boolean useFastGraphSearch) {
+        // The searchType and typeFilter arguments aren't supported by the uri-search endpoint, so are ignored
         StringBuilder builder = new StringBuilder();
         builder.append(searchApiUrl)
-               .append(useFastGraphSearch ? "/documents/uri-search?query=" : "/documents?query=")
+               .append("/documents/uri-search?query=")
                .append(URLEncoder.encode(searchTerm, StandardCharsets.UTF_8));
 
         Integer limit = environment.getArgument(TelicentGraphSchema.ARGUMENT_LIMIT);
@@ -117,27 +105,12 @@ public abstract class AbstractSearchFetcher<T> implements DataFetcher<T> {
         if (offset != null && offset >= 1) {
             builder.append("&offset=").append(offset);
         }
-        if (!useFastGraphSearch) {
-            SearchType searchType = environment.getArgument(TelicentGraphSchema.ARGUMENT_SEARCH_TYPE);
-            if (searchType != null) {
-                builder.append("&type=").append(searchType.name().toLowerCase(Locale.ROOT));
-            }
-            String typeFilter = environment.getArgument(TelicentGraphSchema.ARGUMENT_TYPE_FILTER);
-            if (StringUtils.isNotBlank(typeFilter)) {
-                builder.append("&type-filter=")
-                       .append(Base64.encodeBase64URLSafeString(typeFilter.getBytes(StandardCharsets.UTF_8)))
-                       .append("&is-type-filter-base64=true");
-            }
-        }
+        // Only typed documents can be graph nodes. Untyped ones, e.g. the content documents for ingested files that the
+        // Search API also indexes, are dropped by the Search API (with security on) or below (their URIs aren't in the
+        // graph), but the Search API still pages past all of them first. Excluding them up front saves that. Search API
+        // versions without this parameter ignore it.
+        builder.append("&types-only=true");
         return URI.create(builder.toString());
-    }
-
-    static boolean useFastGraphSearchByDefault() {
-        String envValue = System.getenv(ENV_SEARCH_API_USE_FAST_GRAPH_SEARCH);
-        if (StringUtils.isNotBlank(envValue)) {
-            return Boolean.parseBoolean(envValue);
-        }
-        return Boolean.parseBoolean(System.getProperty(ENV_SEARCH_API_USE_FAST_GRAPH_SEARCH, Boolean.TRUE.toString()));
     }
 
     private static String findSearchApiUrl() {

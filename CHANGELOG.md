@@ -1,11 +1,25 @@
 # GraphQL Extensions for Apache Jena
 
+# 0.12.5
+- Performance improvements:
+  - Graph searches now pass `types-only=true` to the Search API's `/documents/uri-search` endpoint, so that the
+    Search API only considers documents that have types.  Untyped documents, such as the content documents for ingested files, can never be graph nodes,
+    but the Search API paged past every one of them that outscored the entities first: on a 1M-document test index a
+    search fell from about 6.1 s to 0.54 s, with the same results.  With Search API authentication disabled, untyped
+    documents could also use up the requested limit and leave a search with few or no nodes; that is fixed too.
+    Search API versions without the parameter ignore it.
+  - The `SEARCH_API_USE_FAST_GRAPH_SEARCH` environment variable/system property has been removed.
+    Graph searches always use the `/documents/uri-search` endpoint, which has been the default since it was added,
+    and no longer fall back to the general `/documents` endpoint.  The `searchType` and `typeFilter` arguments of
+    `search` and `searchWithMetadata` are kept for compatibility but, as with the default before, are ignored.
+
+
 # 0.12.4
 
 - Telicent Graph Schema fixes:
     - GraphQL union-view fetchers now return repeated RDF types, literal properties and relationships once when the
       same triple is present in several named graphs.  Relationship counts and type facets now use the same semantics.
-
+    
 # 0.12.3
 
 - Code quality improvements:

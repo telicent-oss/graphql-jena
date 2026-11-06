@@ -17,7 +17,6 @@ import graphql.schema.DataFetchingEnvironmentImpl;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.SearchType;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.Strings;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.testng.Assert;
@@ -25,7 +24,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class TestAbstractSearchFetcher {
@@ -50,25 +48,7 @@ public class TestAbstractSearchFetcher {
 
         // Then
         Assert.assertEquals(searchUrl.getPath(), "/documents/uri-search");
-        Assert.assertEquals(searchUrl.getQuery(), "query=test");
-    }
-
-    @Test
-    public void givenMinimalArguments_whenFormingLegacySearchUrl_thenLegacyUrl() {
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
-                                                                         .localContext(context)
-                                                                         .arguments(
-                                                                                 Map.of(TelicentGraphSchema.ARGUMENT_SEARCH_TERM,
-                                                                                        "test"))
-                                                                         .build();
-
-        URI searchUrl =
-                AbstractSearchFetcher.buildSearchApiRequestUri(AbstractSearchFetcher.DEFAULT_SEARCH_API_URL, "test",
-                                                               environment, false);
-
-        Assert.assertEquals(searchUrl.getPath(), "/documents");
-        Assert.assertEquals(searchUrl.getQuery(), "query=test");
+        Assert.assertEquals(searchUrl.getQuery(), "query=test&types-only=true");
     }
 
     @DataProvider(name = "searchArguments")
@@ -107,10 +87,11 @@ public class TestAbstractSearchFetcher {
                                                    String.format("&%s=%s", entry.getKey(), entry.getValue())),
                               "Expected querystring parameter " + entry.getKey() + " was not present in generated URL");
         }
+        Assert.assertTrue(searchUrl.getQuery().endsWith("&types-only=true"));
     }
 
     @Test
-    public void givenUnusedFastArguments_whenFormingSearchUrl_thenIgnoredInFastUrl() {
+    public void givenSearchTypeAndTypeFilter_whenFormingSearchUrl_thenIgnored() {
         TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
         DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
                                                                          .localContext(context)
@@ -127,37 +108,6 @@ public class TestAbstractSearchFetcher {
                                                                        environment);
 
         Assert.assertEquals(searchUrl.getPath(), "/api/search/documents/uri-search");
-        Assert.assertEquals(searchUrl.getQuery(), "query=test");
-    }
-
-    @Test
-    public void givenLegacyOnlyArguments_whenFormingLegacySearchUrl_thenReflectedInUrl() {
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
-        DataFetchingEnvironment environment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
-                                                                         .localContext(context)
-                                                                         .arguments(Map.of(
-                                                                                 TelicentGraphSchema.ARGUMENT_SEARCH_TERM,
-                                                                                 "test",
-                                                                                 TelicentGraphSchema.ARGUMENT_SEARCH_TYPE,
-                                                                                 SearchType.TERM,
-                                                                                 TelicentGraphSchema.ARGUMENT_TYPE_FILTER,
-                                                                                 "Person"))
-                                                                         .build();
-
-        URI searchUrl = AbstractSearchFetcher.buildSearchApiRequestUri("https://some-deployment/api/search", "test",
-                                                                       environment, false);
-
-        Assert.assertEquals(searchUrl.getPath(), "/api/search/documents");
-        Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(), "query=test"));
-        Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(), "&type=term"));
-        Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(),
-                                              "&type-filter=" + Base64.encodeBase64URLSafeString(
-                                                      "Person".getBytes(StandardCharsets.UTF_8))));
-        Assert.assertTrue(Strings.CS.contains(searchUrl.getQuery(), "&is-type-filter-base64=true"));
-    }
-
-    @Test
-    public void givenNoOverride_whenCheckingFastGraphSearchFlag_thenDefaultsTrue() {
-        Assert.assertTrue(AbstractSearchFetcher.useFastGraphSearchByDefault());
+        Assert.assertEquals(searchUrl.getQuery(), "query=test&types-only=true");
     }
 }
