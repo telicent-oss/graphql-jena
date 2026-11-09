@@ -94,11 +94,11 @@
         <plugin.sonar>5.8.0.7211</plugin.sonar>
         <plugin.source>3.4.0</plugin.source>
         <plugin.surefire>3.6.1</plugin.surefire>
-        <plugin.versions>2.23.0</plugin.versions>
+        <plugin.versions>2.24.0</plugin.versions>
 
         <!-- Dependency Versions -->
         <dependency.airline>3.3.0</dependency.airline>
-        <dependency.errorprone>2.51.0</dependency.errorprone>
+        <dependency.errorprone>2.52.0</dependency.errorprone>
         <dependency.graphql>26.1</dependency.graphql>
         <dependency.jena>6.2.0</dependency.jena>
         <dependency.jackson>2.22.4</dependency.jackson>
@@ -114,7 +114,7 @@
 
         <!-- Vulnerability fixes -->
         <!-- CVE-2024-57699 -->
-        <dependency.json-smart>2.6.0</dependency.json-smart>
+        <dependency.json-smart>2.6.1</dependency.json-smart>
         <!-- CVE-2024-47554 -->
         <dependency.commons-io>2.22.0</dependency.commons-io>
         <!-- CVE-2025-48976 -->
