@@ -47,4 +47,10 @@ public class GraphQLApplication extends AbstractApplication {
         // No /healthz endpoint will be provided in this demo server
         return null;
     }
+
+    @Override
+    protected boolean isRateLimitingEnabled() {
+        // No rate limiting enabled for demo server
+        return false;
+    }
 }
