@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.access.GraphAccess;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
@@ -28,7 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -94,6 +98,38 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
         TelicentExecutionContext executionContext = environment.getLocalContext();
         List<Quad> quads = executionContext.getOrCompute(cacheKey, () -> generateRelationships(dsg, node, filters));
         return quads.stream();
+    }
+
+    /**
+     * Gets the predicates to which a {@link GraphAccess} call must be restricted to answer for the given filters
+     * <p>
+     * A {@link GraphAccess} call can only express a predicate {@link FilterMode#INCLUDE} filter, if any filter
+     * cannot be expressed then this returns an empty optional and the fetcher must use the {@link DatasetGraph}
+     * directly.
+     * </p>
+     *
+     * @param filters Filters that apply
+     * @return Predicates to restrict to, an empty collection meaning any predicate, or an empty optional if the filters
+     * cannot be expressed as a {@link GraphAccess} call
+     */
+    protected static Optional<Collection<Node>> graphAccessPredicates(List<Filter> filters) {
+        Set<Node> predicates = null;
+        for (Filter filter : filters) {
+            if (!(filter instanceof PredicateFilter) || filter.mode() != FilterMode.INCLUDE) {
+                return Optional.empty();
+            }
+            if (predicates == null) {
+                predicates = new LinkedHashSet<>(filter.values());
+            } else {
+                predicates.retainAll(filter.values());
+                if (predicates.isEmpty()) {
+                    // Filters that include no predicate in common include no relationships, which the GraphAccess
+                    // calls can't express since an empty collection means any predicate
+                    return Optional.empty();
+                }
+            }
+        }
+        return Optional.of(predicates != null ? predicates : List.of());
     }
 
     /**

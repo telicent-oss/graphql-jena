@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.execution.telicent.graph;
 
 import graphql.ExecutionResult;
+import io.telicent.jena.graphql.access.GraphAccessTestMode;
 import io.telicent.jena.graphql.execution.AbstractExecutionTests;
 import io.telicent.jena.graphql.fetchers.telicent.graph.IesFetchers;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
@@ -78,21 +79,21 @@ public class TestTelicentGraphExecution extends AbstractExecutionTests {
                                                 .source(TestTelicentGraphExecution.class.getResourceAsStream(
                                                         "/data/starwars.ttl"))
                                                 .toDatasetGraph();
-        this.starwars = new TelicentGraphExecutor(starwarsDsg);
+        this.starwars = new TelicentGraphExecutor(GraphAccessTestMode.apply(starwarsDsg));
 
         DatasetGraph sandyWoodward = RDFParserBuilder.create()
                                                      .lang(Lang.TURTLE)
                                                      .source(TestTelicentGraphExecution.class.getResourceAsStream(
                                                              "/data/sandy_woodward.ttl"))
                                                      .toDatasetGraph();
-        this.falklands = new TelicentGraphExecutor(sandyWoodward);
+        this.falklands = new TelicentGraphExecutor(GraphAccessTestMode.apply(sandyWoodward));
     }
 
     @Test
     public void givenEmptyData_whenQueryingForSingleNode_thenEmptyResults() throws IOException {
         // Given
         DatasetGraph dsg = DatasetGraphFactory.empty();
-        TelicentGraphExecutor execution = new TelicentGraphExecutor(dsg);
+        TelicentGraphExecutor execution = new TelicentGraphExecutor(GraphAccessTestMode.apply(dsg));
 
         // When
         ExecutionResult result = verifyExecution(execution, SINGLE_NODE_QUERY);

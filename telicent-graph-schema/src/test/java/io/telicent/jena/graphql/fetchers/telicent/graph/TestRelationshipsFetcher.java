@@ -15,6 +15,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
+import io.telicent.jena.graphql.access.GraphAccessTestMode;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
@@ -458,7 +459,7 @@ public class TestRelationshipsFetcher extends AbstractFetcherTests {
                                                       TelicentGraphSchema.ARGUMENT_VALUES, List.of(
                                                                RDF.type.getURI())));
 
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        TelicentExecutionContext context = new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), "");
         DataFetchingEnvironment relEnvironment = DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
                                                                            .localContext(context)
                                                                            .source(new TelicentGraphNode(subject,

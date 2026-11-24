@@ -85,4 +85,31 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <!--
+                    Runs the tests a second time with a GraphAccess in the test datasets, see GraphAccessTestMode, to
+                    show that the fetchers give the same answers with and without one
+                    -->
+                    <execution>
+                        <id>graph-access</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <graphql.jena.tests.graphAccess>true</graphql.jena.tests.graphAccess>
+                            </systemPropertyVariables>
+                            <reportsDirectory>${project.build.directory}/surefire-reports-graph-access</reportsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -73,10 +74,35 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
         }
 
         return Txn.calculateRead(dsg, () -> {
+            Optional<TOutput> direct = fetchDirectly(environment, dsg, source, filters);
+            if (direct.isPresent()) {
+                return direct.get();
+            }
             Stream<TInput> input = select(environment, dsg, source, filters);
             Stream<TInput> paged = applyLimitAndOffset(environment, input);
             return map(environment, dsg, source, paged);
         });
+    }
+
+    /**
+     * Fetches the output without selecting, paging and mapping the input, if this fetcher can do so for the given
+     * request, e.g. because the dataset can answer the request directly
+     * <p>
+     * Called within the read transaction before
+     * {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}.  By default, this returns an empty
+     * optional, so the output is always produced from the selected input.
+     * </p>
+     *
+     * @param environment Data Fetching Environment
+     * @param dsg         Dataset Graph
+     * @param source      Source object
+     * @param filters     Any argument driven filters, as passed to
+     *                    {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}
+     * @return Output, or empty if the output must be produced from the selected input
+     */
+    protected Optional<TOutput> fetchDirectly(DataFetchingEnvironment environment, DatasetGraph dsg, TSource source,
+                                              List<Filter> filters) {
+        return Optional.empty();
     }
 
     /**
