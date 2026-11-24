@@ -200,6 +200,49 @@ public class TestRelationshipsGraphAccess extends AbstractFetcherTests {
     }
 
     @Test
+    public void givenNoGraphAccess_whenCounting_thenNoListIsBuiltOrHeldAndTriplesAreCountedOnce() throws Exception {
+        for (EdgeDirection direction : EdgeDirection.values()) {
+            // Given
+            RecordingDataset dsg = datasetWith(null);
+            // The same relationships again in a second graph
+            Node other = createURI("graph2");
+            for (int i = 0; i < 100; i++) {
+                dsg.add(other, SUBJECT, PREDICATE, createURI("object" + i));
+                dsg.add(other, createURI("subject" + i), PREDICATE, SUBJECT);
+            }
+            TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+            AtomicInteger listsBuilt = new AtomicInteger();
+            RelationshipCountsFetcher counts = new RelationshipCountsFetcher(direction) {
+                @Override
+                protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node,
+                                                           List<Filter> filters) {
+                    listsBuilt.incrementAndGet();
+                    return super.generateRelationships(dsg, node, filters);
+                }
+            };
+            RelationshipsFetcher page = new RelationshipsFetcher(direction) {
+                @Override
+                protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node,
+                                                           List<Filter> filters) {
+                    listsBuilt.incrementAndGet();
+                    return super.generateRelationships(dsg, node, filters);
+                }
+            };
+
+            // When
+            Integer count = counts.get(prepareFetchingEnvironment(context, new NodePlaceholder(
+                    new TelicentGraphNode(SUBJECT, null)), Map.of()));
+            boolean heldAfterCount = page.isSelected(pageEnvironment(context, Map.of()),
+                                                     new TelicentGraphNode(SUBJECT, null));
+
+            // Then
+            Assert.assertEquals(count, 100);
+            Assert.assertEquals(listsBuilt.get(), 0);
+            Assert.assertFalse(heldAfterCount);
+        }
+    }
+
+    @Test
     public void givenDefaultGraphAccess_whenCounting_thenSameCountsAsWithout() throws Exception {
         for (EdgeDirection direction : EdgeDirection.values()) {
             // Given

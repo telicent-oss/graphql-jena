@@ -67,6 +67,12 @@ Benchmarks are intentionally small and focus on core query execution paths:
   - These tests exercise the Telicent graph relationship fetchers directly and are the best benchmark for the new
     request-scoped relationship cache.
    
+- Relationship counts (RelationshipCountBenchmark)
+  - `inboundCount`: counts the inbound relationships of a hub node, each relationship present in two named graphs, in
+    a request of its own, over Jena's in-memory dataset and TDB2, with 1,000 and 100,000 relationships.
+  - This exercises `RelationshipCountsFetcher` with no `GraphAccess`, which counts relationships as they stream past
+    rather than building and holding a list of them.  Run it with `-prof gc` to see allocation per count.
+
 - Relationship type facets (RelationshipTypeFacetBenchmark)
   - `legacyTypeFacets`: simulates the previous implementation, which looked up `rdf:type` once per relationship.
   - `optimizedTypeFacets`: measures the current implementation, which deduplicates related nodes first and looks up

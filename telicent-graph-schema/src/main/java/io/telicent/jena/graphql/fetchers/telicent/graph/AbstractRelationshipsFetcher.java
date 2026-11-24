@@ -156,13 +156,26 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
      * @return Materialised list of relationships
      */
     protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
+        return streamRelationships(dsg, node, filters).toList();
+    }
+
+    /**
+     * Streams the filtered relationships for this fetcher, one quad per distinct triple, without building a list of
+     * them
+     *
+     * @param dsg     Dataset graph
+     * @param node    Source node
+     * @param filters Filters to apply
+     * @return Stream of relationships
+     */
+    protected Stream<Quad> streamRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
         // If a Predicate INCLUDE filter can do a more targeted initial stream
         List<Tuple4<Node>> quadPatterns = getPreFilter(filters, node);
         Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, quadPatterns) : stream(dsg, node);
         for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
-        return QuadStreams.distinctByTriple(quads).toList();
+        return QuadStreams.distinctByTriple(quads);
     }
 
     /**
