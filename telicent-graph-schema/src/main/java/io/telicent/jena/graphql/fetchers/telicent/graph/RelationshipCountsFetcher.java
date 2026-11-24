@@ -33,7 +33,8 @@ import java.util.stream.Stream;
  * <p>
  * If the dataset provides a {@link GraphAccess}, and the request's filters can be expressed as a
  * {@link GraphAccess#countRelationships(DatasetGraph, List, EdgeDirection, Collection)} call, then the count is
- * obtained from that rather than by building the list of relationships.
+ * obtained from that rather than by building the list of relationships, unless another field of the request has
+ * already built that list.
  * </p>
  */
 public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Integer> {
@@ -57,7 +58,8 @@ public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Inte
     protected Optional<Integer> fetchDirectly(DataFetchingEnvironment environment, DatasetGraph dsg,
                                               TelicentGraphNode node, List<Filter> filters) {
         GraphAccess access = GraphAccess.get(dsg);
-        if (access == null) {
+        if (access == null || isSelected(environment, node)) {
+            // No GraphAccess, or another field of this request already built the list, which is then counted
             return Optional.empty();
         }
         Optional<Collection<Node>> predicates = graphAccessPredicates(filters);

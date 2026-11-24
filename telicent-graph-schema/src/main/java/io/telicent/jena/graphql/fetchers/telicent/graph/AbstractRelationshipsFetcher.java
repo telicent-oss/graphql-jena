@@ -88,16 +88,31 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     @SuppressWarnings("java:S2259")
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   List<Filter> filters) {
-        RelationshipSelectionCacheKey cacheKey = new RelationshipSelectionCacheKey(node.getNode(), this.direction,
-                                                                                   environment.getArgument(
-                                                                                           TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER),
-                                                                                   environment.getArgument(
-                                                                                           TelicentGraphSchema.ARGUMENT_NODE_FILTER),
-                                                                                   environment.getArgument(
-                                                                                           TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
         TelicentExecutionContext executionContext = environment.getLocalContext();
-        List<Quad> quads = executionContext.getOrCompute(cacheKey, () -> generateRelationships(dsg, node, filters));
+        List<Quad> quads = executionContext.getOrCompute(cacheKey(environment, node),
+                                                         () -> generateRelationships(dsg, node, filters));
         return quads.stream();
+    }
+
+    /**
+     * Gets whether this request has already built the relationships list for the given node and the request's
+     * filters, e.g. because another field of the request needed it
+     *
+     * @param environment Data Fetching environment
+     * @param node        Source node
+     * @return True if the list is already built
+     */
+    @SuppressWarnings("java:S2259")
+    protected boolean isSelected(DataFetchingEnvironment environment, TelicentGraphNode node) {
+        TelicentExecutionContext executionContext = environment.getLocalContext();
+        return executionContext.getIfPresent(cacheKey(environment, node)) != null;
+    }
+
+    private RelationshipSelectionCacheKey cacheKey(DataFetchingEnvironment environment, TelicentGraphNode node) {
+        return new RelationshipSelectionCacheKey(node.getNode(), this.direction,
+                                                 environment.getArgument(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER),
+                                                 environment.getArgument(TelicentGraphSchema.ARGUMENT_NODE_FILTER),
+                                                 environment.getArgument(TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
     }
 
     /**

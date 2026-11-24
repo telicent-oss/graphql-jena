@@ -18,7 +18,9 @@ import io.telicent.jena.graphql.access.GraphAccess;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.FacetInfoPlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.Relationship;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.FilterMode;
@@ -34,6 +36,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -89,7 +92,7 @@ public class TestRelationshipsGraphAccess extends AbstractFetcherTests {
                                          Collection<Node> predicates) {
             this.countCalls.add(predicates);
             long[] counts = new long[nodes.size()];
-            java.util.Arrays.fill(counts, 42);
+            Arrays.fill(counts, 42);
             return counts;
         }
     }
@@ -211,6 +214,110 @@ public class TestRelationshipsGraphAccess extends AbstractFetcherTests {
             Assert.assertEquals(a, b);
             Assert.assertEquals(a, 100);
         }
+    }
+
+    /**
+     * A graph access that records the pages it is asked for and answers them from the default implementation
+     */
+    private static final class RecordingPageAccess extends DefaultGraphAccess {
+        private final List<long[]> pageCalls = new ArrayList<>();
+        private final List<Collection<Node>> pagePredicates = new ArrayList<>();
+
+        @Override
+        public Stream<Quad> relationships(DatasetGraph dsg, Node node, EdgeDirection direction,
+                                          Collection<Node> predicates, long offset, long limit) {
+            this.pageCalls.add(new long[] { offset, limit });
+            this.pagePredicates.add(predicates);
+            return super.relationships(dsg, node, direction, predicates, offset, limit);
+        }
+    }
+
+    private static DataFetchingEnvironment pageEnvironment(TelicentExecutionContext context,
+                                                           Map<String, Object> arguments) {
+        return prepareFetchingEnvironment(context, new TelicentGraphNode(SUBJECT, null), arguments);
+    }
+
+    private static List<String> objects(List<Relationship> relationships) {
+        return relationships.stream().map(r -> r.getDomain().getUri() + " " + r.getRange().getUri()).toList();
+    }
+
+    @Test
+    public void givenGraphAccess_whenFetchingAPage_thenOnlyThatPageIsAskedForWithAZeroBasedOffset() throws Exception {
+        // Given
+        RecordingPageAccess access = new RecordingPageAccess();
+        RecordingDataset dsg = datasetWith(access);
+        AtomicInteger listsBuilt = new AtomicInteger();
+        RelationshipsFetcher fetcher = new RelationshipsFetcher(EdgeDirection.OUT) {
+            @Override
+            protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node,
+                                                       List<Filter> filters) {
+                listsBuilt.incrementAndGet();
+                return super.generateRelationships(dsg, node, filters);
+            }
+        };
+        Map<String, Object> arguments = Map.of(TelicentGraphSchema.ARGUMENT_OFFSET, 3, TelicentGraphSchema.ARGUMENT_LIMIT, 5);
+
+        // When
+        List<Relationship> page = fetcher.get(pageEnvironment(new TelicentExecutionContext(dsg, ""), arguments));
+        List<Relationship> expected = new RelationshipsFetcher(EdgeDirection.OUT).get(
+                pageEnvironment(new TelicentExecutionContext(datasetWith(null), ""), arguments));
+
+        // Then
+        Assert.assertEquals(objects(page), objects(expected));
+        Assert.assertEquals(page.size(), 5);
+        Assert.assertEquals(listsBuilt.get(), 0);
+        Assert.assertEquals(access.pageCalls.size(), 1);
+        Assert.assertEquals(access.pageCalls.get(0), new long[] { 2, 5 });
+        Assert.assertEquals(access.pagePredicates.get(0), List.of());
+    }
+
+    @Test
+    public void givenGraphAccess_whenFetchingPagesWithDefaultLimitAndPredicates_thenSameAsWithout() throws Exception {
+        for (EdgeDirection direction : EdgeDirection.values()) {
+            for (Map<String, Object> arguments : List.of(Map.<String, Object>of(),
+                                                         Map.<String, Object>of(TelicentGraphSchema.ARGUMENT_OFFSET, 90),
+                                                         filter(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER,
+                                                                "INCLUDE", PREDICATE))) {
+                // Given
+                RecordingPageAccess access = new RecordingPageAccess();
+
+                // When
+                List<Relationship> with = new RelationshipsFetcher(direction).get(
+                        pageEnvironment(new TelicentExecutionContext(datasetWith(access), ""), arguments));
+                List<Relationship> without = new RelationshipsFetcher(direction).get(
+                        pageEnvironment(new TelicentExecutionContext(datasetWith(null), ""), arguments));
+
+                // Then
+                Assert.assertEquals(access.pageCalls.size(), 1);
+                Assert.assertEquals(objects(with), objects(without));
+            }
+        }
+    }
+
+    @Test
+    public void givenListAlreadyBuiltForTheRequest_whenFetchingAPageOrCount_thenTheListIsUsed() throws Exception {
+        // Given
+        RecordingPageAccess pageAccess = new RecordingPageAccess();
+        FixedCountAccess countAccess = new FixedCountAccess();
+        RecordingDataset dsg = datasetWith(pageAccess);
+        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        // Facets need the whole list, so build it for this request first
+        new RelationshipPredicateFacetsFetcher(EdgeDirection.OUT).get(
+                prepareFetchingEnvironment(context, new FacetInfoPlaceholder(
+                        new TelicentGraphNode(SUBJECT, null), null, null), Map.of()));
+
+        // When
+        List<Relationship> page = new RelationshipsFetcher(EdgeDirection.OUT).get(pageEnvironment(context, Map.of()));
+        dsg.getContext().set(GraphAccess.SYMBOL, countAccess);
+        Integer count = new RelationshipCountsFetcher(EdgeDirection.OUT).get(
+                prepareFetchingEnvironment(context, new NodePlaceholder(new TelicentGraphNode(SUBJECT, null)),
+                                           Map.of()));
+
+        // Then
+        Assert.assertEquals(page.size(), TelicentGraphSchema.DEFAULT_LIMIT);
+        Assert.assertTrue(pageAccess.pageCalls.isEmpty());
+        Assert.assertEquals(count, 100);
+        Assert.assertTrue(countAccess.countCalls.isEmpty());
     }
 
     @Test

@@ -82,4 +82,16 @@ public class TelicentExecutionContext {
     public <T> T getOrCompute(Object key, Supplier<T> supplier) {
         return (T) this.requestCache.computeIfAbsent(key, ignored -> supplier.get());
     }
+
+    /**
+     * Gets an existing cached value for the given key, without computing it if absent
+     *
+     * @param key Cache key
+     * @param <T> Value type
+     * @return Cached value, or {@code null} if there is none
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getIfPresent(Object key) {
+        return (T) this.requestCache.get(key);
+    }
 }
