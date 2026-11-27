@@ -92,7 +92,8 @@ public class RelationshipCountBenchmark {
          */
         @Setup
         public void setup() {
-            this.dsg = "tdb2".equals(this.store) ? DatabaseMgr.createDatasetGraph() : DatasetGraphFactory.createTxnMem();
+            this.dsg = "tdb2".equals(this.store) ? DatabaseMgr.createDatasetGraph() :
+                       DatasetGraphFactory.createTxnMem();
             Node hubNode = NodeFactory.createURI("https://example.org/hub");
             this.hub = new TelicentGraphNode(hubNode, null);
             Node predicate = NodeFactory.createURI("https://example.org/predicate");

@@ -35,14 +35,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -298,7 +291,8 @@ public class TestRelationshipsGraphAccess extends AbstractFetcherTests {
                 return super.generateRelationships(dsg, node, filters);
             }
         };
-        Map<String, Object> arguments = Map.of(TelicentGraphSchema.ARGUMENT_OFFSET, 3, TelicentGraphSchema.ARGUMENT_LIMIT, 5);
+        Map<String, Object> arguments =
+                Map.of(TelicentGraphSchema.ARGUMENT_OFFSET, 3, TelicentGraphSchema.ARGUMENT_LIMIT, 5);
 
         // When
         List<Relationship> page = fetcher.get(pageEnvironment(new TelicentExecutionContext(dsg, ""), arguments));
@@ -370,8 +364,9 @@ public class TestRelationshipsGraphAccess extends AbstractFetcherTests {
         Node c = createURI("c");
 
         Assert.assertEquals(AbstractRelationshipsFetcher.graphAccessPredicates(List.of()), Optional.of(List.of()));
-        Assert.assertEquals(AbstractRelationshipsFetcher.graphAccessPredicates(
-                List.of(new PredicateFilter(FilterMode.INCLUDE, List.of(a, b)))).map(Set::copyOf), Optional.of(Set.of(a, b)));
+        Optional<Set<Node>> included = AbstractRelationshipsFetcher.graphAccessPredicates(
+                List.of(new PredicateFilter(FilterMode.INCLUDE, List.of(a, b)))).map(Set::copyOf);
+        Assert.assertEquals(included, Optional.of(Set.of(a, b)));
         Assert.assertEquals(AbstractRelationshipsFetcher.graphAccessPredicates(
                                     List.of(new PredicateFilter(FilterMode.INCLUDE, List.of(a, b)),
                                             new PredicateFilter(FilterMode.INCLUDE, List.of(b, c))))

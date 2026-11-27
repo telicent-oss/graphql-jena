@@ -16,13 +16,13 @@
     relationships for the rest of the request only to count it: the count is taken as the relationships are read,
     unless another field of the request has already built the list.  A request that counts the relationships of many
     hub nodes, as a page of relationships with their counts does, no longer holds every hub's relationships until it
-    ends; over TDB2 this is what ran out of heap at 64 concurrent clients on a 100M quad dataset.
+    ends; over TDB2 this is what ran out of heap at 64 concurrent clients on a 100M quad dataset. (TC-787)
 - New features:
   - Added the optional `GraphAccess` interface in `graphql-jena-core`, through which a store can count and page a
     node's relationships in its own engine.  A store that supports it places an implementation in the dataset's
     context under `GraphAccess.SYMBOL`; the Telicent Graph Schema's relationship count and relationship fetchers then
     use it when a request's filters allow.  Datasets without one, including TDB2 and in-memory datasets, behave exactly
-    as before.  See [Graph Access](docs/graph-access.md).
+    as before.  See [Graph Access](docs/graph-access.md). (TC-787)
 
 
 # 0.12.4

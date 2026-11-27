@@ -28,8 +28,8 @@ import java.util.stream.Stream;
  * than by streaming quads through Jena's {@link DatasetGraph} API
  * <p>
  * A store that can answer these questions in its own engine places an implementation in the dataset's
- * {@link Context} under {@link #SYMBOL}.  Fetchers look it up with {@link #get(DatasetGraph)} and, when there is none,
- * fall back to streaming quads from the dataset exactly as they would without this interface.  Since the lookup goes
+ * {@link Context} under {@link #SYMBOL}. Fetchers look it up with {@link #get(DatasetGraph)} and, when there is none,
+ * fall back to streaming quads from the dataset exactly as they would without this interface. Since the lookup goes
  * through the dataset's context, it works even when the store is hidden beneath dataset wrappers.
  * </p>
  * <p>
@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * applied by the dataset applies equally to answers given by an implementation.
  * </p>
  * <p>
- * The questions are plain graph questions with no knowledge of any GraphQL schema or ontology.  Further questions may
+ * The questions are plain graph questions with no knowledge of any GraphQL schema or ontology. Further questions may
  * be added in future versions.
  * </p>
  */
@@ -48,7 +48,7 @@ public interface GraphAccess {
     /**
      * Context symbol under which a dataset's {@link GraphAccess} implementation, if any, is held
      */
-    Symbol SYMBOL = Symbol.create("urn:x-graphql-jena:graphAccess");
+    Symbol SYMBOL = Symbol.create("graphql:graphAccess");
 
     /**
      * Counts the relationships of each of the given nodes
@@ -73,7 +73,7 @@ public interface GraphAccess {
      * Gets a page of the relationships of a node, as counted by
      * {@link #countRelationships(DatasetGraph, List, EdgeDirection, Collection)}
      * <p>
-     * Each distinct triple is returned once, as a quad whose graph carries no meaning.  Relationships are returned in
+     * Each distinct triple is returned once, as a quad whose graph carries no meaning. Relationships are returned in
      * an order that is stable for the same arguments while the dataset is unchanged, so consecutive pages neither
      * repeat nor miss relationships.
      * </p>

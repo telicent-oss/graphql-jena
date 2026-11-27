@@ -33,8 +33,8 @@ import java.util.stream.Stream;
  * <p>
  * If the dataset provides a {@link GraphAccess}, and the request's filters can be expressed as a
  * {@link GraphAccess#countRelationships(DatasetGraph, List, EdgeDirection, Collection)} call, then the count is
- * obtained from that.  Otherwise the relationships are counted as they are streamed from the dataset, without building
- * and holding a list of them.  In either case, if another field of the request has already built the list of these
+ * obtained from that. Otherwise the relationships are counted as they are streamed from the dataset, without building
+ * and holding a list of them. In either case, if another field of the request has already built the list of these
  * relationships, then that list is counted.
  * </p>
  */

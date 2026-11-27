@@ -22,11 +22,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.Txn;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -89,7 +85,7 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      * request, e.g. because the dataset can answer the request directly
      * <p>
      * Called within the read transaction before
-     * {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}.  By default, this returns an empty
+     * {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}. By default, this returns an empty
      * optional, so the output is always produced from the selected input.
      * </p>
      *

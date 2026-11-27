@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.access;
 
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -23,11 +24,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -111,8 +108,8 @@ public abstract class AbstractGraphAccessTests {
         // Literals are not relationships
         quads.add(Quad.create(Quad.defaultGraphIRI, HUB, NAME, NodeFactory.createLiteralString("Hub")));
         quads.add(Quad.create(G1, HUB, NAME, NodeFactory.createLiteralString("A rather longer name for the hub")));
-        quads.add(Quad.create(G1, HUB, KNOWS, NodeFactory.createLiteralDT("12", org.apache.jena.datatypes.xsd.XSDDatatype.XSDinteger)));
-        // Blank nodes are
+        quads.add(Quad.create(G1, HUB, KNOWS, NodeFactory.createLiteralDT("12", XSDDatatype.XSDinteger)));
+        // Blank nodes are relationships
         quads.add(Quad.create(Quad.defaultGraphIRI, HUB, LIKES, BLANK));
         quads.add(Quad.create(G2, BLANK, KNOWS, HUB));
         // Other nodes

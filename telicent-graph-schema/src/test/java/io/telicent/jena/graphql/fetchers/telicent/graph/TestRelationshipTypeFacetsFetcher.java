@@ -196,12 +196,12 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
         // Given: the cache is per request, so a new request (new context) sees changes and other users' views apart
         DatasetGraph dsg = hubDataset();
         AtomicInteger lookups = new AtomicInteger();
-        countingFacets(EdgeDirection.IN, lookups).get(facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""),
-                                                                        createURI("hub")));
+        countingFacets(EdgeDirection.IN, lookups).get(
+                facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""), createURI("hub")));
 
         // When
-        countingFacets(EdgeDirection.IN, lookups).get(facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""),
-                                                                        createURI("hub")));
+        countingFacets(EdgeDirection.IN, lookups).get(
+                facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""), createURI("hub")));
 
         // Then
         Assert.assertEquals(lookups.get(), 6);

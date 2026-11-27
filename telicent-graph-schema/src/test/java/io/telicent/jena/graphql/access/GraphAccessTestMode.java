@@ -19,7 +19,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
  * <p>
  * The build runs this module's tests twice: once as normal, with no {@link GraphAccess}, and once with the
  * {@value #PROPERTY} system property set to {@code true}, in which case test datasets are given a
- * {@link DefaultGraphAccess}.  Every test must pass both ways, which shows that fetchers give the same answers through
+ * {@link DefaultGraphAccess}. Every test must pass both ways, which shows that fetchers give the same answers through
  * a {@link GraphAccess} as without one.
  * </p>
  */

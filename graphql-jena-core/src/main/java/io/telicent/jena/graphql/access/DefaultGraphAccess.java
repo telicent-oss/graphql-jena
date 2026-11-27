@@ -18,18 +18,14 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
  * A {@link GraphAccess} implementation that answers every question by streaming quads from the dataset via
  * {@link DatasetGraph#stream(Node, Node, Node, Node)}
  * <p>
- * This defines the expected answers for any other implementation and is suitable for any dataset.  It is never used
+ * This defines the expected answers for any other implementation and is suitable for any dataset. It is never used
  * automatically: a dataset with no {@link GraphAccess} in its context is served by the fetchers' own code, which gives
  * the same answers.
  * </p>
