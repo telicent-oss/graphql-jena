@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.access.GraphAccess;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.TelicentGraphSchema;
@@ -26,9 +27,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,16 +83,63 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
     @SuppressWarnings("java:S2259")
     protected Stream<Quad> select(DataFetchingEnvironment environment, DatasetGraph dsg, TelicentGraphNode node,
                                   List<Filter> filters) {
-        RelationshipSelectionCacheKey cacheKey = new RelationshipSelectionCacheKey(node.getNode(), this.direction,
-                                                                                   environment.getArgument(
-                                                                                           TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER),
-                                                                                   environment.getArgument(
-                                                                                           TelicentGraphSchema.ARGUMENT_NODE_FILTER),
-                                                                                   environment.getArgument(
-                                                                                           TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
         TelicentExecutionContext executionContext = environment.getLocalContext();
-        List<Quad> quads = executionContext.getOrCompute(cacheKey, () -> generateRelationships(dsg, node, filters));
+        List<Quad> quads = executionContext.getOrCompute(cacheKey(environment, node),
+                                                         () -> generateRelationships(dsg, node, filters));
         return quads.stream();
+    }
+
+    /**
+     * Gets whether this request has already built the relationships list for the given node and the request's
+     * filters, e.g. because another field of the request needed it
+     *
+     * @param environment Data Fetching environment
+     * @param node        Source node
+     * @return True if the list is already built
+     */
+    @SuppressWarnings("java:S2259")
+    protected boolean isSelected(DataFetchingEnvironment environment, TelicentGraphNode node) {
+        TelicentExecutionContext executionContext = environment.getLocalContext();
+        return executionContext.getIfPresent(cacheKey(environment, node)) != null;
+    }
+
+    private RelationshipSelectionCacheKey cacheKey(DataFetchingEnvironment environment, TelicentGraphNode node) {
+        return new RelationshipSelectionCacheKey(node.getNode(), this.direction,
+                                                 environment.getArgument(TelicentGraphSchema.ARGUMENT_PREDICATE_FILTER),
+                                                 environment.getArgument(TelicentGraphSchema.ARGUMENT_NODE_FILTER),
+                                                 environment.getArgument(TelicentGraphSchema.ARGUMENT_TYPE_FILTER));
+    }
+
+    /**
+     * Gets the predicates to which a {@link GraphAccess} call must be restricted to answer for the given filters
+     * <p>
+     * A {@link GraphAccess} call can only express a predicate {@link FilterMode#INCLUDE} filter, if any filter
+     * cannot be expressed then this returns an empty optional and the fetcher must use the {@link DatasetGraph}
+     * directly.
+     * </p>
+     *
+     * @param filters Filters that apply
+     * @return Predicates to restrict to, an empty collection meaning any predicate, or an empty optional if the filters
+     * cannot be expressed as a {@link GraphAccess} call
+     */
+    protected static Optional<Collection<Node>> graphAccessPredicates(List<Filter> filters) {
+        Set<Node> predicates = null;
+        for (Filter filter : filters) {
+            if (!(filter instanceof PredicateFilter) || filter.mode() != FilterMode.INCLUDE) {
+                return Optional.empty();
+            }
+            if (predicates == null) {
+                predicates = new LinkedHashSet<>(filter.values());
+            } else {
+                predicates.retainAll(filter.values());
+                if (predicates.isEmpty()) {
+                    // Filters that include no predicate in common include no relationships, which the GraphAccess
+                    // calls can't express since an empty collection means any predicate
+                    return Optional.empty();
+                }
+            }
+        }
+        return Optional.of(predicates != null ? predicates : List.of());
     }
 
     /**
@@ -105,13 +151,26 @@ public abstract class AbstractRelationshipsFetcher<TOutput>
      * @return Materialised list of relationships
      */
     protected List<Quad> generateRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
+        return streamRelationships(dsg, node, filters).toList();
+    }
+
+    /**
+     * Streams the filtered relationships for this fetcher, one quad per distinct triple, without building a list of
+     * them
+     *
+     * @param dsg     Dataset graph
+     * @param node    Source node
+     * @param filters Filters to apply
+     * @return Stream of relationships
+     */
+    protected Stream<Quad> streamRelationships(DatasetGraph dsg, TelicentGraphNode node, List<Filter> filters) {
         // If a Predicate INCLUDE filter can do a more targeted initial stream
         List<Tuple4<Node>> quadPatterns = getPreFilter(filters, node);
         Stream<Quad> quads = quadPatterns != null ? streamPreFiltered(dsg, quadPatterns) : stream(dsg, node);
         for (Filter filter : filters) {
             quads = filter.filter(quads, dsg);
         }
-        return QuadStreams.distinctByTriple(quads).toList();
+        return QuadStreams.distinctByTriple(quads);
     }
 
     /**

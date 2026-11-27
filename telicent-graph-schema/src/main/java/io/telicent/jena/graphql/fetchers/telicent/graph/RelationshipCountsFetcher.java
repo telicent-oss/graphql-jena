@@ -14,16 +14,29 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.access.GraphAccess;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.NodePlaceholder;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.TelicentGraphNode;
+import io.telicent.jena.graphql.schemas.telicent.graph.models.inputs.Filter;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * A GraphQL {@link DataFetcher} that finds the counts of incoming/outgoing relationships for a node
+ * <p>
+ * If the dataset provides a {@link GraphAccess}, and the request's filters can be expressed as a
+ * {@link GraphAccess#countRelationships(DatasetGraph, List, EdgeDirection, Collection)} call, then the count is
+ * obtained from that. Otherwise the relationships are counted as they are streamed from the dataset, without building
+ * and holding a list of them. In either case, if another field of the request has already built the list of these
+ * relationships, then that list is counted.
+ * </p>
  */
 public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Integer> {
 
@@ -40,6 +53,27 @@ public class RelationshipCountsFetcher extends AbstractRelationshipsFetcher<Inte
     protected TelicentGraphNode getSource(DataFetchingEnvironment environment) {
         NodePlaceholder counts = environment.getSource();
         return counts.parent();
+    }
+
+    @Override
+    protected Optional<Integer> fetchDirectly(DataFetchingEnvironment environment, DatasetGraph dsg,
+                                              TelicentGraphNode node, List<Filter> filters) {
+        if (isSelected(environment, node)) {
+            // Another field of this request already built the list, so count that
+            return Optional.empty();
+        }
+        GraphAccess access = GraphAccess.get(dsg);
+        if (access != null) {
+            Optional<Collection<Node>> predicates = graphAccessPredicates(filters);
+            if (predicates.isPresent()) {
+                long[] counts = access.countRelationships(dsg, List.of(node.getNode()), this.direction,
+                                                          predicates.get());
+                return Optional.of(Math.toIntExact(counts[0]));
+            }
+        }
+        // Count as the relationships stream past, rather than building a list that would be held until the request
+        // ends only to be counted
+        return Optional.of(Math.toIntExact(streamRelationships(dsg, node, filters).count()));
     }
 
     @Override

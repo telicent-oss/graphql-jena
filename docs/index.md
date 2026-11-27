@@ -12,6 +12,9 @@ queries over RDF data.  It primarily serves to demonstrate how to use the `graph
 GraphQL schema over Jena backed RDF data.  You'll also find a bunch of helper utilities and constants for reuse in other
 modules here.
 
+Stores that can answer common graph questions, such as counting a node's relationships, in their own engine may
+provide the optional [Graph Access](graph-access.md) interface.
+
 ### Telicent GraphQL Schema
 
 The `telicent-graph-schema` module provides a Telicent specific schema and associated execution logic for use by our

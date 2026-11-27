@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.execution.telicent.graph;
 
 import graphql.ExecutionResult;
+import io.telicent.jena.graphql.access.GraphAccessTestMode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -53,7 +54,7 @@ public class TestTelicentGraphExecutionTdb2 {
         DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
         Txn.executeWrite(dsg, () -> RDFDataMgr.read(dsg, TestTelicentGraphExecutionTdb2.class.getResourceAsStream(
                 "/data/starwars.ttl"), Lang.TURTLE));
-        return new TelicentGraphExecutor(dsg);
+        return new TelicentGraphExecutor(GraphAccessTestMode.apply(dsg));
     }
 
     private static Map<String, Object> verifyNode(ExecutionResult result, String when) {

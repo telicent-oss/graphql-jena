@@ -14,6 +14,7 @@ package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
+import io.telicent.jena.graphql.access.GraphAccessTestMode;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
@@ -28,7 +29,7 @@ public class AbstractFetcherTests {
     }
 
     protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(DatasetGraph dsg, T source) {
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        TelicentExecutionContext context = new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), "");
         return prepareFetchingEnvironment(context, source);
     }
 
@@ -41,7 +42,7 @@ public class AbstractFetcherTests {
     }
 
     protected static <T> DataFetchingEnvironment prepareFetchingEnvironment(DatasetGraph dsg, T source, Map<String, Object> arguments) {
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        TelicentExecutionContext context = new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), "");
         return prepareFetchingEnvironment(context, source, arguments);
     }
 

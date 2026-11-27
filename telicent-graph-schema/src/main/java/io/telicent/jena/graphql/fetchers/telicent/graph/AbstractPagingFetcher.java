@@ -22,10 +22,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.Txn;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -73,10 +70,35 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
         }
 
         return Txn.calculateRead(dsg, () -> {
+            Optional<TOutput> direct = fetchDirectly(environment, dsg, source, filters);
+            if (direct.isPresent()) {
+                return direct.get();
+            }
             Stream<TInput> input = select(environment, dsg, source, filters);
             Stream<TInput> paged = applyLimitAndOffset(environment, input);
             return map(environment, dsg, source, paged);
         });
+    }
+
+    /**
+     * Fetches the output without selecting, paging and mapping the input, if this fetcher can do so for the given
+     * request, e.g. because the dataset can answer the request directly
+     * <p>
+     * Called within the read transaction before
+     * {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}. By default, this returns an empty
+     * optional, so the output is always produced from the selected input.
+     * </p>
+     *
+     * @param environment Data Fetching Environment
+     * @param dsg         Dataset Graph
+     * @param source      Source object
+     * @param filters     Any argument driven filters, as passed to
+     *                    {@link #select(DataFetchingEnvironment, DatasetGraph, Object, List)}
+     * @return Output, or empty if the output must be produced from the selected input
+     */
+    protected Optional<TOutput> fetchDirectly(DataFetchingEnvironment environment, DatasetGraph dsg, TSource source,
+                                              List<Filter> filters) {
+        return Optional.empty();
     }
 
     /**
@@ -172,21 +194,58 @@ public abstract class AbstractPagingFetcher<TSource, TInput, TOutput> implements
      */
     public static <T> Stream<T> applyLimitAndOffset(DataFetchingEnvironment environment, Stream<T> stream,
                                                     long defaultLimit, long maxLimit) {
-        Integer limit = environment.getArgument(TelicentGraphSchema.ARGUMENT_LIMIT);
-        Integer offset = environment.getArgument(TelicentGraphSchema.ARGUMENT_OFFSET);
-        if (offset != null && offset > 1) {
-            stream = stream.skip(offset.longValue() - 1);
+        long skip = getSkip(environment);
+        if (skip > 0) {
+            stream = stream.skip(skip);
         }
+        return stream.limit(getLimit(environment, defaultLimit, maxLimit));
+    }
+
+    /**
+     * Gets the number of results to skip for the requested page
+     * <p>
+     * The {@code offset} argument is 1-based, i.e. an offset of {@code 1} starts from the first result, so the number
+     * of results to skip is one less than the offset.
+     * </p>
+     *
+     * @param environment Data Fetching environment
+     * @return Number of results to skip, zero or more
+     */
+    public static long getSkip(DataFetchingEnvironment environment) {
+        Integer offset = environment.getArgument(TelicentGraphSchema.ARGUMENT_OFFSET);
+        return offset != null && offset > 1 ? offset.longValue() - 1 : 0;
+    }
+
+    /**
+     * Gets the maximum number of results for the requested page
+     *
+     * @param environment  Data Fetching environment
+     * @param defaultLimit Default limit to apply if not provided in arguments
+     * @param maxLimit     Maximum limit to apply
+     * @return Maximum number of results
+     * @throws IllegalArgumentException Thrown if the requested limit exceeds the maximum limit
+     */
+    public static long getLimit(DataFetchingEnvironment environment, long defaultLimit, long maxLimit) {
+        Integer limit = environment.getArgument(TelicentGraphSchema.ARGUMENT_LIMIT);
         if (limit != null && limit > 0) {
             if (limit > maxLimit) {
                 throw new IllegalArgumentException(
                         "Requested limit " + limit + " exceeds the maximum limit " + maxLimit);
             }
-            stream = stream.limit(limit.longValue());
-        } else {
-            stream = stream.limit(defaultLimit);
+            return limit.longValue();
         }
-        return stream;
+        return defaultLimit;
+    }
+
+    /**
+     * Gets the maximum number of results for the requested page, using this fetcher's limit settings
+     *
+     * @param environment Data Fetching environment
+     * @return Maximum number of results
+     * @throws IllegalArgumentException Thrown if the requested limit exceeds the maximum limit
+     */
+    protected long getLimit(DataFetchingEnvironment environment) {
+        return getLimit(environment, this.defaultLimit, this.maxLimit);
     }
 
     /**

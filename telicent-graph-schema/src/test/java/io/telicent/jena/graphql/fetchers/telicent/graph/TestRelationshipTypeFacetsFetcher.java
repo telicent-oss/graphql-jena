@@ -13,6 +13,7 @@
 package io.telicent.jena.graphql.fetchers.telicent.graph;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.telicent.jena.graphql.access.GraphAccessTestMode;
 import io.telicent.jena.graphql.execution.telicent.graph.TelicentExecutionContext;
 import io.telicent.jena.graphql.schemas.models.EdgeDirection;
 import io.telicent.jena.graphql.schemas.telicent.graph.models.FacetInfo;
@@ -131,7 +132,7 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
             throws Exception {
         // Given: one request in which another field (e.g. inRels { domain { types } }) already fetched e1's types
         DatasetGraph dsg = hubDataset();
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        TelicentExecutionContext context = new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), "");
         new NodeTypesFetcher().get(prepareFetchingEnvironment(context, new TelicentGraphNode(createURI("e1"), null)));
         AtomicInteger lookups = new AtomicInteger();
 
@@ -149,7 +150,7 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
             throws Exception {
         // Given
         DatasetGraph dsg = hubDataset();
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        TelicentExecutionContext context = new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), "");
         AtomicInteger inLookups = new AtomicInteger(), outLookups = new AtomicInteger();
 
         // When: relFacets { inRels { types } outRels { types } } in one request
@@ -169,7 +170,7 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
     public void givenTypeFacetsFetched_whenFetchingRelatedNodeTypes_thenCachedTypesAreReused() throws Exception {
         // Given: the facets ran first in this request
         DatasetGraph dsg = hubDataset();
-        TelicentExecutionContext context = new TelicentExecutionContext(dsg, "");
+        TelicentExecutionContext context = new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), "");
         new RelationshipTypeFacetsFetcher(EdgeDirection.IN).get(facetsEnvironment(context, createURI("hub")));
         AtomicInteger lookups = new AtomicInteger();
         NodeTypesFetcher types = new NodeTypesFetcher() {
@@ -195,12 +196,12 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
         // Given: the cache is per request, so a new request (new context) sees changes and other users' views apart
         DatasetGraph dsg = hubDataset();
         AtomicInteger lookups = new AtomicInteger();
-        countingFacets(EdgeDirection.IN, lookups).get(facetsEnvironment(new TelicentExecutionContext(dsg, ""),
-                                                                        createURI("hub")));
+        countingFacets(EdgeDirection.IN, lookups).get(
+                facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""), createURI("hub")));
 
         // When
-        countingFacets(EdgeDirection.IN, lookups).get(facetsEnvironment(new TelicentExecutionContext(dsg, ""),
-                                                                        createURI("hub")));
+        countingFacets(EdgeDirection.IN, lookups).get(
+                facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""), createURI("hub")));
 
         // Then
         Assert.assertEquals(lookups.get(), 6);
@@ -214,7 +215,7 @@ public class TestRelationshipTypeFacetsFetcher extends AbstractFetcherTests {
 
         // When
         List<FacetInfo> facets = new RelationshipTypeFacetsFetcher(EdgeDirection.IN).get(
-                facetsEnvironment(new TelicentExecutionContext(dsg, ""), createURI("hub")));
+                facetsEnvironment(new TelicentExecutionContext(GraphAccessTestMode.apply(dsg), ""), createURI("hub")));
 
         // Then
         Assert.assertEquals(counts(facets), Map.of("Person", 2, "Location", 1));
